@@ -4,7 +4,12 @@ let sha1 = require('sha1');
 class InfoContainer {
     constructor(annotator){
         this.annotator = annotator;
-        this.$container = $("<div class='annotator-info' aria-live='polite' aria-atomic='true'></div>").appendTo(this.annotator.$container);
+        let container = $(".annotator-info");
+        if(container.length > 0){
+            this.$container = container.first();
+        } else {
+            this.$container = $("<div class='annotator-info' aria-live='polite' aria-atomic='true'></div>").appendTo(this.annotator.$container);
+        }
     }
 
     Rebuild(annotations){
