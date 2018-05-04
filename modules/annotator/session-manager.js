@@ -11,14 +11,15 @@ class SessionManager {
         this.modalOpen = false;
 
         // Inject the button for logging in/out into the toolbar
-        this.$userButton = $("<button>Session</button>").button({
-            icon: "fa fa-user",
-            showLabel: false
-        }).click(() => {
-            this.PresentModal();
-        });
-        this.annotator.player.controlBar.RegisterElement(this.$userButton, 1, 'flex-end');
-
+        if(!annotator.kioskMode){
+            this.$userButton = $("<button>Session</button>").button({
+                icon: "fa fa-user",
+                showLabel: false
+            }).click(() => {
+                this.PresentModal();
+            });
+            this.annotator.player.controlBar.RegisterElement(this.$userButton, 1, 'flex-end');
+        }
         //this.$dialog.dialog("open");
 
         console.log("SessionManager created.");

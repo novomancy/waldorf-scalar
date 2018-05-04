@@ -10,12 +10,13 @@ import { MessageOverlay } from "./components/message-overlay.js";
 import { Annotation } from "./annotation.js";
 
 class VideoAnnotator {
-    constructor(player, serverURL, tagsURL, apiKey){
+    constructor(player, serverURL, tagsURL, apiKey, kioskMode){
         console.log("[VideoAnnotator] Creating VideoAnnotator...");
 
         this.serverURL = serverURL;
         this.tagsURL = tagsURL;
         this.apiKey = apiKey;
+        this.kioskMode = kioskMode
         
         this.player = player;
         this.Wrap();
@@ -112,23 +113,27 @@ class VideoAnnotator {
         this.infoContainer = new InfoContainer(this);
 
         // Inject the annotation edit button into the toolbar
-        this.$addAnnotationButton = $("<button>Add New Annotation</button>").button({
-            icon: "fa fa-plus",
-            showLabel: false
-        }).click(() => {
-            this.$addAnnotationButton.button("disable");
-            this.gui.BeginEditing();
-        });
-        this.player.controlBar.RegisterElement(this.$addAnnotationButton, 3, 'flex-end');
+        if(!this.kioskMode){
+            this.$addAnnotationButton = $("<button>Add New Annotation</button>").button({
+                icon: "fa fa-plus",
+                showLabel: false
+            }).click(() => {
+                this.$addAnnotationButton.button("disable");
+                this.gui.BeginEditing();
+            });
+            this.player.controlBar.RegisterElement(this.$addAnnotationButton, 3, 'flex-end');
+        }
 
         // Inject the annotation upload button into the toolbar
-        this.$uploadAnnotationButton = $("<button type='file'>Import Annotation From File</button>").button({
-            icon: "fa fa-upload",
-            showLabel: false
-        }).click(() => {
-            this.LoadFromFile();
-        });
-        this.player.controlBar.RegisterElement(this.$uploadAnnotationButton, 2, 'flex-end');
+        if(!this.kioskMode){
+            this.$uploadAnnotationButton = $("<button type='file'>Import Annotation From File</button>").button({
+                icon: "fa fa-upload",
+                showLabel: false
+            }).click(() => {
+                this.LoadFromFile();
+            });
+            this.player.controlBar.RegisterElement(this.$uploadAnnotationButton, 2, 'flex-end');
+        }
 
         
 
