@@ -15,7 +15,14 @@ import { VerifyRequirements } from "./utils/requirements.js";
 import { AnnotatorVideoPlayer } from "./video-player/video-player.js";
 import { VideoAnnotator } from "./annotator/annotator.js";
 
-$.fn.annotate = function(serverURL, tagsURL, apiKey, kioskMode) {
+$.fn.annotate = function(args){ 
+
+    let serverURL = args.serverURL || '';
+    let tagsURL = args.tagsURL || '';
+    let apiKey = args.apiKey || '';
+    let kioskMode = args.kioskMode || false;
+    let localURL = args.localURL || '';
+
     // Error out early if "this" is not a video
     if($(this).prop('tagName').toLowerCase() != "video"){
         console.error("Cannot wrap a non-video element!");
