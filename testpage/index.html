@@ -46,13 +46,12 @@
         // $("video").first().annotate({serverURL: serverAddress, 
         //                              tagsURL: tagsAddress, 
         //                              apiKey: apiKey, 
-        //                              kioskMode: true});
+        //                              kioskMode: false});
 
         //This configuration loads annotations from a static W3C OA-formatted file
         var localAnnotations = "/testpage/annotation_cache.json";
         var tagsAddress = "https://onomy.org/published/83/json";
-        $("video").first().annotate({localURL: localAnnotations,
-                                     kioskMode: true});
+        $("video").first().annotate({localURL: localAnnotations}); //kioskMode=true is implied
 
     </script>
 

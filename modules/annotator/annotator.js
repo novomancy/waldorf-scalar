@@ -105,28 +105,30 @@ class VideoAnnotator {
         // Create the polygon overlay
         this.polyOverlay = new PolygonOverlay(this);
 
-        this.$debugControls = $("<div class='annotator-debug-controls'></div>").appendTo(this.$container);
-        var $showAllAnnotationsButton = this.$debugControls.append('<button>Open Annotation Manifest in New Window</button>');
-        $showAllAnnotationsButton.click(() => {
-            let url = this.player.videoElement.currentSrc;
-            this.server.FetchAnnotations("location", url).done((json) => {
-                let win = window.open();
-                if(win === null) {
-                    console.error("Couldn't show annotation manifest; please allow pop-ups.");
-                    this.messageOverlay.ShowError("Couldn't show annotation manifest; please allow pop-ups.");
-                }
-                else {
-                    win.document.open();
-                    win.document.write(`<title>Annotation Manifest for ${url}</title>`);
-                    win.document.write("<pre>");
-                    win.document.write(JSON.stringify(json, null, 2).escapeHTML());
+        if(!this.kioskMode){
+            this.$debugControls = $("<div class='annotator-debug-controls'></div>").appendTo(this.$container);
+            var $showAllAnnotationsButton = this.$debugControls.append('<button>Open Annotation Manifest in New Window</button>');
+            $showAllAnnotationsButton.click(() => {
+                let url = this.player.videoElement.currentSrc;
+                this.server.FetchAnnotations("location", url).done((json) => {
+                    let win = window.open();
+                    if(win === null) {
+                        console.error("Couldn't show annotation manifest; please allow pop-ups.");
+                        this.messageOverlay.ShowError("Couldn't show annotation manifest; please allow pop-ups.");
+                    }
+                    else {
+                        win.document.open();
+                        win.document.write(`<title>Annotation Manifest for ${url}</title>`);
+                        win.document.write("<pre>");
+                        win.document.write(JSON.stringify(json, null, 2).escapeHTML());
 
-                    win.document.write("</pre>");
-                    win.document.close();
-                }
+                        win.document.write("</pre>");
+                        win.document.close();
+                    }
+                });
+                
             });
-            
-        });
+        }
 
         // Wrap all the buttons with the list tag
         //this.$debugControls.wrapInner("<ul></ul>");
@@ -146,10 +148,8 @@ class VideoAnnotator {
                 this.gui.BeginEditing();
             });
             this.player.controlBar.RegisterElement(this.$addAnnotationButton, 3, 'flex-end');
-        }
 
-        // Inject the annotation upload button into the toolbar
-        if(!this.kioskMode){
+            // Inject the annotation upload button into the toolbar
             this.$uploadAnnotationButton = $("<button type='file'>Import Annotation From File</button>").button({
                 icon: "fa fa-upload",
                 showLabel: false
