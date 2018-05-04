@@ -29,11 +29,14 @@ class InfoContainer {
         //let text = JSON.stringify(annotation.AsOpenAnnotation(), null, 2);
 
         // Add clickable header that brings up the edit interface.
-        let $header = $(`<a href='' title='Edit Annotation'><b>Annotation ${index + 1}:</b><br></a>`);
-        $header.click( (event) => {
-            event.preventDefault();
-            this.annotator.gui.BeginEditing(annotation);
-        });
+        let $header = $(`<b>Annotation ${index + 1}:</b><br>`);
+        if(this.annotator.kioskMode==false){
+            $header = $(`<a href='' title='Edit Annotation'><b>Annotation ${index + 1}:</b><br></a>`);
+            $header.click( (event) => {
+                event.preventDefault();
+                this.annotator.gui.BeginEditing(annotation);
+            });
+        }
 
         $panel.append($header);
         let $content = $("<p></p>");
