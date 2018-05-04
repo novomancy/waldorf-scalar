@@ -12,14 +12,14 @@
 
     <!-- Annotator Dependencies -->
     <!-- Import JQuery -->
-    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script src="//code.jquery.com/jquery-3.3.1.min.js"></script>
     <!-- Import JQueryUI -->
-    <script src="http://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
-    <link rel="stylesheet" href="http://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="//code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 
     <!-- This is loading out of order using grunt so loading manually here - JPB -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.1/css/select2.min.css" rel="stylesheet" />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.1/js/select2.min.js"></script>
+    <link href="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.1/css/select2.min.css" rel="stylesheet" />
+    <script src="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.1/js/select2.min.js"></script>
     <!-- Annotator Core -->
     <script type="text/javascript" src="/dist/annotator-frontend.js"></script>
     <link rel="stylesheet" href="/dist/annotator-frontend.css">
@@ -38,16 +38,22 @@
     <!-- If there is no DOM object with class annotator-info, it will be created right below the video.
          If you manually create a div with that class, though, annotations will be inserted into the existing div. -->
     <div class='annotator-info' aria-live='polite' aria-atomic='true'></div>
-    <script>
-        // Internal: "http://192.168.1.83:3000"
-        // External: "http://130.111.199.37:3000"
-        // AWS: "http://ec2-52-88-72-190.us-west-2.compute.amazonaws.com:3000"
-        // AWS IP: "52.88.72.190"
-        var serverAddress = "http://ec2-54-202-39-81.us-west-2.compute.amazonaws.com:3000";
+    <script>        
+        //This configuration connects to a live Statler server to edit and share annotations
+        // var serverAddress = "http://ec2-54-202-39-81.us-west-2.compute.amazonaws.com:3000";
+        // var tagsAddress = "https://onomy.org/published/83/json";
+        // var apiKey = "592c83c4-bc5c-4f07-8156-d98e4d48f707";
+        // $("video").first().annotate({serverURL: serverAddress, 
+        //                              tagsURL: tagsAddress, 
+        //                              apiKey: apiKey, 
+        //                              kioskMode: true});
+
+        //This configuration loads annotations from a static W3C OA-formatted file
+        var localAnnotations = "/testpage/annotation_cache.json";
         var tagsAddress = "https://onomy.org/published/83/json";
-        var apiKey = "592c83c4-bc5c-4f07-8156-d98e4d48f707";
-        //$("video").first().annotate(serverAddress, tagsAddress);
-        $("video").first().annotate({serverURL: serverAddress, tagsURL: tagsAddress, apiKey: apiKey, kioskMode: true});
+        $("video").first().annotate({localURL: localAnnotations,
+                                     kioskMode: true});
+
     </script>
 
 </body>

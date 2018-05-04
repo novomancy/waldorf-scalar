@@ -10,31 +10,55 @@ import { MessageOverlay } from "./components/message-overlay.js";
 import { Annotation } from "./annotation.js";
 
 class VideoAnnotator {
-    constructor(player, serverURL, tagsURL, apiKey, kioskMode){
+    constructor(args){
         console.log("[VideoAnnotator] Creating VideoAnnotator...");
 
-        this.serverURL = serverURL;
-        this.tagsURL = tagsURL;
-        this.apiKey = apiKey;
-        this.kioskMode = kioskMode
-        
-        this.player = player;
+        this.serverURL = typeof args.serverURL === 'undefined' ? '' : args.serverURL;
+        this.tagsURL = typeof args.tagsURL === 'undefined' ? '' : args.tagsURL;
+        this.apiKey = typeof args.apiKey === 'undefined' ? '' : args.apiKey;
+        this.kioskMode = typeof args.kioskMode === 'undefined' ? '' : args.kioskMode;
+        this.localURL = typeof args.localURL === 'undefined' ? '' : args.localURL;
+        this.player = typeof args.player === 'undefined' ? '' : args.player;
+        console.log("localURL: " + typeof args.localURL);
+        //localURL implies kiosk mode
+        if(this.localURL != '') this.kioskMode = true;
+
         this.Wrap();
         this.PopulateControls();
 
-        this.server = new ServerInterface(this);
-        this.server.SetBaseURL(this.serverURL);
-        
+        //may need to move this below the this.server block later?
         this.messageOverlay = new MessageOverlay(this);
         this.annotationManager = new AnnotationManager();
         this.sessionManager = new SessionManager(this);
 
-        // Load annotations from server based on the player's video URL
-        this.server.FetchAnnotations('location', this.player.videoElement.currentSrc)
-        .done((json)=>{
-            this.annotationManager.PopulateFromJSON(json);
-            this.AnnotationsLoaded();
-        });
+        //localURL takes precendence - if it is anything but '' then do not load from server
+        if(this.localURL == ''){
+            this.server = new ServerInterface(this);
+            this.server.SetBaseURL(this.serverURL);
+
+            // Load annotations from server based on the player's video URL
+            this.server.FetchAnnotations('location', this.player.videoElement.currentSrc)
+            .done((json)=>{
+                this.annotationManager.PopulateFromJSON(json);
+                this.AnnotationsLoaded();
+            });
+        } else {
+            console.log('Loading local cache file: ' + this.localURL);
+            $.ajax({
+                url: this.localURL,
+                type: "GET",
+                dataType: "json",
+                async: true
+            }).done((data) => {
+                console.log(`Fetched ${data.length} annotations from local cache.`);
+                this.annotationManager.PopulateFromJSON(data);
+                this.AnnotationsLoaded();
+            }).fail((response) => {
+                console.log(response);
+                console.error(`Error fetching annotations from local cache"\n${response.responseJSON.detail}.`);
+                this.annotator.messageOverlay.ShowError(`Could not retrieve annotations!<br>(${response.responseJSON.detail})`);
+            });
+        }
 
         this.player.$container.on("OnTimeUpdate", (event, time) => {
             this.OnTimeUpdate(time);

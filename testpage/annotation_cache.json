@@ -1,0 +1,135 @@
+[
+    {
+      "@context": "http://www.w3.org/ns/anno.jsonld",
+      "id": 2,
+      "type": "Annotation",
+      "motivation": "highlighting",
+      "creator": {
+        "type": "Person",
+        "nickname": "a6ad00ac113a19d953efb91820d8788e2263b28a",
+        "email": "a6ad00ac113a19d953efb91820d8788e2263b28a"
+      },
+      "body": [
+        {
+          "type": "TextualBody",
+          "value": "Test",
+          "format": "text/plain",
+          "language": "en",
+          "purpose": "describing"
+        },
+        {
+          "type": "TextualBody",
+          "purpose": "tagging",
+          "value": "Actor"
+        }
+      ],
+      "target": {
+        "id": "http://sachinchoolur.github.io/lightGallery/static/videos/video2.mp4",
+        "type": "Video",
+        "selector": [
+          {
+            "type": "SvgSelector",
+            "value": "<svg:svg viewBox='0 0 100 100' preserveAspectRatio='none'><polygon points='22.34375,49.44444444444444 37.5,22.500000000000004 52.81250000000001,46.94444444444444 45.3125,61.388888888888886 29.218750000000004,63.61111111111111 31.71875,51.666666666666664' /></svg:svg>"
+          },
+          {
+            "type": "FragmentSelector",
+            "conformsTo": "http://www.w3.org/TR/media-frags/",
+            "value": "t=10.0,30.0"
+          }
+        ]
+      }
+    },
+    {
+      "@context": "http://www.w3.org/ns/anno.jsonld",
+      "id": 4,
+      "type": "Annotation",
+      "motivation": "highlighting",
+      "creator": {
+        "type": "Person",
+        "nickname": "b5908f811353b9fbb76dcaff8d22aa820796459d",
+        "email": "b5908f811353b9fbb76dcaff8d22aa820796459d"
+      },
+      "body": [
+        {
+          "type": "TextualBody",
+          "value": "",
+          "format": "text/plain",
+          "language": "en",
+          "purpose": "describing"
+        }
+      ],
+      "target": {
+        "id": "http://sachinchoolur.github.io/lightGallery/static/videos/video2.mp4",
+        "type": "Video",
+        "selector": [
+          {
+            "type": "FragmentSelector",
+            "conformsTo": "http://www.w3.org/TR/media-frags/",
+            "value": "t=65.0,175.0"
+          }
+        ]
+      }
+    },
+    {
+      "@context": "http://www.w3.org/ns/anno.jsonld",
+      "id": 5,
+      "type": "Annotation",
+      "motivation": "highlighting",
+      "creator": {
+        "type": "Person",
+        "nickname": "b5908f811353b9fbb76dcaff8d22aa820796459d",
+        "email": "b5908f811353b9fbb76dcaff8d22aa820796459d"
+      },
+      "body": [
+        {
+          "type": "TextualBody",
+          "value": "",
+          "format": "text/plain",
+          "language": "en",
+          "purpose": "describing"
+        }
+      ],
+      "target": {
+        "id": "http://sachinchoolur.github.io/lightGallery/static/videos/video2.mp4",
+        "type": "Video",
+        "selector": [
+          {
+            "type": "FragmentSelector",
+            "conformsTo": "http://www.w3.org/TR/media-frags/",
+            "value": "t=1.0,175.0"
+          }
+        ]
+      }
+    },
+    {
+      "@context": "http://www.w3.org/ns/anno.jsonld",
+      "id": 6,
+      "type": "Annotation",
+      "motivation": "highlighting",
+      "creator": {
+        "type": "Person",
+        "nickname": "b5908f811353b9fbb76dcaff8d22aa820796459d",
+        "email": "b5908f811353b9fbb76dcaff8d22aa820796459d"
+      },
+      "body": [
+        {
+          "type": "TextualBody",
+          "value": "",
+          "format": "text/plain",
+          "language": "en",
+          "purpose": "describing"
+        }
+      ],
+      "target": {
+        "id": "http://sachinchoolur.github.io/lightGallery/static/videos/video2.mp4",
+        "type": "Video",
+        "selector": [
+          {
+            "type": "FragmentSelector",
+            "conformsTo": "http://www.w3.org/TR/media-frags/",
+            "value": "t=37.0,175.0"
+          }
+        ]
+      }
+    }
+  ]
