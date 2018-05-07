@@ -41,24 +41,26 @@
     <script>     
         //This is an advanced option to create a custom renderer for annotations
         var customRenderer = function(annotator, annotation, index){
+            //In this case we're attaching a div for each annotation to the container (defined by class='waldorf-info')
             var $panel = $("<p></p>").appendTo($("<div></div>").appendTo(annotator.infoContainer.$container));
-            //let text = JSON.stringify(annotation.AsOpenAnnotation(), null, 2);
 
-            // Add clickable header that brings up the edit interface.
-            var $header = $(`<b style="color: #ff0000">Annotation ${index + 1}:</b><br>`);
-            console.log(annotator)
+            // Add clickable header that brings up the edit interface if kioskMode is off.
+            var $header = $(`<b style="color: #ff0000">Custom Annotation ${index + 1}:</b><br>`);
             if(annotator.kioskMode==false){
-                $header = $(`<a href='' title='Edit Annotation'><b style="color: #ff0000">Annotation ${index + 1}:</b><br></a>`);
+                $header = $(`<a href='' title='Edit Annotation'><b style="color: #ff0000">Custom Annotation ${index + 1}:</b><br></a>`);
                 $header.click( (event) => {
                     event.preventDefault();
                     annotator.gui.BeginEditing(annotation);
                 });
             }
-
             $panel.append($header);
             var $content = $("<p></p>");
             
-            
+            //Append the content of the annotation itself. Key terms are:
+            //annotation.body - the body of the annotation (see the filter below to grab the right node)
+            //annotation.tags - an array of tags
+            //annotation.beginTime and .endTime - these are floats of seconds
+            //annotation.creator - email address of the person credited with the annotation
             $content.append("<b>Text: </b> " + annotation.body.filter(item => item.purpose === "describing")[0].value);
             $content.append("<br>");
             $content.append("<b>Tags: </b> " + annotation.tags.join(", "));
@@ -73,8 +75,7 @@
                     + (annotation.creator != null ? annotation.creator.email : "unspecified")
                     );
 
-            //$paragraph.append("<strong>Annotation " + (index + 1) + ":</strong><br><pre>" + text.escapeHTML() + "</pre>");
-
+            //attach the annotation to the container and return the container
             $panel.append($content);
             return $panel;
         }
