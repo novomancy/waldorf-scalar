@@ -40,18 +40,18 @@
     <div class='annotator-info' aria-live='polite' aria-atomic='true'></div>
     <script>        
         //This configuration connects to a live Statler server to edit and share annotations
-        // var serverAddress = "http://ec2-54-202-39-81.us-west-2.compute.amazonaws.com:3000";
-        // var tagsAddress = "https://onomy.org/published/83/json";
-        // var apiKey = "592c83c4-bc5c-4f07-8156-d98e4d48f707";
-        // $("video").first().annotate({serverURL: serverAddress, 
-        //                              tagsURL: tagsAddress, 
-        //                              apiKey: apiKey, 
-        //                              kioskMode: false});
+        var serverAddress = "http://ec2-54-202-39-81.us-west-2.compute.amazonaws.com:3000";
+        var tagsAddress = "https://onomy.org/published/83/json";
+        var apiKey = "592c83c4-bc5c-4f07-8156-d98e4d48f707";
+        $("video").first().annotate({serverURL: serverAddress, 
+                                     tagsURL: tagsAddress, 
+                                     apiKey: apiKey, 
+                                     kioskMode: false});
 
         //This configuration loads annotations from a static W3C OA-formatted file
-        var localAnnotations = "/testpage/annotation_cache.json";
-        var tagsAddress = "https://onomy.org/published/83/json";
-        $("video").first().annotate({localURL: localAnnotations}); //kioskMode=true is implied
+        // var localAnnotations = "/testpage/annotation_cache.json";
+        // var tagsAddress = "https://onomy.org/published/83/json";
+        // $("video").first().annotate({localURL: localAnnotations}); //kioskMode=true is implied
 
     </script>
 

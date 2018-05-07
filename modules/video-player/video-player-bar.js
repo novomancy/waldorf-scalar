@@ -63,7 +63,7 @@ class VideoPlayerBar {
         this.RegisterElement(this.$playButton, -4);
 
         // Time text
-        let zero = GetFormattedTime(0);
+        let zero = GetFormattedTime(0.000);
         this.$timeText = $("<p>${zero}/${zero}</p>");
         this.RegisterElement(this.$timeText, -3);
 
