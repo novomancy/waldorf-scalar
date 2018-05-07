@@ -19,7 +19,8 @@ class VideoAnnotator {
         this.kioskMode = typeof args.kioskMode === 'undefined' ? '' : args.kioskMode;
         this.localURL = typeof args.localURL === 'undefined' ? '' : args.localURL;
         this.player = typeof args.player === 'undefined' ? '' : args.player;
-        console.log("localURL: " + typeof args.localURL);
+        this.renderer = typeof args.renderer === 'undefined' ? false : args.renderer;
+        
         //localURL implies kiosk mode
         if(this.localURL != '') this.kioskMode = true;
 

@@ -22,6 +22,7 @@ $.fn.annotate = function(args){
     // let apiKey = args.apiKey || '';
     // let kioskMode = args.kioskMode || false;
     // let localURL = args.localURL || '';
+    // let renderer = function(...) || false;
 
     // Error out early if "this" is not a video
     if($(this).prop('tagName').toLowerCase() != "video"){

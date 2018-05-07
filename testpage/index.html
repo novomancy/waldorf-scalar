@@ -38,7 +38,47 @@
     <!-- If there is no DOM object with class waldorf-info, it will be created right below the video.
          If you manually create a div with that class, though, annotations will be inserted into the existing div. -->
     <div class='waldorf-info' aria-live='polite' aria-atomic='true'></div>
-    <script>        
+    <script>     
+        //This is an advanced option to create a custom renderer for annotations
+        var customRenderer = function(annotator, annotation, index){
+            var $panel = $("<p></p>").appendTo($("<div></div>").appendTo(annotator.infoContainer.$container));
+            //let text = JSON.stringify(annotation.AsOpenAnnotation(), null, 2);
+
+            // Add clickable header that brings up the edit interface.
+            var $header = $(`<b style="color: #ff0000">Annotation ${index + 1}:</b><br>`);
+            console.log(annotator)
+            if(annotator.kioskMode==false){
+                $header = $(`<a href='' title='Edit Annotation'><b style="color: #ff0000">Annotation ${index + 1}:</b><br></a>`);
+                $header.click( (event) => {
+                    event.preventDefault();
+                    annotator.gui.BeginEditing(annotation);
+                });
+            }
+
+            $panel.append($header);
+            var $content = $("<p></p>");
+            
+            
+            $content.append("<b>Text: </b> " + annotation.body.filter(item => item.purpose === "describing")[0].value);
+            $content.append("<br>");
+            $content.append("<b>Tags: </b> " + annotation.tags.join(", "));
+            $content.append("<br>");
+            $content.append("<b>Time: </b> " 
+                    + annotation.beginTime
+                    + " - " 
+                    + annotation.endTime);
+            $content.append("<br>");
+
+            $content.append("<b>Submitted by:</b><br />"
+                    + (annotation.creator != null ? annotation.creator.email : "unspecified")
+                    );
+
+            //$paragraph.append("<strong>Annotation " + (index + 1) + ":</strong><br><pre>" + text.escapeHTML() + "</pre>");
+
+            $panel.append($content);
+            return $panel;
+        }
+    
         //This configuration connects to a live Statler server to edit and share annotations
         var serverAddress = "http://ec2-54-202-39-81.us-west-2.compute.amazonaws.com:3000";
         var tagsAddress = "https://onomy.org/published/83/json";
@@ -46,7 +86,8 @@
         $("video").first().annotate({serverURL: serverAddress, 
                                      tagsURL: tagsAddress, 
                                      apiKey: apiKey, 
-                                     kioskMode: false});
+                                     kioskMode: false,
+                                     renderer: customRenderer});
 
         //This configuration loads annotations from a static W3C OA-formatted file
         // var localAnnotations = "/testpage/annotation_cache.json";

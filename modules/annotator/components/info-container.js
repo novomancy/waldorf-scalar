@@ -19,22 +19,23 @@ class InfoContainer {
         this.$container.html(`<p>Showing ${annotations.length} annotation${plural} (${totalAnnotations} total).</p>`);
 
         // Add each annotation to the readout
+        let renderer = this.annotator.renderer === false ? this.MakeContainer : this.annotator.renderer;
         for (let i = 0; i < annotations.length; i++){
-            this.$container.append(this.MakeContainer(annotations[i], i));
+            this.$container.append(renderer(this.annotator, annotations[i], i));
         }
     }
 
-    MakeContainer(annotation, index){
-        let $panel = $("<p></p>").appendTo($("<div></div>").appendTo(this.$container));
+    MakeContainer(annotator, annotation, index){
+        let $panel = $("<p></p>").appendTo($("<div></div>").appendTo(annotator.$container));
         //let text = JSON.stringify(annotation.AsOpenAnnotation(), null, 2);
 
         // Add clickable header that brings up the edit interface.
         let $header = $(`<b>Annotation ${index + 1}:</b><br>`);
-        if(this.annotator.kioskMode==false){
+        if(annotator.kioskMode==false){
             $header = $(`<a href='' title='Edit Annotation'><b>Annotation ${index + 1}:</b><br></a>`);
             $header.click( (event) => {
                 event.preventDefault();
-                this.annotator.gui.BeginEditing(annotation);
+                annotator.gui.BeginEditing(annotation);
             });
         }
 
