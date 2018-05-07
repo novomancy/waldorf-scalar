@@ -3,7 +3,7 @@ class MessageOverlay {
     constructor(annotator){
         this.annotator = annotator;
 
-        this.$container = $("<div class='annotator-message-overlay'></div>");
+        this.$container = $("<div class='waldorf-message-overlay'></div>");
         this.$container.appendTo(this.annotator.player.$container);
 
         this.$text = $("<p role='alert' aria-live='assertive' aria-atomic='true'></p>").appendTo(this.$container);
@@ -12,13 +12,13 @@ class MessageOverlay {
     }
 
     ShowError(message, duration = 3.0){
-        this.$container.addClass("annotator-message-overlay-error");
+        this.$container.addClass("waldorf-message-overlay-error");
 
         this._ShowText(message, duration);
     }
 
     ShowMessage(message, duration = 5.0){
-        this.$container.removeClass("annotator-message-overlay-error");
+        this.$container.removeClass("waldorf-message-overlay-error");
 
         this._ShowText(message, duration);
     }

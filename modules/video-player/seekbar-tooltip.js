@@ -5,7 +5,7 @@ class SeekbarTooltip {
         this.$parent = $parent;
         this.player = player;
 
-        this.$tooltip = $("<div class='annotator-seekbar-tooltip'></div>").appendTo($parent);
+        this.$tooltip = $("<div class='waldorf-seekbar-tooltip'></div>").appendTo($parent);
         this.text = "Test";
         this.$content = $("<p>" + this.text + "</p>").appendTo(this.$tooltip);
         

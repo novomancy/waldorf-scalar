@@ -1,4 +1,4 @@
-.annotator-video-player {
+.waldorf-video-player {
     background-color: black;
     position: relative;
     width: 100% !important;
@@ -7,11 +7,11 @@
     video {
         width: 100%;
         height: 100%;
-        display: block; // Removes extra pixels created by "height: auto;" in annotator-video-player
+        display: block; // Removes extra pixels created by "height: auto;" in waldorf-video-player
     }
 }
 
-.annotator-fullscreen {
+.waldorf-fullscreen {
     width: 100% !important;
     height: 100% !important;
 }

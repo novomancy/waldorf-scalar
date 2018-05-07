@@ -5,7 +5,7 @@ class VideoPlayerBar {
 
     constructor(player){
         this.player = player; 
-        this.$container = $("<div class='video-player-toolbar flex-toolbar'></div>").appendTo(player.$container);
+        this.$container = $("<div class='waldorf-player-toolbar flex-toolbar'></div>").appendTo(player.$container);
 
         this.PopulateElements();
 

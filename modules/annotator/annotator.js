@@ -84,7 +84,7 @@ class VideoAnnotator {
      */
     Wrap(){
         // Wrap the video player with this container
-        this.$container = $(this.player.$container).wrap("<div class='annotator-container'></div>").parent();
+        this.$container = $(this.player.$container).wrap("<div class='waldorf-container'></div>").parent();
 
         // Set the container to the width of the video player
         this.$container.width(this.player.$container.width());
@@ -106,7 +106,7 @@ class VideoAnnotator {
         this.polyOverlay = new PolygonOverlay(this);
 
         if(!this.kioskMode){
-            this.$debugControls = $("<div class='annotator-debug-controls'></div>").appendTo(this.$container);
+            this.$debugControls = $("<div class='waldorf-debug-controls'></div>").appendTo(this.$container);
             var $showAllAnnotationsButton = this.$debugControls.append('<button>Open Annotation Manifest in New Window</button>');
             $showAllAnnotationsButton.click(() => {
                 let url = this.player.videoElement.currentSrc;
@@ -228,7 +228,7 @@ class VideoAnnotator {
 
     LoadFromFile() {
         // Create the dialog
-        let $container = $("<div class='session-modal' title='Import Annotation'></div>"); // Outermost HTML
+        let $container = $("<div class='waldorf-session-modal' title='Import Annotation'></div>"); // Outermost HTML
         let $headText = $("<p class='validateTips'>Annotations must be W3C OA compliant in JSON format.</p>").appendTo($container);
         let $errorText = $("<p class='validateTips modal-error-text'></p>").appendTo($container);
         $errorText.hide();

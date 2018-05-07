@@ -6,7 +6,7 @@ class PolygonOverlay {
         this.lastAnnotations = [];
 
         // Create the video overlay
-        this.$videoOverlay = $("<div class='annotator-video-overlay'></div>").appendTo(this.annotator.player.$container);
+        this.$videoOverlay = $("<div class='waldorf-video-overlay'></div>").appendTo(this.annotator.player.$container);
         this.ResizeOverlay();
         this.annotator.player.$container.on("OnFullscreenChange", (event, setFullscreen) => this.ResizeOverlay());
 
@@ -45,7 +45,7 @@ class PolygonOverlay {
             }
 
             // Create the poly object
-            let $poly = $("<div class='annotator-overlay-poly'></div>").appendTo(this.$videoOverlay);
+            let $poly = $("<div class='waldorf-overlay-poly'></div>").appendTo(this.$videoOverlay);
 
             $poly.clipPath(annotationPolyPoints, {
                 isPercentage: true,

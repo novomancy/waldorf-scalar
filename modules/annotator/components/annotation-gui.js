@@ -25,7 +25,7 @@ class AnnotationGUI {
     }
 
     Create(){
-        this.$container = $("<div class='annotator-vp-post'></div>").appendTo(this.annotator.player.$container);
+        this.$container = $("<div class='waldorf-vp-post'></div>").appendTo(this.annotator.player.$container);
         this.$postToolbar = $("<div class='flex-toolbar'></div>").appendTo(this.$container);
         this.$postToolbar.css("margin-bottom", "5px");
         this.$postToolbar2 = $("<div class='flex-toolbar'></div>").appendTo(this.$container);
@@ -103,7 +103,7 @@ class AnnotationGUI {
             showLabel: false
         });
         $cancelButton.attr('title', "Cancel annotation editing");
-        $cancelButton.addClass("annotator-cancel-button");
+        $cancelButton.addClass("waldorf-cancel-button");
         $cancelButton.click(() => {
             this.Close();
         });
@@ -115,7 +115,7 @@ class AnnotationGUI {
             showLabel: false
         });
         $submitButton.attr('title', "Save annotation to database");
-        $submitButton.addClass("annotator-confirm-button");
+        $submitButton.addClass("waldorf-confirm-button");
         $submitButton.click(() => {
             this.CommitAnnotationToServer((annotation, oldID) => {
                 if(this.editMode){

@@ -1,5 +1,5 @@
 // Container for the whole app
-.annotator-container {
+.waldorf-container {
     //position: relative !important;
     height: auto !important;
     display: inline-block !important;
@@ -7,7 +7,7 @@
 }
 
 // Overlay that holds all the polygons
-.annotator-video-overlay {
+.waldorf-video-overlay {
     position: absolute;
     top: 0px;
     width: 100%;
@@ -20,7 +20,7 @@
     }
 
     // Polygon styling
-    .annotator-overlay-poly {
+    .waldorf-overlay-poly {
         position: absolute;
         background-color: rgba(0, 118, 255, 0.55);
         width: 100%;
@@ -30,7 +30,7 @@
 }
 
 // Overlay that holds the polygon editor (minus the toolbar)
-.annotator-edit-overlay{
+.waldorf-edit-overlay{
     position: absolute;
     top: 0px;
     width: 100%;
@@ -43,7 +43,7 @@
     //}
 
     // Editor polygon lives next to the overlay
-    + .annotator-edit-poly {
+    + .waldorf-edit-poly {
         position: absolute;
         background-color: rgba(255, 118, 0, 0.55);
         width: 100%;
@@ -55,7 +55,7 @@
     }
 }
 
-.annotator-tickbar {
+.waldorf-tickbar {
     position: absolute;
     display: block;
     cursor: pointer;
@@ -71,7 +71,7 @@
         background-color: rgba(255, 0, 0, 255);
     }
 
-    .annotator-tickbar-tick {
+    .waldorf-tickbar-tick {
         position: absolute;
         width: 2px;
         height: 100%;
@@ -81,7 +81,7 @@
     }
 }
 
-.annotator-info {
+.waldorf-info {
     position: relative;
     background-color: rgba(121, 121, 221, 0.3);
     width: 100%;
@@ -97,7 +97,7 @@
     }
 }
 
-.annotator-debug-controls {
+.waldorf-debug-controls {
     position:relative;
     background-color: rgba(121, 221, 121, 0.3);
     width: 100%;
@@ -117,7 +117,7 @@
 
 // POST interface
 
-.annotator-vp-post {
+.waldorf-vp-post {
 	position: absolute;
 	top: 0;
 	left: 0;
@@ -162,7 +162,7 @@
 
 }
 
-.annotator-vp-click-surface {
+.waldorf-vp-click-surface {
     z-index: $base-z + 8;
     pointer-events: auto;
     // box-shadow: inset 0 0 0px 1px rgb(255, 0, 0);
@@ -191,15 +191,15 @@
     }
 }
 
-.annotator-cancel-button {
+.waldorf-cancel-button {
     @include accent-button(#FFFFFF, #F44336);
 }
 
-.annotator-confirm-button {
+.waldorf-confirm-button {
     @include accent-button(#FFFFFF, #8BC34A);
 }
 
-.annotator-message-overlay {
+.waldorf-message-overlay {
     background-color: rgba(52, 52, 52, 0.95);
     position: absolute;
     margin: auto;
@@ -226,6 +226,6 @@
     }
 }
 
-.annotator-message-overlay-error {
+.waldorf-message-overlay-error {
     background-color: rgba(255, 30, 30, 0.95);
 }

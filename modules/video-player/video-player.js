@@ -68,7 +68,7 @@ class AnnotatorVideoPlayer {
         this.videoElement.removeAttribute("controls");
 
         // Wrap the video element with the container
-        this.$container = this.$video.wrap("<div class='annotator-video-player'></div>").parent();
+        this.$container = this.$video.wrap("<div class='waldorf-video-player'></div>").parent();
         // Resize container to fit the dimensions of the video
         this.$container.width(this.$video.width());
         this.$container.height(this.$video.height());
@@ -126,10 +126,10 @@ class AnnotatorVideoPlayer {
 
     OnFullscreenChange(){
         if(screenfull.isFullscreen){
-            this.$container.addClass("annotator-fullscreen");
+            this.$container.addClass("waldorf-fullscreen");
         }
         else{
-            this.$container.removeClass("annotator-fullscreen");
+            this.$container.removeClass("waldorf-fullscreen");
         }
     }
 

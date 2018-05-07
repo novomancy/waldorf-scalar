@@ -13,21 +13,21 @@ class PolygonEditor {
         this.$breadcrumbs = [];
 
         // Create the video overlay
-        this.$clickSurface = $("<div class='annotator-edit-overlay annotator-vp-click-surface'></div>").appendTo(this.annotator.player.$container);
+        this.$clickSurface = $("<div class='waldorf-edit-overlay waldorf-vp-click-surface'></div>").appendTo(this.annotator.player.$container);
         //this.$clickSurface.css("z-index", this.baseZ);
         this.$clickSurface.click((event) => {
             this.OnSurfaceClick(event);
         });
 
         // Create the poly object
-        this.$poly = $("<div class='annotator-edit-poly'></div>").appendTo(this.annotator.player.$container);
+        this.$poly = $("<div class='waldorf-edit-poly'></div>").appendTo(this.annotator.player.$container);
         //this.$poly.css("z-index", this.baseZ + 1);
 
         this.ResizeOverlay();
         this.annotator.player.$container.on("OnFullscreenChange", (event, setFullscreen) => this.ResizeOverlay());
 
         // Create the toolbar up top
-        this.$bar = $("<div class='annotator-vp-post'></div>").appendTo(this.annotator.player.$container);
+        this.$bar = $("<div class='waldorf-vp-post'></div>").appendTo(this.annotator.player.$container);
         this.$postToolbar = $("<div class='flex-toolbar'></div>").appendTo(this.$bar);
         // Invisible expanding divider
         this.$postToolbar.append($("<div><p style='color:white'>Edit Polygon</p></div>").css("flex-grow", 1).css("order", 0));
@@ -50,7 +50,7 @@ class PolygonEditor {
             showLabel: false
         });
         this.$confirmButton.attr('title', "Finish polygon");
-        this.$confirmButton.addClass("annotator-confirm-button");
+        this.$confirmButton.addClass("waldorf-confirm-button");
         this.$confirmButton.click(() => {
             this.originalJSON = this.GetJSON();
             this.Done();
@@ -63,7 +63,7 @@ class PolygonEditor {
             icon: "fa fa-remove",
             showLabel: false
         });
-        this.$cancelButton.addClass("annotator-cancel-button");
+        this.$cancelButton.addClass("waldorf-cancel-button");
         this.$cancelButton.attr('title', "Cancel polygon editing");
         this.$cancelButton.click(() => {
             //Restore the original state

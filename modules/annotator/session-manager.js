@@ -29,7 +29,7 @@ class SessionManager {
     ShowLoginModal(){
 
         // Create the dialog
-        let $container = $("<div class='session-modal' title='Log In'></div>"); // Outermost HTML
+        let $container = $("<div class='waldorf-session-modal' title='Log In'></div>"); // Outermost HTML
         let $headText = $("<p class='validateTips'>All fields are required.</p>").appendTo($container);
         let $form = $("<form></form>").appendTo($container);
 

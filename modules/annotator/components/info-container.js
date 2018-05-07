@@ -4,11 +4,11 @@ let sha1 = require('sha1');
 class InfoContainer {
     constructor(annotator){
         this.annotator = annotator;
-        let container = $(".annotator-info");
+        let container = $(".waldorf-info");
         if(container.length > 0){
             this.$container = container.first();
         } else {
-            this.$container = $("<div class='annotator-info' aria-live='polite' aria-atomic='true'></div>").appendTo(this.annotator.$container);
+            this.$container = $("<div class='waldorf-info' aria-live='polite' aria-atomic='true'></div>").appendTo(this.annotator.$container);
         }
     }
 

@@ -1,5 +1,5 @@
 // Make sure any Select2 instances in the annotator get the right z-index
-.annotator-container .select2-dropdown-annotator {
+.waldorf-container .select2-dropdown-annotator {
     z-index: $base-z + 3;
 }
 

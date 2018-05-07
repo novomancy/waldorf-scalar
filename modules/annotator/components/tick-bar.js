@@ -6,7 +6,7 @@ class TickBar {
         this.ticks = [];
 
         // Create the element
-        this.$tickBar = $("<div class='annotator-tickbar'></div>");
+        this.$tickBar = $("<div class='waldorf-tickbar'></div>");
         this.annotator.player.controlBar.$container.append(this.$tickBar);
 
         // Attach event handlers
@@ -30,7 +30,7 @@ class TickBar {
     }
 
     LoadAnnotation(annotation){
-        let $tick = $("<div class='annotator-tickbar-tick'></div>").appendTo(this.$tickBar);
+        let $tick = $("<div class='waldorf-tickbar-tick'></div>").appendTo(this.$tickBar);
 
         // Add the ID of the annotation to its corresponding tick so we can reference it later
         $tick.data("annotation-id", annotation.id);
