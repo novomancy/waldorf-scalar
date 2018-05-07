@@ -50,6 +50,7 @@ $.fn.annotate = function(args){
         if(annotator == null){
             console.log("[Main] Wrapping video with annotator...");
             annotator = new VideoAnnotator(annotatorArgs);
+            if(typeof annotatorArgs.callback == "function") annotatorArgs.callback(annotator);
         }
     });
 

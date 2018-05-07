@@ -79,6 +79,12 @@
             $panel.append($content);
             return $panel;
         }
+
+        //This is an advanced option to create a callback function after creating a video annotator
+        waldorf = false;
+        var cb = function(_waldorf){
+            waldorf = _waldorf;
+        }
     
         //This configuration connects to a live Statler server to edit and share annotations
         var serverAddress = "http://ec2-54-202-39-81.us-west-2.compute.amazonaws.com:3000";
@@ -88,7 +94,8 @@
                                      tagsURL: tagsAddress, 
                                      apiKey: apiKey, 
                                      kioskMode: false,
-                                     renderer: customRenderer});
+                                     renderer: customRenderer,
+                                     callback: cb});
 
         //This configuration loads annotations from a static W3C OA-formatted file
         // var localAnnotations = "/testpage/annotation_cache.json";
