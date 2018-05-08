@@ -12,14 +12,14 @@
 
     <!-- Annotator Dependencies -->
     <!-- Import JQuery -->
-    <script src="//code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script src="http://code.jquery.com/jquery-3.3.1.min.js"></script>
     <!-- Import JQueryUI -->
-    <script src="//code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
-    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="http://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+    <link rel="stylesheet" href="http://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 
     <!-- This is loading out of order using grunt so loading manually here - JPB -->
-    <link href="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.1/css/select2.min.css" rel="stylesheet" />
-    <script src="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.1/js/select2.min.js"></script>
+    <link href="http://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.1/css/select2.min.css" rel="stylesheet" />
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.1/js/select2.min.js"></script>
     <!-- Annotator Core -->
     <script type="text/javascript" src="/dist/annotator-frontend.js"></script>
     <link rel="stylesheet" href="/dist/annotator-frontend.css">
@@ -84,6 +84,14 @@
         waldorf = false;
         var cb = function(_waldorf){
             waldorf = _waldorf;
+            //This won't work immediately because the annotations aren't loaded, but
+            //you can do the same thing later by watching for the OnAnnotationsLoaded event
+            console.log("nothing to see here" + waldorf.GetAnnotations());
+            waldorf.$container.on("OnAnnotationsLoaded", function(){
+                console.log("Now it works");
+                console.log(waldorf.GetAnnotations());
+            });
+
         }
     
         //This configuration connects to a live Statler server to edit and share annotations
