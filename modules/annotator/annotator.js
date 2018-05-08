@@ -35,7 +35,7 @@ class VideoAnnotator {
         //Allows passing in a function that overrides the default annotation renderer
         this.renderer = typeof args.renderer === 'undefined' ? false : args.renderer;
         //Determines whether or not the annotation container is cleared every time it updates
-        this.clearContainer = typeof args.clearContainer === 'undefined' ? true : false;
+        this.clearContainer = typeof args.clearContainer === 'undefined' ? true : args.clearContainer;
 
 
         //localURL implies kiosk mode
