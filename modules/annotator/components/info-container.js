@@ -12,10 +12,12 @@ class InfoContainer {
         }
     }
 
-    Rebuild(annotations){
-        let plural = annotations.length == 1 ? "" : "s";
-        let totalAnnotations = this.annotator.annotationManager.annotations.length;
-        this.$container.empty();
+    Rebuild(annotations, clearContainer){
+        if(this.clearContainer) this.$container.empty();
+
+        // let plural = annotations.length == 1 ? "" : "s";
+        // let totalAnnotations = this.annotator.annotationManager.annotations.length;
+        // this.$container.html(`<p>Showing ${annotations.length} annotation${plural} (${totalAnnotations} total).</p>`);
 
         // Add each annotation to the readout
         let renderer = this.annotator.renderer === false ? this.MakeContainer : this.annotator.renderer;

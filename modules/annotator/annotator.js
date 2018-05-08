@@ -13,14 +13,31 @@ class VideoAnnotator {
     constructor(args){
         console.log("[VideoAnnotator] Creating VideoAnnotator...");
 
+        //Parse arguments
+        //This is actually required
+        if(typeof args.player === 'undefined'){
+            console.log('Called for a new VideoAnnotator without passing a player!');
+            return false;
+        }
+        this.player =  args.player;
+
+        //These config options are required for saving annotations to a server
         this.serverURL = typeof args.serverURL === 'undefined' ? '' : args.serverURL;
         this.tagsURL = typeof args.tagsURL === 'undefined' ? '' : args.tagsURL;
         this.apiKey = typeof args.apiKey === 'undefined' ? '' : args.apiKey;
-        this.kioskMode = typeof args.kioskMode === 'undefined' ? '' : args.kioskMode;
+
+        //This config option is required for using a static annotation file
         this.localURL = typeof args.localURL === 'undefined' ? '' : args.localURL;
-        this.player = typeof args.player === 'undefined' ? '' : args.player;
+
+        //Optional params
+        //Removes the editing interface
+        this.kioskMode = typeof args.kioskMode === 'undefined' ? '' : args.kioskMode;
+        //Allows passing in a function that overrides the default annotation renderer
         this.renderer = typeof args.renderer === 'undefined' ? false : args.renderer;
-        
+        //Determines whether or not the annotation container is cleared every time it updates
+        this.clearContainer = typeof args.clearContainer === 'undefined' ? true : false;
+
+
         //localURL implies kiosk mode
         if(this.localURL != '') this.kioskMode = true;
 
@@ -188,7 +205,7 @@ class VideoAnnotator {
         this.annotationsNow = this.annotationManager.AnnotationsAtTime(this.player.videoElement.currentTime);
 
         // Update the info container
-        this.infoContainer.Rebuild(this.annotationsNow);
+        this.infoContainer.Rebuild(this.annotationsNow, this.clearContainer);
 
         this.$container.trigger("OnNewAnnotationSet", [this.annotationsNow]);
     }
