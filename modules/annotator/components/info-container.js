@@ -14,6 +14,7 @@ class InfoContainer {
 
     Rebuild(annotations, clearContainer){
         if(clearContainer) this.$container.empty();
+        if(this.annotator.unrenderer) this.annotator.unrenderer(this.annotator);
 
         // let plural = annotations.length == 1 ? "" : "s";
         // let totalAnnotations = this.annotator.annotationManager.annotations.length;

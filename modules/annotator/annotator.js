@@ -34,6 +34,8 @@ class VideoAnnotator {
         this.kioskMode = typeof args.kioskMode === 'undefined' ? '' : args.kioskMode;
         //Allows passing in a function that overrides the default annotation renderer
         this.renderer = typeof args.renderer === 'undefined' ? false : args.renderer;
+        //Allows passing in a function that overrides the default annotation renderer
+        this.unrenderer = typeof args.unrenderer === 'undefined' ? false : args.unrenderer;
         //Determines whether or not the annotation container is cleared every time it updates
         this.clearContainer = typeof args.clearContainer === 'undefined' ? true : args.clearContainer;
 

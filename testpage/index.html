@@ -80,6 +80,12 @@
             return $panel;
         }
 
+        //This is an advanced option to create a function that runs when annotations are removed
+        var customUnrenderer = function(annotator){
+            console.log('Unrendering');
+            annotator.infoContainer.$container.empty();
+        }
+
         //This is an advanced option to create a callback function after creating a video annotator
         waldorf = false;
         var cb = function(_waldorf){
@@ -104,6 +110,7 @@
                                      kioskMode: false,
                                      clearContainer: false,
                                      renderer: customRenderer,
+                                     unrenderer: customUnrenderer,
                                      callback: cb});
 
         //This configuration loads annotations from a static W3C OA-formatted file
