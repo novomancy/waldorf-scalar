@@ -193,6 +193,17 @@ class VideoAnnotator {
         this.$container.trigger("OnNewAnnotationSet", [this.annotationsNow]);
     }
 
+    GetAnnotations(){
+        let ordered = this.annotationManager.annotations.slice();
+        let orderByStart = function(a, b){
+            let aTime = a.beginTime;
+            let bTime = b.beginTime;
+            return ((aTime < bTime) ? -1 : ((aTime > bTime) ? 1 : 0));
+        }
+        ordered.sort(orderByStart);
+        return ordered;
+    }
+
     RegisterNewAnnotation(annotation){
         //console.log(annotation);
         this.annotationManager.RegisterAnnotation(annotation);
