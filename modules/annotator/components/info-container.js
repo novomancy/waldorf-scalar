@@ -56,7 +56,7 @@ class InfoContainer {
         $content.append("<br>");
 
         $content.append("<b>Submitted by:</b><br />"
-                + (annotation.creator != null ? annotation.creator.email : "unspecified")
+                + (annotation.creator != null ? annotation.creator.nickname + ' (' + annotation.creator.email + ')' : "unspecified")
                 );
 
         //$paragraph.append("<strong>Annotation " + (index + 1) + ":</strong><br><pre>" + text.escapeHTML() + "</pre>");

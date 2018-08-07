@@ -77,7 +77,7 @@
             $content.append("<br>");
 
             $content.append("<b>Submitted by:</b><br />"
-                    + (annotation.creator != null ? annotation.creator.email : "unspecified")
+            + (annotation.creator != null ? annotation.creator.nickname + ' (' + annotation.creator.email + ')' : "unspecified")
                     );
 
             //attach the annotation to the container and return the container
