@@ -43,6 +43,7 @@ class ServerInterface {
             console.log("Successfully logged in.");
             localStorage.setItem('waldorf_user_email', password);
             localStorage.setItem('waldorf_user_name', username);
+            this.annotator.messageOverlay.ShowMessage("Logged in as "+username);
             return $.Deferred().resolve();
         }
 
