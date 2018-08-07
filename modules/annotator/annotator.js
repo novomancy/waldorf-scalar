@@ -8,6 +8,7 @@ import { InfoContainer } from "./components/info-container.js";
 import { SessionManager } from "./session-manager.js";
 import { MessageOverlay } from "./components/message-overlay.js";
 import { Annotation } from "./annotation.js";
+let sha1 = require('sha1');
 
 class VideoAnnotator {
     constructor(args){
@@ -25,6 +26,10 @@ class VideoAnnotator {
         this.serverURL = typeof args.serverURL === 'undefined' ? '' : args.serverURL;
         this.tagsURL = typeof args.tagsURL === 'undefined' ? '' : args.tagsURL;
         this.apiKey = typeof args.apiKey === 'undefined' ? '' : args.apiKey;
+
+        //If apiKey is set and cmsUsername and cmsEmail are passed, we'll auto login later
+        this.cmsUsername = typeof args.cmsUsername === 'undefined' ? '' : args.cmsUsername;
+        this.cmsEmail = typeof args.cmsEmail === 'undefined' ? '' : args.cmsEmail;
 
         //This config option is required for using a static annotation file
         this.localURL = typeof args.localURL === 'undefined' ? '' : args.localURL;
@@ -62,6 +67,19 @@ class VideoAnnotator {
                 this.annotationManager.PopulateFromJSON(json);
                 this.AnnotationsLoaded();
             });
+
+            //auto-login if not in kiosk mode, and we have the cms variables and API key
+            if(!this.kioskMode){
+                if(this.apiKey && this.cmsEmail && this.cmsUsername){
+                    this.server.LogOut();
+                    this.server.LogIn(this.cmsUsername, sha1(this.cmsEmail)).done(() => {
+                        console.log("CMS login success");
+                    }).fail(() => {
+                        console.log("CMS login failed");
+                    });
+                }
+            }
+
         } else {
             console.log('Loading local cache file: ' + this.localURL);
             $.ajax({
