@@ -33,12 +33,15 @@ class SessionManager {
         let $headText = $("<p class='validateTips'>All fields are required.</p>").appendTo($container);
         let $form = $("<form></form>").appendTo($container);
 
+        let $nicknameField;
         let $usernameField;
         let $passwordField;
 
         if (this.annotator.apiKey){
+            $("<label for='username'>Name</label>").appendTo($form);
+            $nicknameField = $("<input type='text' name='username' value='' class='text ui-widget-content ui-corner-all'>").appendTo($form);
             $("<label for='username'>Email Address</label>").appendTo($form);
-            $usernameField = $("<input type='text' name='username' value='' class='text ui-widget-content ui-corner-all'>").appendTo($form);
+            $usernameField = $("<input type='text' name='email' value='' class='text ui-widget-content ui-corner-all'>").appendTo($form);
         }
         else {
             $("<label for='username'>Username</label>").appendTo($form);
@@ -51,8 +54,9 @@ class SessionManager {
 
         let login = () => {
             if(this.annotator.apiKey){
+                let nickName = $nicknameField.val();
                 let userName = sha1($usernameField.val());
-                this.annotator.server.LogIn(userName).done(() => {
+                this.annotator.server.LogIn(nickName, userName).done(() => {
                     console.log("API key login success");
                     $dialog.dialog("close");
                 }).fail(() => {

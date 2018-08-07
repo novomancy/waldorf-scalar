@@ -41,7 +41,8 @@ class ServerInterface {
         // If API key is used, just store the email address
         if(this.annotator.apiKey){
             console.log("Successfully logged in.");
-            localStorage.setItem('waldorf_user_email', username);
+            localStorage.setItem('waldorf_user_email', password);
+            localStorage.setItem('waldorf_user_name', username);
             return $.Deferred().resolve();
         }
 
@@ -67,6 +68,7 @@ class ServerInterface {
         if(this.annotator.apiKey){
             console.log("Successfully logged out.");
             localStorage.removeItem('waldorf_user_email');
+            localStorage.removeItem('waldorf_user_name');
             return $.Deferred().resolve();
         }
 
@@ -113,11 +115,13 @@ class ServerInterface {
         if (this.annotator.apiKey){
             key = this.annotator.apiKey;
             let email_storage = localStorage.getItem('waldorf_user_email');
+            let name_storage = localStorage.getItem('waldorf_user_name');
             if (email_storage === null) {
                 console.error("You are not logged in!");
                 this.annotator.messageOverlay.ShowError("You are not logged in!");
                 return false;
             }
+            if(name_storage == null) name_storage = email_storage;
         } else {
             key = localStorage.getItem('waldorf_auth_token');
             if (key === null) {
@@ -130,6 +134,7 @@ class ServerInterface {
         if(this.annotator.apiKey){
             if(annotation["creator"] == null) annotation["creator"] = {};
             annotation["creator"]["email"] = localStorage.getItem('waldorf_user_email');
+            annotation["creator"]["nickname"] = localStorage.getItem('waldorf_user_name');
             //annotation.metadata.userEmail = localStorage.getItem('waldorf_user_email');
             //anno_data["email"] = localStorage.getItem('waldorf_user_email'); // Email
         }
@@ -169,11 +174,13 @@ class ServerInterface {
         if (this.annotator.apiKey){
             key = this.annotator.apiKey;
             let email_storage = localStorage.getItem('waldorf_user_email');
+            let name_storage = localStorage.getItem('waldorf_user_name');
             if (email_storage === null) {
                 console.error("You are not logged in!");
                 this.annotator.messageOverlay.ShowError("You are not logged in!");
                 return false;
             }
+            if(name_storage == null) name_storage = email_storage;
         } else {
             key = localStorage.getItem('waldorf_auth_token');
             if (key === null) {
@@ -186,6 +193,7 @@ class ServerInterface {
         if(this.annotator.apiKey){
             if(annotation["creator"] == null) annotation["creator"] = {};
             annotation["creator"]["email"] = localStorage.getItem('waldorf_user_email');
+            annotation["creator"]["nickname"] = localStorage.getItem('waldorf_user_name');
         }
 
         let oldID = annotation.id;
