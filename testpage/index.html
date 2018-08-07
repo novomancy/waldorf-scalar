@@ -23,7 +23,7 @@
     <!-- This is loading out of order using grunt so loading manually here - JPB -->
     <!-- <link href="http://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.1/css/select2.min.css" rel="stylesheet" />
     <script src="http://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.1/js/select2.min.js"></script> -->
-    <link href="/vendor/jquery-ui.css" rel="stylesheet" />
+    <link href="/vendor/select2.min.css" rel="stylesheet" />
     <script src="/vendor/select2.min.js"></script>
     <!-- Annotator Core -->
     <script type="text/javascript" src="/dist/annotator-frontend.js"></script>
@@ -116,7 +116,9 @@
                                      clearContainer: false,
                                      renderer: customRenderer,
                                      unrenderer: customUnrenderer,
-                                     callback: cb});
+                                     callback: cb,
+                                     cmsUsername: "John Bell",
+                                     cmsEmail: "john.p.bell@dartmouth.edu"});
 
         //This configuration loads annotations from a static W3C OA-formatted file
         // var localAnnotations = "/testpage/annotation_cache.json";
