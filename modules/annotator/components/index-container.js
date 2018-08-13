@@ -14,12 +14,16 @@ class IndexContainer {
         this.annotationList = $("<ul class='waldorf-annotation-list' role='menubar'></ul>").appendTo(this.$container);
         // Attach event handlers
         this.annotator.$container.on("OnAnnotationsLoaded", 
-            (event, annotationManager) => this.Rebuild(annotationManager));
+            (event, annotationManager) => this.Rebuild());
+        this.annotator.$container.on("OnAnnotationRegistered",
+            (event, annotation) => this.Rebuild());
+        this.annotator.$container.on("OnAnnotationRemoved",
+            (event, id) => this.Rebuild());            
 
     }
 
-    Rebuild(annotationManager){
-        // if(clearContainer) this.$container.empty();
+    Rebuild(){
+        this.annotationList.empty();
         // if(this.annotator.unrenderer) this.annotator.unrenderer(this.annotator);
 
         // let plural = annotations.length == 1 ? "" : "s";
@@ -29,7 +33,7 @@ class IndexContainer {
         // Add each annotation to the readout
         let ordered = this.annotator.GetAnnotations();
         for (let i = 0; i < ordered.length; i++){
-            this.$container.append(this.MakeContainer(this.annotator, ordered[i], i));
+            this.annotationList.append(this.MakeContainer(this.annotator, ordered[i], i));
         }
     }
 
