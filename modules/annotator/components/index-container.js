@@ -44,6 +44,7 @@ class IndexContainer {
         $header.click( (event) => {
             event.preventDefault();
             annotator.player.videoElement.src=annotator.url + "#t=" + annotation.beginTime +","+annotation.endTime;
+            annotator.player.videoElement.play();
         });
 
         $panel.append($header);

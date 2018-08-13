@@ -333,7 +333,7 @@ class AnnotationGUI {
         annotation["body"] = body;
 
         let target = {
-            "id": this.annotator.player.videoElement.currentSrc, // URL of the video
+            "id": this.annotator.url, // URL of the video
             "type": "Video"
         }
 
