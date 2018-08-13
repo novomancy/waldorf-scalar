@@ -5,6 +5,7 @@ import { PolygonOverlay } from "./components/polygon-overlay.js";
 import { preferences } from "../utils/preference-manager.js";
 import { AnnotationGUI } from "./components/annotation-gui.js";
 import { InfoContainer } from "./components/info-container.js";
+import { IndexContainer } from "./components/index-container.js";
 import { SessionManager } from "./session-manager.js";
 import { MessageOverlay } from "./components/message-overlay.js";
 import { Annotation } from "./annotation.js";
@@ -43,6 +44,8 @@ class VideoAnnotator {
         this.unrenderer = typeof args.unrenderer === 'undefined' ? false : args.unrenderer;
         //Determines whether or not the annotation container is cleared every time it updates
         this.clearContainer = typeof args.clearContainer === 'undefined' ? true : args.clearContainer;
+        //Determines whether or not to create a navigable index of annotations
+        this.displayIndex = typeof args.displayIndex === 'undefined' ? false : args.displayIndex;        
 
 
         //localURL implies kiosk mode
@@ -114,6 +117,8 @@ class VideoAnnotator {
             this.$addAnnotationButton.button("enable");
         });
 
+        this.url = this.player.videoElement.currentSrc;
+
         console.log("[VideoAnnotator] Annotator created for video.");
     }
 
@@ -175,6 +180,8 @@ class VideoAnnotator {
 
         // Create the info container
         this.infoContainer = new InfoContainer(this);
+
+        if(this.displayIndex) this.indexContainer = new IndexContainer(this);
 
         // Inject the annotation edit button into the toolbar
         if(!this.kioskMode){

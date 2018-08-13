@@ -37,12 +37,10 @@
     <video playsinline width="640" height="480">
         <source src="http://sachinchoolur.github.io/lightGallery/static/videos/video2.mp4" type="video/mp4">
     </video>
-
-    <div class="blah">Lorem Ipsum</div>
-
     <!-- If there is no DOM object with class waldorf-info, it will be created right below the video.
          If you manually create a div with that class, though, annotations will be inserted into the existing div. -->
     <div class='waldorf-info' aria-live='polite' aria-atomic='true'></div>
+    <div class="waldorf-index" aria-live="polite" role="navigation"></div>
     <script>     
         //This is an advanced option to create a custom renderer for annotations
         var customRenderer = function(annotator, annotation, index){
@@ -117,6 +115,7 @@
                                      renderer: customRenderer,
                                      unrenderer: customUnrenderer,
                                      callback: cb,
+                                     displayIndex: true,
                                      cmsUsername: "John Bell",
                                      cmsEmail: "user@example.com"});
 
