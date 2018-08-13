@@ -39,7 +39,7 @@ class IndexContainer {
 
     MakeContainer(annotator, annotation){
         //TODO: ARIA and general screen reader compatibility
-        let $panel = $("<li role='presentation' data-creator="+annotation.creator.email+"></li>");
+        let $panel = $("<li role='presentation' data-creator="+annotation.creator.email+" data-tags='"+annotation.tags.join(", ").replace("'", "%27")+"'></li>");
         //let text = JSON.stringify(annotation.AsOpenAnnotation(), null, 2);
 
         let headerText = GetFormattedTime(annotation.beginTime) + " - " + GetFormattedTime(annotation.endTime);
