@@ -27,8 +27,9 @@ class IndexContainer {
         // this.$container.html(`<p>Showing ${annotations.length} annotation${plural} (${totalAnnotations} total).</p>`);
 
         // Add each annotation to the readout
-        for (let i = 0; i < annotationManager.annotations.length; i++){
-            this.$container.append(this.MakeContainer(this.annotator, annotationManager.annotations[i], i));
+        let ordered = this.annotator.GetAnnotations();
+        for (let i = 0; i < ordered.length; i++){
+            this.$container.append(this.MakeContainer(this.annotator, ordered[i], i));
         }
     }
 
