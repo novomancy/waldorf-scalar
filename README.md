@@ -3,20 +3,17 @@
 ![Media Ecology Project Image](/media/cropped-mep_banner511.png)
 
 <p align="center">
-    <a href="https://github.com/colejd/waldorf/releases"><img src="https://img.shields.io/github/release/colejd/Waldorf.svg" alt="Release version"></img></a>
-    <a href="https://travis-ci.org/colejd/Waldorf"><img src="https://travis-ci.org/colejd/Waldorf.svg?branch=master" alt="Build status"></img></a>
-    <a href="https://david-dm.org/colejd/Waldorf"><img src="https://img.shields.io/david/colejd/Waldorf.svg" alt="Dependency status"></img></a>
+    <a href="https://github.com/novomancy/waldorf/releases"><img src="https://img.shields.io/github/release/colejd/Waldorf.svg" alt="Release version"></img></a>
 </p>
 
 Waldorf is a replacement video player for HTML5 videos which allows for 
 viewing, creating, and modifying user-made annotations conforming to the
 [W3C Web Annotation data model](https://www.w3.org/TR/annotation-model/),
-and was created for the [Media Ecology Project](https://sites.dartmouth.edu/mediaecology/). 
+and was created for the [Media Ecology Project](https://mediaecology.dartmouth.edu/). 
 
-This project is in an early alpha phase. As such, please note that it's still 
+This project is in a beta phase. As such, please note that it's still 
 rough around the edges; documentation and clarifying information will be fleshed
 out further as the project progresses.
-
 
 ## How to Use
 
@@ -99,6 +96,7 @@ Tasks:
 ## Authors
 
 * **Jonathan Cole** - *VEMILab* - [joncole.me](http://www.joncole.me)
+* **John Bell** - *Dartmouth College* - [johnpbell.com](http://www.johnpbell.com)
 
 ## License
 
