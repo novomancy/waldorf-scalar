@@ -43,9 +43,49 @@ Example:
 
 You can see a full example at [/testpage/](/testpage/).
 
+### Configuration
+
+The .annotate() call can be passed an object with configuration options. Valid options include:
+
+```
+Server/storage options:
+serverURL: serverAddress        //The URL of a Statler server API to store annotations
+apiKey: apiKey                  //If you are managing access to Statler with an API key, 
+                                //provide it here
+localURL: localAnnotations      //If provided, loads annotations from a local json file
+                                //This turns off serverURL and forces kioskMode=true
+
+Editing options:
+kioskMode: false                //kioskMode removes the annotation editing interface
+tagsURL: tagsAddress            //If you have an external tagging vocabulary, provide the 
+                                //URL to it here
+displayIndex: true              //Whether or not to display an index of annotations
+
+User options:
+                                //NOTE: Setting these options will disable Stater user login!
+cmsUsername: "User Name"        //The human-readable name to which attributions will be 
+                                //attributed when connecting to Statler using an API key
+cmsEmail: "user@example.com"    //The email address corresponding to cmsUsername. This will 
+                                //be SHA1 encoded before sending it to the server.
+
+Callbacks and hooks:
+
+clearContainer: false           //Whether or not to remove old annotations when rendering
+renderer: fnCustomRenderer      //A function to render annotations, overriding the default
+unrenderer: fnCustomUnrenderer  //A function to unrender annotations, overriding the default
+callback: fncb                  //A function to run after Waldorf has loaded
+```
+
 ### Styling
 
-Information forthcoming.
+Waldorf creates a new div wrapping the video tag that .annotate() is called on with `class="waldorf-container"`. Ideally, this is the CSS class you should target to change Waldorf's look and feel.
+
+In addition to the video, Waldorf will either find or create two special page regions (identified by class name) used for rendering annotation data:
+
+* A div with `class="waldorf-info"` will be where annotations are rendered and unrendered in synch with video playback.
+* A div with `class="waldorf-index"` will show a listing of all annotations found for the current video. (this is optional based on the config option displayIndex mentioned above)
+
+If your HTML contains divs with these classes your existing containers will be used. If these classes are not in your DOM when Waldorf loads it will create both containers below where the video appears on your page (again, pending the displayIndex option).
 
 ### Known Issues
 
