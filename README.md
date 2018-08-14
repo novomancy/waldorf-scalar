@@ -7,10 +7,6 @@ viewing, creating, and modifying user-made annotations conforming to the
 [W3C Web Annotation data model](https://www.w3.org/TR/annotation-model/),
 and was created for the [Media Ecology Project](https://mediaecology.dartmouth.edu/). 
 
-This project is in a beta phase. As such, please note that it's still 
-rough around the edges; documentation and clarifying information will be fleshed
-out further as the project progresses.
-
 ## How to Use
 
 The following instructions are for using this plugin with your website.
