@@ -2,10 +2,6 @@
 
 ![Media Ecology Project Image](/media/cropped-mep_banner511.png)
 
-<p align="center">
-    <a href="https://github.com/novomancy/waldorf/releases"><img src="https://img.shields.io/github/release/colejd/Waldorf.svg" alt="Release version"></img></a>
-</p>
-
 Waldorf is a replacement video player for HTML5 videos which allows for 
 viewing, creating, and modifying user-made annotations conforming to the
 [W3C Web Annotation data model](https://www.w3.org/TR/annotation-model/),
