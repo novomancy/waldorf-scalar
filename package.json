@@ -30,6 +30,7 @@
     "clip-path-polygon": "^0.1.13",
     "jquery-ui": "^1.12.1",
     "qtip2": "^3.0.3",
+    "sass": "^1.15.1",
     "screenfull": "^3.0.2",
     "select2": "^4.0.6-rc.1",
     "sha1": "^1.1.1",
