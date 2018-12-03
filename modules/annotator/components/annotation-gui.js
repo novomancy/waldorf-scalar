@@ -69,8 +69,25 @@ class AnnotationGUI {
             }
             return false;
         });
+
         this.RegisterElement($timeEndContainer, this.$postToolbar, -2);
-        
+
+        //Add some error checking...
+        this.$timeEndField.blur(() => {
+            let e = $(this.$timeEndField).val();
+            let s = $(this.$timeStartField).val();
+            if(GetSecondsFromHMS(s+1) > GetSecondsFromHMS(e)){
+                $(this.$timeEndField).val(s);
+            }
+        });
+        this.$timeStartField.blur(() => {
+            let e = $(this.$timeEndField).val();
+            let s = $(this.$timeStartField).val();
+            if(GetSecondsFromHMS(s+1) > GetSecondsFromHMS(e)){
+                $(this.$timeEndField).val(s);
+            }
+        });
+
         // Make "Edit polygon" button
         let $editPolyButton = $("<button>Edit Polygon</button>").button({
             icon: "fa fa-pencil",
@@ -350,11 +367,16 @@ class AnnotationGUI {
             selectors.push(polygonSelector);
         }
 
+        let safeEndTime = GetSecondsFromHMS(this.$timeStartField.val());
+        if(GetSecondsFromHMS(this.$timeEndField.val()) > GetSecondsFromHMS(this.$timeStartField.val())){
+            safeEndTime = GetSecondsFromHMS(this.$timeEndField.val());
+        }
+
         // Build time selector
         let timeSelector = {
             "type": "FragmentSelector",
             "conformsTo": "http://www.w3.org/TR/media-frags/", // See media fragment specification
-            "value": `t=${GetSecondsFromHMS(this.$timeStartField.val())},${GetSecondsFromHMS(this.$timeEndField.val())}` // Time interval in seconds
+            "value": `t=${GetSecondsFromHMS(this.$timeStartField.val())},${safeEndTime}` // Time interval in seconds
         }
         selectors.push(timeSelector);
 
