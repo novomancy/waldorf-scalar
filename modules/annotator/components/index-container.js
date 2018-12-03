@@ -49,7 +49,10 @@ class IndexContainer {
         $header.click( (event) => {
             event.preventDefault();
             annotator.player.videoElement.src=annotator.url + "#t=" + annotation.beginTime +","+annotation.endTime;
-            annotator.player.videoElement.play();
+            if(annotation.beginTime+1 > annotation.endTime){
+                annotator.player.videoElement.play();
+                annotator.player.videoElement.pause();
+            }
         });
 
         $panel.append($header);

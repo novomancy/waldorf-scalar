@@ -77,14 +77,14 @@ class AnnotationGUI {
             let e = $(this.$timeEndField).val();
             let s = $(this.$timeStartField).val();
             if(GetSecondsFromHMS(s+1) > GetSecondsFromHMS(e)){
-                $(this.$timeEndField).val(s);
+                $(this.$timeEndField).val(GetFormattedTime(GetSecondsFromHMS(s)+.01));
             }
         });
         this.$timeStartField.blur(() => {
             let e = $(this.$timeEndField).val();
             let s = $(this.$timeStartField).val();
             if(GetSecondsFromHMS(s+1) > GetSecondsFromHMS(e)){
-                $(this.$timeEndField).val(s);
+                $(this.$timeEndField).val(GetFormattedTime(GetSecondsFromHMS(s)+.01));
             }
         });
 
