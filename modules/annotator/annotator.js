@@ -319,15 +319,30 @@ class VideoAnnotator {
                 }
 
                 let localJson = JSON.parse(localFile.target.result);
-                let annotation = new Annotation(localJson);
-                if(this.ValidateAnnotation(annotation)){
-                    // Open the GUI and populate it with this annotation's data.
-                    this.gui.BeginEditing(annotation, true);
-                    $dialog.dialog("close");
+                if(typeof(localJson.target)!="undefined"){
+                    let annotation = new Annotation(localJson);
+                    if(this.ValidateAnnotation(annotation)){
+                        // Open the GUI and populate it with this annotation's data.
+                        this.gui.BeginEditing(annotation, true);
+                        this.gui.CommitAnnotationToServer(function(){return;});
+                    }
+                    else {
+                        error("JSON is invalid!");
+                    }
+                } else {
+                    for(var i=0; i<localJson.length; i++){
+                        let annotation = new Annotation(localJson[i]);
+                        if(this.ValidateAnnotation(annotation)){
+                            // Open the GUI and populate it with this annotation's data.
+                            this.gui.BeginEditing(annotation, true);
+                            this.gui.CommitAnnotationToServer(function(){return;});
+                        }
+                        else {
+                            error("JSON is invalid!");
+                        }
+                    }
                 }
-                else {
-                    error("JSON is invalid!");
-                }
+                $dialog.dialog("close");
             });
             fr.readAsText(files[0]);
         });
