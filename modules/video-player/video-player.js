@@ -94,6 +94,26 @@ class AnnotatorVideoPlayer {
         }
     }
 
+    StepForward(){
+        var newTime = this.videoElement.currentTime + 0.1;
+        this.videoElement.currentTime = newTime > this.videoElement.duration ? this.videoElement.duration : newTime;
+    }
+
+    JumpForward(){
+        var newTime = this.videoElement.currentTime + 1;
+        this.videoElement.currentTime = newTime > this.videoElement.duration ? this.videoElement.duration : newTime;
+    }  
+    
+    StepBackward(){
+        var newTime = this.videoElement.currentTime - 0.1;
+        this.videoElement.currentTime = newTime < 0 ? 0 : newTime;
+    }
+
+    JumpBackward(){
+        var newTime = this.videoElement.currentTime - 1;
+        this.videoElement.currentTime = newTime < 0 ? 0 : newTime;
+    }     
+
     Play(){
         this.videoElement.play();
         this.SetAutoFade(true);

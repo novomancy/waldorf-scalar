@@ -55,12 +55,40 @@ class VideoPlayerBar {
         this.$seekProgress = $("<div id='seek-fill'></div>");
         this.$container.append(this.$seekProgress);
 
+        //Jump Back button
+        this.$jumpBackButton = $("<button>Jump Back</button>").button({
+            icon: "fa fa-fast-backward",
+            showLabel: false
+        }).click(() => this.player.JumpBackward());
+        this.RegisterElement(this.$jumpBackButton, -8);   
+        
+        //Nudge Back button
+        this.$nudgeBackButton = $("<button>Nudge Back</button>").button({
+            icon: "fa fa-step-backward",
+            showLabel: false
+        }).click(() => this.player.StepBackward());
+        this.RegisterElement(this.$nudgeBackButton, -7);
+
         // Play button
         this.$playButton = $("<button>Play</button>").button({
             icon: "fa fa-play",
             showLabel: false
         }).click(() => this.player.TogglePlayState());
-        this.RegisterElement(this.$playButton, -4);
+        this.RegisterElement(this.$playButton, -6);
+
+        //Nudge button
+        this.$nudgeButton = $("<button>Nudge</button>").button({
+            icon: "fa fa-step-forward",
+            showLabel: false
+        }).click(() => this.player.StepForward());
+        this.RegisterElement(this.$nudgeButton, -5);   
+        
+        //Jump button
+        this.$jumpButton = $("<button>Nudge</button>").button({
+            icon: "fa fa-fast-forward",
+            showLabel: false
+        }).click(() => this.player.JumpForward());
+        this.RegisterElement(this.$jumpButton, -4);          
 
         // Time text
         let zero = GetFormattedTime(0.000);
