@@ -41,7 +41,7 @@ class AnnotationGUI {
         
         // Make "Start time" label and field
         let $timeStartContainer = $('<div class="ui-field-contain"></div>');
-        let $timeStartLabel = $('<label for="time-start">Start Time:</label>').appendTo($timeStartContainer);
+        let $timeStartLabel = $('<label for="time-start">Start:</label>').appendTo($timeStartContainer);
         this.$timeStartField = $('<input type="text" name="time-start" id="time-start" value="">').appendTo($timeStartContainer);
         this.$timeStartField.width(50);
         this.$timeStartField.css("font-family", "Courier, monospace");
@@ -53,11 +53,20 @@ class AnnotationGUI {
             }
             return false;
         });
-        this.RegisterElement($timeStartContainer, this.$postToolbar, -3);
+        this.RegisterElement($timeStartContainer, this.$postToolbar, -5);
+
+        //add marker button
+        this.$timeStartButton = $("<button style='padding:0'>Set Start</button>").button({
+            icon: "fa fa-map-marker",
+            showLabel: false
+        }).click(() => {
+            this.$timeStartField[0].value = GetFormattedTime(this.annotator.player.videoElement.currentTime);
+        });
+        this.RegisterElement(this.$timeStartButton, this.$postToolbar, -4);   
         
         // Make "End time" label and field
         let $timeEndContainer = $('<div class="ui-field-contain"></div>');
-        let $timeEndLabel = $('<label for="time-end">End Time:</label>').appendTo($timeEndContainer);
+        let $timeEndLabel = $('<label for="time-end">End:</label>').appendTo($timeEndContainer);
         this.$timeEndField = $('<input type="text" name="time-end" id="time-end" value="0">').appendTo($timeEndContainer);
         this.$timeEndField.width(50);
         this.$timeEndField.css("font-family", "Courier, monospace");
@@ -70,7 +79,16 @@ class AnnotationGUI {
             return false;
         });
 
-        this.RegisterElement($timeEndContainer, this.$postToolbar, -2);
+        this.RegisterElement($timeEndContainer, this.$postToolbar, -3);
+
+        //add marker button
+        this.$timeEndButton = $("<button style='padding:0'>Set End</button>").button({
+            icon: "fa fa-map-marker",
+            showLabel: false
+        }).click(() => {
+            this.$timeEndField[0].value = GetFormattedTime(this.annotator.player.videoElement.currentTime);
+        });
+        this.RegisterElement(this.$timeEndButton, this.$postToolbar, -2);         
 
         //Add some error checking...
         this.$timeEndField.blur(() => {
