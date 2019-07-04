@@ -1,0 +1,70 @@
+[
+	{
+		"body": [
+			{
+				"value": "Machine generated cut 1",
+				"purpose": "describing",
+				"language": "en",
+				"format": "text/plain"
+			},
+			{
+				"type": "TextualBody",
+				"purpose": "tagging",
+				"value": "DVT"
+			}
+		],
+		"motivation": "highlighting",
+		"target": {
+			"type": "Video",
+			"id": "example.com/sleep.mp4",
+			"selector": [
+				{
+					"conformsTo": "http://www.w3.org/TR/media-frags/",
+					"type": "FragmentSelector",
+					"value": "t=0,6.41"
+				}
+			]
+		},
+		"creator": {
+			"type": "Software",
+			"nickname": "DVT",
+			"email": "70b9fb119f20efaeb9bbbbd459d7bc8a"
+		},
+		"@context": "http://www.w3.org/ns/anno.jsonld",
+		"type": "Annotation"
+	},
+	{
+		"body": [
+			{
+				"value": "Machine generated cut 2",
+				"purpose": "describing",
+				"language": "en",
+				"format": "text/plain"
+			},
+			{
+				"type": "TextualBody",
+				"purpose": "tagging",
+				"value": "DVT"
+			}
+		],
+		"motivation": "highlighting",
+		"target": {
+			"type": "Video",
+			"id": "example.com/sleep.mp4",
+			"selector": [
+				{
+					"conformsTo": "http://www.w3.org/TR/media-frags/",
+					"type": "FragmentSelector",
+					"value": "t=7,15.41"
+				}
+			]
+		},
+		"creator": {
+			"type": "Software",
+			"nickname": "DVT",
+			"email": "70b9fb119f20efaeb9bbbbd459d7bc8a"
+		},
+		"@context": "http://www.w3.org/ns/anno.jsonld",
+		"type": "Annotation"
+	}	
+]

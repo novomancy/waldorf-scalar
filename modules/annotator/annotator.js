@@ -335,7 +335,10 @@ class VideoAnnotator {
                         if(this.ValidateAnnotation(annotation)){
                             // Open the GUI and populate it with this annotation's data.
                             this.gui.BeginEditing(annotation, true);
-                            this.gui.CommitAnnotationToServer(function(){return;});
+                            this.gui.CommitAnnotationToServer((annotation) => {
+                                this.RegisterNewAnnotation(annotation);
+                                this.gui.Close();
+                            });
                         }
                         else {
                             error("JSON is invalid!");
