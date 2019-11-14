@@ -1,40 +1,46 @@
 {
   "name": "Waldorf",
   "author": "Jonathan Cole <joncole04412@gmail.com>",
+  "contributors": [
+    "John Bell <john.p.bell@dartmouth.edu>",
+    "Craig Dietrich <craigdietrich@gmail.com>"
+  ],
   "description": "Description",
-  "version": "0.0.2",
+  "version": "0.1",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/seieibob/Waldorf"
+    "url": "https://github.com/novomancy/waldorf-scalar/"
   },
   "main": "dist/annotator-module.js",
   "private": true,
-  "devDependencies": {
+  "devDependencies": {},
+  "dependencies": {
+    "@babel/core": "^7.7.2",
+    "babel": "^6.23.0",
     "babel-core": "^6.26.3",
-    "babel-loader": "^7.1.4",
+    "babel-loader": "^8.0.6",
     "babel-preset-es2015": "^6.24.1",
-    "babelify": "^8.0.0",
-    "browserify-css": "^0.14.0",
-    "browserify-shim": "^3.8.13",
-    "grunt": "^1.0.3",
+    "babelify": "^10.0.0",
+    "browserify-css": "^0.15.0",
+    "browserify-shim": "^3.8.14",
+    "clip-path-polygon": "^0.1.13",
+    "grunt": "^1.0.4",
     "grunt-browser-sync": "^2.2.0",
     "grunt-browserify": "^5.3.0",
-    "grunt-contrib-compress": "^1.4.1",
+    "grunt-contrib-compress": "^1.6.0",
     "grunt-contrib-sass": "^1.0.0",
     "grunt-contrib-watch": "^1.1.0",
     "grunt-extract-sourcemap": "^0.1.19",
-    "uglifyify": "^5.0.0"
-  },
-  "dependencies": {
-    "clip-path-polygon": "^0.1.13",
+    "jquery": "^3.4.1",
     "jquery-ui": "^1.12.1",
     "qtip2": "^3.0.3",
-    "sass": "^1.15.1",
-    "screenfull": "^3.0.2",
-    "select2": "^4.0.6-rc.1",
+    "sass": "^1.23.3",
+    "screenfull": "^5.0.0",
+    "select2": "^4.0.12",
     "sha1": "^1.1.1",
-    "webpack": "^4.26.1"
+    "uglifyify": "^5.0.2",
+    "webpack": "^4.41.2"
   },
   "scripts": {
     "test": "grunt test"
