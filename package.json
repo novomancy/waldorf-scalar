@@ -52,7 +52,7 @@
         "babelify",
         {
           "presets": [
-            "es2015"
+            "@babel/env"
           ]
         }
       ],
