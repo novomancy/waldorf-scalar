@@ -93,18 +93,35 @@ class ServerInterface {
     }
 
     FetchAnnotations(searchKey, searchParam) {
+        //This is replaced by this.baseURL, which is defined in config
+        //var book_url = 'http://scalar.usc.edu/dev/semantic-annotation-tool/';  // This will be defined in the Book's JS
+        var ajax_url = this.baseURL + 'rdf/file/' + searchParam.replace(this.baseURL,'') + '?format=oac&prov=1&rec=2';
         return $.ajax({
-            url: this.baseURL + "/api/getAnnotationsByLocation",
+            url: ajax_url,
             type: "GET",
-            data: { [searchKey]: searchParam },
-            dataType: "json",
+            jsonp: "callback",
+            dataType: "jsonp",
             async: true
-        }).done((data) => {
-            console.log(`Fetched ${data.length} annotations for ${searchKey}: "${searchParam}".`);
-        }).fail((response) => {
-            console.error(`Error fetching annotations for ${searchKey}: "${searchParam}"\n${response.responseJSON.detail}.`);
-            this.annotator.messageOverlay.ShowError(`Could not retrieve annotations!<br>(${response.responseJSON.detail})`);
-        });
+        }).done(function (data) {
+            console.log('Fetched ' + data.length + ' annotations for ' + searchKey + ': "' + searchParam + '".');
+        }).fail(function (response) {
+            console.error('Error fetching annotations for ' + searchKey + ': "' + searchParam + '"\n' + response.responseJSON.detail + '.');
+            _this2.annotator.messageOverlay.ShowError('Could not retrieve annotations!<br>(' + response.responseJSON.detail + ')');
+        });  
+
+
+        // return $.ajax({
+        //     url: this.baseURL + "/api/getAnnotationsByLocation",
+        //     type: "GET",
+        //     data: { [searchKey]: searchParam },
+        //     dataType: "json",
+        //     async: true
+        // }).done((data) => {
+        //     console.log(`Fetched ${data.length} annotations for ${searchKey}: "${searchParam}".`);
+        // }).fail((response) => {
+        //     console.error(`Error fetching annotations for ${searchKey}: "${searchParam}"\n${response.responseJSON.detail}.`);
+        //     this.annotator.messageOverlay.ShowError(`Could not retrieve annotations!<br>(${response.responseJSON.detail})`);
+        // });
     }
 
     PostAnnotation(callback){

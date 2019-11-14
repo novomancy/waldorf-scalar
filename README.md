@@ -41,7 +41,7 @@ The .annotate() call can be passed an object with configuration options. Valid o
 
 ```
 Server/storage options:
-serverURL: serverAddress        //The URL of a Statler server API to store annotations
+serverURL: serverAddress        //The URL of a Scalar book store annotations
 apiKey: apiKey                  //If you are managing access to Statler with an API key, 
                                 //provide it here
 localURL: localAnnotations      //If provided, loads annotations from a local json file
