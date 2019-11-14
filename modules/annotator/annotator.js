@@ -68,7 +68,7 @@ class VideoAnnotator {
             this.server.FetchAnnotations('location', this.player.videoElement.currentSrc)
             .done((json)=>{
             	//json.shift()  // Assume first node is a content node
-            	for (var j = json.length; j >= 0; --j) {
+            	for (var j = json.length-1; j >= 0; j--) {
                     if(json[j].type != "Annotation"){
                         json.splice(j,1);
                     } else {
