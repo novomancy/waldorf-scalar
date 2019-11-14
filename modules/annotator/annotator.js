@@ -67,6 +67,18 @@ class VideoAnnotator {
             // Load annotations from server based on the player's video URL
             this.server.FetchAnnotations('location', this.player.videoElement.currentSrc)
             .done((json)=>{
+            	//json.shift()  // Assume first node is a content node
+            	for (var j = json.length; j >= 0; --j) {
+                    if(json[j].type != "Annotation"){
+                        json.splice(j,1);
+                    } else {
+            		    for (var k = 0; k < json[j].target.selector.length; k++) {
+            			    if ('FragmentSelector' != json[j].target.selector[k].type) continue;
+            			    json[j].target.selector[k].value = json[j].target.selector[k].value.replace('#t=npt:','t=');
+                        }
+                    }
+            	}
+
                 this.annotationManager.PopulateFromJSON(json);
                 this.AnnotationsLoaded();
             });
