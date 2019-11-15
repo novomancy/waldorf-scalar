@@ -48,10 +48,17 @@ class IndexContainer {
         let $header = $("<a href='' title='Go to Annotation' role='menuitem'>"+headerText+"</a><br>");
         $header.click( (event) => {
             event.preventDefault();
-            annotator.player.videoElement.src=annotator.url + "#t=" + annotation.beginTime +","+annotation.endTime;
-            annotator.player.videoElement.play();
+            annotator.player.videoElement.currentTime = annotation.beginTime;
+            // if(annotator.player.videoElement.annotationTimeout) clearTimeout(annotator.player.videoElement.annotationTimeout);
+            // annotator.player.videoElement.annotationTimeout = setTimeout(function(){
+            //     annotator.player.videoElement.pause()}, (annotation.endTime-annotation.beginTime) * 1000
+            // );
+            //annotator.player.videoElement.src=annotator.url + "#t=" + annotation.beginTime +","+annotation.endTime;
+            //annotator.player.videoElement.play();
+            annotator.player.Play();
+            annotator.player.endTime = annotation.endTime;
             if(annotation.beginTime+1 > annotation.endTime){
-                annotator.player.videoElement.pause();
+                annotator.player.Pause();
             }
         });
 
