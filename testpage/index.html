@@ -103,7 +103,11 @@
 
         }
     
-        //This configuration connects to a live Statler server to edit and share annotations
+        function launchWaldorf(){
+        //This configuration connects to a live Scalar server to edit and share annotations
+        //Note that it's not necessary to delay this or put it in a function call,
+        //it's only done here for demonstration purposes so you can see the original
+        //video and then the wrapped version after.
         var serverAddress = "http://scalar.usc.edu/dev/semantic-annotation-tool/";
         var tagsAddress = "https://onomy.org/published/83/json";
         var apiKey = "bba00b0a-66f3-44a3-9f3c-9b2fa97d3f0a";
@@ -119,6 +123,9 @@
                                      displayIndex: true,
                                      cmsUsername: "John Bell",
                                      cmsEmail: "user@example.com"});
+        }
+
+        setTimeout(launchWaldorf, 2000);
 
         //This configuration loads annotations from a static W3C OA-formatted file
         // var localAnnotations = "/testpage/annotation_cache.json";
