@@ -40,7 +40,7 @@ class ServerInterface {
     LogIn(username, password){
         // If API key is used, just store the email address
         if(this.annotator.apiKey){
-            console.log("Successfully logged in.");
+            console.log("[Server Interface] Successfully logged in.");
             localStorage.setItem('waldorf_user_email', password);
             localStorage.setItem('waldorf_user_name', username);
             this.annotator.messageOverlay.ShowMessage("Logged in as "+username);
@@ -56,10 +56,10 @@ class ServerInterface {
                 xhr.setRequestHeader('Authorization', this.make_base_auth(username, password));
             }
         }).done((data) => {
-            console.log("Successfully logged in.");
+            console.log("[Server Interface] Successfully logged in.");
             localStorage.setItem('waldorf_auth_token', data.auth_token);
         }).fail((response) => {
-            console.error("Could not log in.");
+            console.error("[Server Interface] Could not log in.");
             this.annotator.messageOverlay.ShowError("Could not log in!");
         });
     }
@@ -67,7 +67,7 @@ class ServerInterface {
     LogOut(){
         // If API key is used, just remove the email from local storage.
         if(this.annotator.apiKey){
-            console.log("Successfully logged out.");
+            console.log("[Server Interface] Successfully logged out.");
             localStorage.removeItem('waldorf_user_email');
             localStorage.removeItem('waldorf_user_name');
             return $.Deferred().resolve();
@@ -80,14 +80,14 @@ class ServerInterface {
             context: this,
             beforeSend: function (xhr) {
                 let auth_token = localStorage.getItem('waldorf_auth_token') || "";
-                console.log(`token: ${auth_token}`);
+                console.log(`[Server Interface] token: ${auth_token}`);
                 xhr.setRequestHeader('Authorization', this.make_write_auth(auth_token));
             }
         }).done((data) => {
-            console.log("Successfully logged out.");
+            console.log("[Server Interface] Successfully logged out.");
             localStorage.removeItem('waldorf_auth_token');
         }).fail((response) => {
-            console.error("Could not log out.");
+            console.error("[Server Interface] Could not log out.");
             localStorage.removeItem('waldorf_auth_token');
         });
     }
@@ -103,9 +103,9 @@ class ServerInterface {
             dataType: "jsonp",
             async: true
         }).done(function (data) {
-            console.log('Fetched ' + data.length + ' annotations for ' + searchKey + ': "' + searchParam + '".');
+            console.log('[Server Interface] Fetched ' + data.length + ' annotations for ' + searchKey + ': "' + searchParam + '".');
         }).fail(function (response) {
-            console.error('Error fetching annotations for ' + searchKey + ': "' + searchParam + '"\n' + response.responseJSON.detail + '.');
+            console.error('[Server Interface] Error fetching annotations for ' + searchKey + ': "' + searchParam + '"\n' + response.responseJSON.detail + '.');
             _this2.annotator.messageOverlay.ShowError('Could not retrieve annotations!<br>(' + response.responseJSON.detail + ')');
         });  
 
@@ -135,7 +135,7 @@ class ServerInterface {
             let email_storage = localStorage.getItem('waldorf_user_email');
             let name_storage = localStorage.getItem('waldorf_user_name');
             if (email_storage === null) {
-                console.error("You are not logged in!");
+                console.error("[Server Interface] You are not logged in!");
                 this.annotator.messageOverlay.ShowError("You are not logged in!");
                 return false;
             }
@@ -143,7 +143,7 @@ class ServerInterface {
         } else {
             key = localStorage.getItem('waldorf_auth_token');
             if (key === null) {
-                console.error("You are not logged in!");
+                console.error("[Server Interface] You are not logged in!");
                 this.annotator.messageOverlay.ShowError("You are not logged in!");
                 return false;
             }
@@ -194,7 +194,7 @@ class ServerInterface {
             let email_storage = localStorage.getItem('waldorf_user_email');
             let name_storage = localStorage.getItem('waldorf_user_name');
             if (email_storage === null) {
-                console.error("You are not logged in!");
+                console.error("[Server Interface] You are not logged in!");
                 this.annotator.messageOverlay.ShowError("You are not logged in!");
                 return false;
             }
@@ -202,7 +202,7 @@ class ServerInterface {
         } else {
             key = localStorage.getItem('waldorf_auth_token');
             if (key === null) {
-                console.error("You are not logged in!");
+                console.error("[Server Interface] You are not logged in!");
                 this.annotator.messageOverlay.ShowError("You are not logged in!");
                 return false;
             }
@@ -251,7 +251,7 @@ class ServerInterface {
             key = this.annotator.apiKey;
             let email_storage = localStorage.getItem('waldorf_user_email');
             if (email_storage === null) {
-                console.error("You are not logged in!");
+                console.error("[Server Interface] You are not logged in!");
                 this.annotator.messageOverlay.ShowError("You are not logged in!");
                 let deferred = $.Deferred();
                 deferred.reject({
@@ -263,7 +263,7 @@ class ServerInterface {
         } else {
             key = localStorage.getItem('waldorf_auth_token');
             if (key === null) {
-                console.error("You are not logged in!");
+                console.error("[Server Interface] You are not logged in!");
                 this.annotator.messageOverlay.ShowError("You are not logged in!");
                 let deferred = $.Deferred();
                 deferred.reject({

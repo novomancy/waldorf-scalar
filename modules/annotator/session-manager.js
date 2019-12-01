@@ -6,7 +6,7 @@ let sha1 = require('sha1');
 class SessionManager {
 
     constructor(annotator){
-        console.log("Creating SessionManager...");
+        console.log("[Session Manager] Creating SessionManager...");
         this.annotator = annotator;
         this.modalOpen = false;
 
@@ -22,7 +22,7 @@ class SessionManager {
         }
         //this.$dialog.dialog("open");
 
-        console.log("SessionManager created.");
+        console.log("[Session Manager] SessionManager created.");
 
     }
 

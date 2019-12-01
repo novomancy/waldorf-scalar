@@ -90,9 +90,9 @@ class VideoAnnotator {
                 if(this.apiKey && this.cmsEmail && this.cmsUsername){
                     this.server.LogOut();
                     this.server.LogIn(this.cmsUsername, sha1(this.cmsEmail)).done(() => {
-                        console.log("CMS login success");
+                        console.log("[Main] CMS login success");
                     }).fail(() => {
-                        console.log("CMS login failed");
+                        console.log("[Main] CMS login failed");
                     });
                 }
             }
@@ -151,7 +151,7 @@ class VideoAnnotator {
         //this.player.$container.height("100%");
 
         // Copy the video styles to the container
-        console.log(this.player.originalStyles);
+        // console.log(this.player.originalStyles);
         this.$container.css(this.player.originalStyles);
     }
 
