@@ -13,7 +13,7 @@ import "./utils/string-extensions.js";
 import { preferences } from "./utils/preference-manager.js";
 import { VerifyRequirements } from "./utils/requirements.js";
 import { AnnotatorVideoPlayer } from "./video-player/video-player.js";
-import { VideoAnnotator } from "./annotator/annotator.js";
+
 
 $.fn.annotate = function(args){ 
 
@@ -41,17 +41,6 @@ $.fn.annotate = function(args){
     //Prep args to pass to annotator
 
     let annotatorArgs = args;
-    annotatorArgs.player = new AnnotatorVideoPlayer($(this));;
-    let annotator = null;
-    
-    annotatorArgs.player.$container.on("OnVideoReady", () => {
-        console.log("[Main] Player sent OnVideoReady, attempting to wrap with annotator...");
-        // Add annotator once video has loaded
-        if(annotator == null){
-            console.log("[Main] Wrapping video with annotator...");
-            annotator = new VideoAnnotator(annotatorArgs);
-            if(typeof annotatorArgs.callback == "function") annotatorArgs.callback(annotator);
-        }
-    });
+    new AnnotatorVideoPlayer($(this), args);
 
 };

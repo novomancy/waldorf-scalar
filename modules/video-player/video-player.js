@@ -1,20 +1,18 @@
 import { VideoPlayerBar } from "./video-player-bar.js";
+import { VideoAnnotator } from "../annotator/annotator.js";
 //import * as screenfull from "screenfull";
 
 //import 'jquery-ui/dist/jquery-ui.js';
 let screenfull = require('screenfull');
 
 class AnnotatorVideoPlayer {
-    constructor($video){
+    constructor($video, annotatorArgs){
         console.log("[AnnotatorVideoPlayer] Creating AnnotatorVideoPlayer for video...");
         this.$video = $video;
         this.videoElement = this.$video.get(0);
 
         // Store the original styling of the video element before we alter it
         this.originalStyles = this.$video.getStyles(null, ["height", "WebkitTextFillColor", "color"]); //["width", "top", "left", "margin", "padding"]
-
-        // Force the video to reload so our events fire properly
-        this.videoElement.load();
 
         this.Wrap();
         this.PopulateControls();
@@ -51,6 +49,17 @@ class AnnotatorVideoPlayer {
             this.OnTimeUpdate(this.videoElement.currentTime);
         };
 
+        this.$container.on("OnVideoReady", () => {
+            if(annotatorArgs.annotator==null){
+                console.log("[Main] Player sent OnVideoReady, attempting to wrap with annotator...");
+                // Add annotator once video has loaded
+                console.log("[Main] Wrapping video with annotator...");
+                annotatorArgs.player = this;
+                annotatorArgs.annotator = new VideoAnnotator(annotatorArgs);
+                if(typeof annotatorArgs.callback == "function") annotatorArgs.callback(annotatorArgs.annotator);
+            }
+        });
+
         this.videoElement.onloadedmetadata = () => {
             this.$container.trigger("OnVideoReady");
         };
@@ -59,7 +68,7 @@ class AnnotatorVideoPlayer {
             // onloadedmetadata won't be fired
             this.$container.trigger("OnVideoReady");
         }
-
+        
         console.log("[AnnotatorVideoPlayer] AnnotatorVideoPlayer created for video.");
         
     }
