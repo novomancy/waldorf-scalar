@@ -38,9 +38,6 @@ $.fn.annotate = function(args){
     //     //console.log(data);
     // });
     
-    //Prep args to pass to annotator
-
-    let annotatorArgs = args;
     new AnnotatorVideoPlayer($(this), args);
 
 };

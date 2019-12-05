@@ -51,9 +51,9 @@ class AnnotatorVideoPlayer {
 
         this.$container.on("OnVideoReady", () => {
             if(annotatorArgs.annotator==null){
-                console.log("[Main] Player sent OnVideoReady, attempting to wrap with annotator...");
+                console.log("[AnnotatorVideoPlayer] Player sent OnVideoReady, attempting to wrap with annotator...");
                 // Add annotator once video has loaded
-                console.log("[Main] Wrapping video with annotator...");
+                console.log("[AnnotatorVideoPlayer] Wrapping video with annotator...");
                 annotatorArgs.player = this;
                 annotatorArgs.annotator = new VideoAnnotator(annotatorArgs);
                 if(typeof annotatorArgs.callback == "function") annotatorArgs.callback(annotatorArgs.annotator);
