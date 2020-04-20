@@ -129,7 +129,7 @@ Tasks:
 
 ## Authors
 
-* **Jonathan Cole** - *VEMILab* - [joncole.me](http://www.joncole.me)
+* **Jonathan Cole** - *VEMILab* - [jons.website](https://jons.website)
 * **John Bell** - *Dartmouth College* - [johnpbell.com](http://www.johnpbell.com)
 
 ## License
