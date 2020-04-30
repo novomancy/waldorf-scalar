@@ -30,7 +30,7 @@
     "grunt-contrib-sass": "^1.0.0",
     "grunt-contrib-watch": "^1.1.0",
     "grunt-extract-sourcemap": "^0.1.19",
-    "jquery": "^3.4.1",
+    "jquery": "^3.5.0",
     "jquery-ui": "^1.12.1",
     "qtip2": "^3.0.3",
     "sass": "^1.23.3",
