@@ -36,7 +36,7 @@
     "sass": "^1.23.3",
     "screenfull": "^5.0.0",
     "select2": "^4.0.12",
-    "serialize-javascript": "^2.1.1",
+    "serialize-javascript": "^3.1.0",
     "sha1": "^1.1.1",
     "terser-webpack-plugin": "^2.2.1",
     "uglifyify": "^5.0.2",
