@@ -159,9 +159,13 @@ class ServerInterface {
         
         //data = JSON.stringify(data);
         //console.log(anno_data);
+
+        //setaction in annotation payload
+        annotation["request"]["items"]["action"] = "add";
         
         $.ajax({
-            url: this.baseURL + "/api/addAnnotation",
+            //url: this.baseURL + "/api/addAnnotation",
+            url: this.baseURL + "api/add",
             type: "POST",
             dataType: 'json', // Necessary for Rails to see this data type correctly
             contentType: 'application/json',  // Necessary for Rails to see this data type correctly

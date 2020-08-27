@@ -1,0 +1,6 @@
+{
+    "client_id": "scalar",
+    "client_ver": "2.5.12",
+    "id": "user@example.com",
+    "api_key": "abcd-hashkey-from-somewhere-else"
+}

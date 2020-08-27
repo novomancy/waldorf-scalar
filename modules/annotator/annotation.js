@@ -1,8 +1,20 @@
 /// A wrapper for W3C Open Annotation JSON objects.
 class Annotation {
+
     constructor(json = null){
 
         this["@context"] = "http://www.w3.org/ns/anno.jsonld";
+        this["request"] = {
+            "client_id": "scalar",
+            "client_ver": "2.5.12",
+            "items": {
+                "native": false,
+                "id": "__CHECK_CONFIG_FILE__ID__",
+                "api_key": "__CHECK_CONFIG_FILE__API_KEY__",
+                "action": "TOBEFILLED",
+                "format": "json"
+            }
+        };
         this["type"] = "Annotation";
         this["motivation"] = "highlighting";
 
@@ -12,6 +24,7 @@ class Annotation {
         //delete this.beginTime;
         //delete this.endTime;
         //delete this.tags;
+        this.readConfig();
 
         if(json) {
             // Merge the json into this class.
@@ -21,6 +34,14 @@ class Annotation {
             this.recalculate();
         }
 
+    }
+
+    readConfig() {
+        const config = require("../annotator-config.json"); 
+        this["request"]["client_id"] = config.client_id;
+        this["request"]["client_ver"] = config.client_ver;
+        this["request"]["items"]["id"] = config.id;
+        this["request"]["items"]["api_key"] = config.api_key;
     }
 
     /// Compute read only easy access properties
