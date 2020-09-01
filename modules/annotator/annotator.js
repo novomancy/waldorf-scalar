@@ -22,6 +22,7 @@ class VideoAnnotator {
             return false;
         }
         this.player =  args.player;
+        
 
         //These config options are required for saving annotations to a server
         this.serverURL = typeof args.serverURL === 'undefined' ? '' : args.serverURL;
@@ -136,6 +137,11 @@ class VideoAnnotator {
         console.log("[VideoAnnotator] Annotator created for video.");
     }
 
+
+    readConfig() {
+        const config = require("../annotator-config.json"); 
+        this.apiKey = config.api_key;
+    }
     /**
      * Creates the divs that surround the video player.
      */

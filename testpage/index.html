@@ -35,7 +35,7 @@
 
 <body>
     <video playsinline width="1280" height="720">
-        <source src="http://scalar.usc.edu/dev/semantic-annotation-tool/media/Inception%20Corgi%20Flop.mp4" type="video/mp4">
+        <source src="https://scalar.usc.edu/dev/semantic-annotation-tool/media/Inception%20Corgi%20Flop.mp4" type="video/mp4">
     </video>
     <!-- If there is no DOM object with class waldorf-info, it will be created right below the video.
          If you manually create a div with that class, though, annotations will be inserted into the existing div. -->
@@ -108,7 +108,7 @@
         //Note that it's not necessary to delay this or put it in a function call,
         //it's only done here for demonstration purposes so you can see the original
         //video and then the wrapped version after.
-        var serverAddress = "http://scalar.usc.edu/dev/semantic-annotation-tool/";
+        var serverAddress = "https://scalar.usc.edu/dev/semantic-annotation-tool/";
         var tagsAddress = "https://onomy.org/published/83/json";
         var apiKey = "bba00b0a-66f3-44a3-9f3c-9b2fa97d3f0a";
         $("video").first().annotate({serverURL: serverAddress, 
