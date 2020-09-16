@@ -105,8 +105,12 @@ class ServerInterface {
         }).done(function (data) {
             console.log('[Server Interface] Fetched ' + data.length + ' annotations for ' + searchKey + ': "' + searchParam + '".');
         }).fail(function (response) {
-            console.error('[Server Interface] Error fetching annotations for ' + searchKey + ': "' + searchParam + '"\n' + response.responseJSON.detail + '.');
-            _this2.annotator.messageOverlay.ShowError('Could not retrieve annotations!<br>(' + response.responseJSON.detail + ')');
+            //console.error('[Server Interface] Error fetching annotations for ' + searchKey + ': "' + searchParam + '"\n' + response.responseJSON.detail + '.');
+            //_this2.annotator.messageOverlay.ShowError('Could not retrieve annotations!<br>(' + response.responseJSON.detail + ')');
+            var returned_response = response.responseJSON.error.code[0].value + " : " + response.responseJSON.error.message[0].value ;
+            console.error('[Server Interface] Error fetching annotations for ' + searchKey + ': "' + searchParam + '"\n ' + returned_response);
+            _this2.annotator.messageOverlay.ShowError('Could not retrieve annotations!<br>(' + returned_response + ')');
+
         });  
 
 
@@ -182,8 +186,9 @@ class ServerInterface {
                 if(callback) callback(annotation);
             },
             error: (response) => {
-                console.error(`Could not post new annotation! Message:\n ${response.responseJSON.detail}`);
-                this.annotator.messageOverlay.ShowError(`Could not post new annotation!<br>(${response.responseJSON.detail})`);
+                var returned_response = response.responseJSON.error.code[0].value + " : " + response.responseJSON.error.message[0].value ;
+                console.error(`Could not post new annotation! Message:\n ${returned_response}`);
+                this.annotator.messageOverlay.ShowError(`Could not post new annotation!<br>(${returned_response})`);
             }
 
         });
@@ -242,8 +247,14 @@ class ServerInterface {
                 if(callback) callback(annotation, oldID);
             },
             error: (response) => {
-                console.error(`Could not edit the annotation! Message:\n ${response.responseJSON.detail}`);
-                this.annotator.messageOverlay.ShowError(`Could not edit the annotation!<br>(${response.responseJSON.detail})`);
+                //console.error(`Could not edit the annotation! Message:\n ${response.responseJSON.detail}`);
+                //this.annotator.messageOverlay.ShowError(`Could not edit the annotation!<br>(${response.responseJSON.detail})`);
+                var returned_response = "undefined error while editing the annotation";
+                if (response.responseJSON) {
+                    returned_response = response.responseJSON.error.code[0].value + " : " + response.responseJSON.error.message[0].value ;
+                }
+                console.error(`Could not edit the annotation! Message:\n ${returned_response}`);
+                this.annotator.messageOverlay.ShowError(`Could not edit the annotation!<br>(${returned_response})`);
             }
 
         });
@@ -280,7 +291,7 @@ class ServerInterface {
 
         console.log("Deleting annotation " + annotation.id);
         return $.ajax({
-            url: this.baseURL + "/api/deleteAnnotation",
+            url: this.baseURL + "api/delete",
             type: "DELETE",
             data: {
                 "id": annotation.id
@@ -289,15 +300,29 @@ class ServerInterface {
             context: this,
             beforeSend: function (xhr) {
                 xhr.setRequestHeader('Authorization', this.make_write_auth(key));
+            },
+            error: (response) => {
+                var returned_response = "undefined error while deleting the annotation";
+                if (response.responseJSON) {
+                    response.responseJSON.error.code[0].value + " : " + response.responseJSON.error.message[0].value ;
+                }
+                console.error(`Could not delete the annotation. Message:\n ${returned_response}`);
+                this.annotator.messageOverlay.ShowError(`Could not delete the annotation!<br>(${returned_response})`);
             }
 
         }).done((response) => {
             console.log("Successfully deleted the annotation.");
             this.annotator.messageOverlay.ShowMessage("Successfully deleted the annotation.");
         }).fail((response) => {
-            console.error(`Could not delete the annotation. Message:\n ${response.responseJSON.detail}`);
-            this.annotator.messageOverlay.ShowError(`Could not delete the annotation!<br>(${response.responseJSON.detail})`);
-        });
+            //console.error(`Could not delete the annotation. Message:\n ${response.responseJSON.detail}`);
+            //this.annotator.messageOverlay.ShowError(`Could not delete the annotation!<br>(${response.responseJSON.detail})`);
+            var returned_response = "undefined failure while deleting the annotation";
+            if (response.responseJSON) {
+                response.responseJSON.error.code[0].value + " : " + response.responseJSON.error.message[0].value ;
+            }
+            console.error(`Could not delete the annotation. Message:\n ${returned_response}`);
+            this.annotator.messageOverlay.ShowError(`Could not delete the annotation!<br>(${returned_response})`);
+        })
     }
 
 }

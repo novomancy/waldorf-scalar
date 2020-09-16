@@ -9,7 +9,7 @@
 
 import "qtip2";
 //require("../node_modules/qtip2/dist/jquery.qtip.min.js");
-import "../node_modules/qtip2/dist/jquery.qtip.min.css";
+//import "../node_modules/qtip2/dist/jquery.qtip.min.css";
 
 import "clip-path-polygon";
 
