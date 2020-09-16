@@ -131,6 +131,7 @@ Tasks:
 
 * **Jonathan Cole** - *VEMILab* - [jons.website](https://jons.website)
 * **John Bell** - *Dartmouth College* - [johnpbell.com](http://www.johnpbell.com)
+* **Siva Kandasamy** - *Dartmouth College* 
 
 ## License
 
