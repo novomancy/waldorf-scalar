@@ -32,6 +32,35 @@ class PolygonEditor {
         // Invisible expanding divider
         this.$postToolbar.append($("<div><p style='color:white'>Edit Polygon</p></div>").css("flex-grow", 1).css("order", 0));
 
+
+        // Make "Collect Polygon state" button
+        this.$capPolyButton = $("<button>Capture Polygon</button>").button({
+            icon: "fa fa-camera-retro",
+            showLabel: false
+        }).click(() => {
+            console.log("Capturing the polygon");
+            //this.SetVisible(false);
+            //this.GetPoints();
+
+            let tmpSelectors = [];
+
+            // Build polygon selector
+            let points = this.GetPoints();
+            if(points.length > 0) {
+                let pointsStr = points.map(item => { return `${item[0]},${item[1]}` }).join(" ");
+                let polygonSelector = {
+                    "type": "SvgSelector",
+                    "value": `<svg:svg viewBox='0 0 100 100' preserveAspectRatio='none'><polygon points='${pointsStr}' /></svg:svg>` // http://stackoverflow.com/a/24898728
+                }
+                tmpSelectors.push(polygonSelector);
+            }
+            console.log("tmpSelectors");
+            console.log(tmpSelectors);
+        });
+        this.$capPolyButton.css("margin-right", "15px");
+        this.$capPolyButton.attr('title', "Capture polygon");
+        this.RegisterElement(this.$capPolyButton, this.$postToolbar, 1, 'flex-end');
+
         // Create undo button
         this.$undoButton = $("<button>Remove Last Point</button>").button({
             icon: "fa fa-undo",

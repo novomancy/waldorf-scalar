@@ -25,7 +25,7 @@ class AnnotationGUI {
     }
 
     Create(){
-        this.$container = $("<div class='waldorf-vp-post'></div>").appendTo(this.annotator.player.$container);
+        //this.$container = $("<div class='waldorf-vp-post'></div>").appendTo(this.annotator.player.$container);
         this.$postToolbar = $("<div class='flex-toolbar'></div>").appendTo(this.$container);
         this.$postToolbar.css("margin-bottom", "5px");
         this.$postToolbar2 = $("<div class='flex-toolbar'></div>").appendTo(this.$container);
@@ -192,6 +192,102 @@ class AnnotationGUI {
         this.$textField.css("flex-grow", 2);
         this.RegisterElement(this.$textField, this.$postToolbar3, -1);
         
+        //new UI
+        this.$container = $("<div id='draggable' class='ui-widget-content center'>").appendTo(this.annotator.player.$container);
+        this.$title2 = $("<div class='dialog-title'>Create Annotation</div>").appendTo(this.$container);
+
+        // Make cancel button
+        let $exit_button = $("<button>Exit Annotation Editing</button>").button({
+            icons: {primary: 'fa fa-remove'},
+            showLabel: false
+        });
+        $exit_button.css("float", "right");
+        $exit_button.attr('title', "Exit annotation editing");
+        $exit_button.addClass("waldorf-cancel-button");
+        $exit_button.click(() => {
+            this.Close();
+        });
+        this.RegisterElement($exit_button, this.$title2, -1);
+
+        this.$tabs = $("<div id='tabs'></div>").appendTo(this.$container);
+        
+        let $tab_ui = $("<ul></ul>");
+        let $start_ui = $("<li><a href='#start_tab'>Start </a></li>");
+        let $body_ui = $("<li><a href='#body_tab'>Body </a></li>");
+        let $stop_ui = $("<li><a href='#stop_tab'>Stop </a></li>");
+        this.RegisterElement($tab_ui, this.$tabs, -1);
+        this.RegisterElement($start_ui, $tab_ui, -1);
+        this.RegisterElement($body_ui, $tab_ui, -1);
+        this.RegisterElement($stop_ui, $tab_ui, -1);
+
+        let $start_tab = $("<div id='start_tab'>" + 
+                            "<label for='start_time'>Start Time</label><br>" + 
+                            "<input type='text' id='start_time'>" + 
+                        "</div>");
+        this.RegisterElement($start_tab, this.$tabs, -1);
+
+        let $body_tab = $("<div id='body_tab'> " + 
+                            "<label for='annotation_tags'>Tags</label>" + 
+                            "<input type='text' id='annotation_tags'>" + 
+                            "<br>" + 
+                            "<label for='annotation_notes'>Notes</label>" + 
+                            "<input type='text' id='annotation_notes'>" +
+                        "</div>");
+        this.RegisterElement($body_tab, this.$tabs, -1);
+
+        let $stop_tab = $("<div id='stop_tab'>" + 
+                            "<label for='stop_time'>Stop Time</label>" + 
+                            "<br>" + 
+                            "<input type='text' id='stop_time'>" + 
+                        "</div>");
+        this.RegisterElement($stop_tab, this.$tabs, -1);
+
+        let $button_panel = $("<div class='button_panel'>" + 
+                            //"<label>Start Target</label><br>" +
+                            //"<img src='unknown' >" +
+                            //"<br><br>" + 
+                            //"<button id='cancel_btn' type='button'>Cancel</button>" + 
+                            //"<button id='save_btn' type='button'>Save</button>" +
+                            "</div>").appendTo(this.$container);
+
+
+
+        let $start_target_label = $("<label>Start Target</label><br>");
+        $start_target_label.css("color", "white");
+        this.RegisterElement($start_target_label, $button_panel, -1);
+
+        //Make "Edit polygon" button
+        let $edit_poly_button = $("<button>Edit Polygon</button>").button({
+             icon: "fa fa-pencil",
+             showLabel: false
+        }).click(() => {
+             this.SetVisible(false);
+             this.polyEditor.BeginEditing();
+        });
+        $edit_poly_button.attr('title', "Edit polygon");
+        this.RegisterElement($edit_poly_button, $button_panel, -1);
+
+        // Make cancel button
+        let $cancel_button = $("<br><br><button>Cancel</button>").button({
+            showLabel: true
+        }).click(() => {
+            this.Close();
+        });
+        $cancel_button.css("float", "right");
+        $cancel_button.attr('title', "Exit annotation editing");
+        //$cancel_button.addClass("waldorf-cancel-button");
+        this.RegisterElement($cancel_button, $button_panel, -1);
+        
+        // Make save button
+        let $save_button = $("<button>Save</button>").button({
+            showLabel: true
+        }).click(() => {
+            alert("Saving the annotation");
+        });
+        $save_button.css("float", "left");
+        this.RegisterElement($save_button, $button_panel, -1);
+
+        //let $script_section = $
         //this.$container.hide();
     }
 

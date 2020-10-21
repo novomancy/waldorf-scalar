@@ -228,7 +228,7 @@ class ServerInterface {
         console.log("Modifying annotation " + oldID);
         
         $.ajax({
-            url: this.baseURL + "/api/editAnnotation",
+            url: this.baseURL + "api/edit/",
             type: "POST",
             dataType: 'json',
             contentType: 'application/json',
