@@ -229,3 +229,144 @@
 .waldorf-message-overlay-error {
     background-color: rgba(255, 30, 30, 0.95);
 }
+
+/* create_annotation_dialog.css start */
+
+#create-dialog {
+    float: right;
+    width: 710px;
+    padding: 0.01em;
+    margin: 10px 10px 10px 0;
+    border: 1px solid white;
+    border-radius: 6px;
+    background-color: black;
+    opacity: 0.7 !important;
+}
+
+
+.center { 
+    position: fixed; 
+    top: 8%; 
+    left: 20%; 
+    margin-top: -100px; 
+    margin-left: -100px; 
+} 
+
+.dialog-title {
+    color: white;
+    opacity: 0.7; 
+    line-height: 2;
+    font-family: Arial,Helvetica,sans-serif;
+    margin-left: 8px;
+}
+
+
+
+
+/** vertical tab start */
+/* ref: https://www.tjvantoll.com/2012/11/08/creating-a-polished-vertical-tabs-interaction-with-jquery-ui/ */
+.ui-tabs.ui-tabs-vertical {
+    padding: 0;
+    width: 99%;
+    /* border: 2px solid red;*/
+    background-color: black !important;
+}
+.ui-tabs.ui-tabs-vertical .ui-widget-header {
+
+}
+.ui-tabs.ui-tabs-vertical .ui-tabs-nav {
+    float: left;
+    width: 12%;
+    background: black;
+    border-radius: 4px 0 0 4px;
+    border-right: 1px solid gray;
+    padding: .2em .2em .2em .2em !important;
+}
+.ui-tabs.ui-tabs-vertical .ui-tabs-nav li {
+    clear: left;
+    width: 100%;
+    /* margin: 0.2em 0;*/
+    margin: 0px !important;
+    /* border: 1px solid gray; */
+    border-width: 1px 0 1px 1px;
+    border-radius: 4px 0 0 4px;
+    overflow: hidden;
+    position: relative;
+    right: -2px;
+    z-index: 2;
+}
+.ui-tabs.ui-tabs-vertical .ui-tabs-nav li a {
+    display: block;
+    width: 100%;
+    padding: .4em 1em !important; 
+}
+
+.ui-tabs.ui-tabs-vertical .ui-tabs-nav li a:hover {
+    cursor: pointer;
+}
+
+.ui-tabs.ui-tabs-vertical .ui-tabs-nav li.ui-tabs-active {
+    margin-bottom: 0.1em;
+    padding-bottom: 0;
+    border-right: 1px solid black;
+}
+
+.ui-tabs.ui-tabs-vertical .ui-tabs-nav li:last-child {
+    margin-bottom: 5px;
+}
+
+.ui-tabs.ui-tabs-vertical .ui-tabs-panel {
+    float: left;
+    width: 28em;
+    border-left: 1px solid gray;
+    border-radius: 0;
+    position: relative;
+    left: -1px;
+}
+
+/** vertical tab end */
+
+
+#start_tab, #body_tab, #stop_tab {
+    margin-top: 1px;
+    height: 78px;
+    width: 380px;
+    background-color: black;
+    border-top: 1px solid gray;
+    border-right: 1px solid gray;
+    border-bottom: 1px solid gray;
+    border-left: none;
+    border-radius: 0px 4px 4px 0px;
+    color: white;
+}
+
+.button_panel {
+    float: right;
+    margin-right: 15px;
+    margin-top: 5px;
+}
+
+.button_panel button {
+  height: 30px;
+}   
+
+/* create_annotation_dialog.css end */
+
+/* edit polygon dialog.css start */
+
+#edit-dialog {
+    float: right;
+    width: 45px;
+    height: 150px;
+    // padding: 0.01em;
+    /*margin: 10px 10px 10px 0; */
+    border: 1px solid white;
+    border-radius: 6px;
+    background-color: black;
+    opacity: 0.6 !important;
+    position: absolute;
+    top: 40%;
+    left: 80%;
+}
+
+/* edit polygon dialog.css end */

@@ -42,12 +42,12 @@ class AnnotationGUI {
         // Make "Start time" label and field
         let $timeStartContainer = $('<div class="ui-field-contain"></div>');
         let $timeStartLabel = $('<label for="time-start">Start:</label>').appendTo($timeStartContainer);
-        this.$timeStartField = $('<input type="text" name="time-start" id="time-start" value="">').appendTo($timeStartContainer);
-        this.$timeStartField.width(50);
-        this.$timeStartField.css("font-family", "Courier, monospace");
-        this.$timeStartField.addClass("ui-widget ui-widget-content ui-corner-all");
-        this.$timeStartField.attr('title', "Start time (hh:mm:ss.ss)");
-        this.$timeStartField.on('keypress', function(event){
+        this.$timeStartField1 = $('<input type="text" name="time-start" id="time-start" value="">').appendTo($timeStartContainer);
+        this.$timeStartField1.width(50);
+        this.$timeStartField1.css("font-family", "Courier, monospace");
+        this.$timeStartField1.addClass("ui-widget ui-widget-content ui-corner-all");
+        this.$timeStartField1.attr('title', "Start time (hh:mm:ss.ss)");
+        this.$timeStartField1.on('keypress', function(event){
             if (event.keyCode == 46 || (event.keyCode >= 48 && event.keyCode <= 58)){ //0-9, period, and colon
                 return true;
             }
@@ -67,12 +67,12 @@ class AnnotationGUI {
         // Make "End time" label and field
         let $timeEndContainer = $('<div class="ui-field-contain"></div>');
         let $timeEndLabel = $('<label for="time-end">End:</label>').appendTo($timeEndContainer);
-        this.$timeEndField = $('<input type="text" name="time-end" id="time-end" value="0">').appendTo($timeEndContainer);
-        this.$timeEndField.width(50);
-        this.$timeEndField.css("font-family", "Courier, monospace");
-        this.$timeEndField.addClass("ui-widget ui-widget-content ui-corner-all");
-        this.$timeEndField.attr('title', "End time (hh:mm:ss.ss)");
-        this.$timeEndField.on('keypress', function(event){
+        this.$timeEndField1 = $('<input type="text" name="time-end" id="time-end" value="0">').appendTo($timeEndContainer);
+        this.$timeEndField1.width(50);
+        this.$timeEndField1.css("font-family", "Courier, monospace");
+        this.$timeEndField1.addClass("ui-widget ui-widget-content ui-corner-all");
+        this.$timeEndField1.attr('title', "End time (hh:mm:ss.ss)");
+        this.$timeEndField1.on('keypress', function(event){
             if (event.keyCode == 46 || (event.keyCode >= 48 && event.keyCode <= 58)){ //0-9, period, and colon
                 return true;
             }
@@ -91,14 +91,14 @@ class AnnotationGUI {
         this.RegisterElement(this.$timeEndButton, this.$postToolbar, -2);         
 
         //Add some error checking...
-        this.$timeEndField.blur(() => {
+        this.$timeEndField1.blur(() => {
             let e = $(this.$timeEndField).val();
             let s = $(this.$timeStartField).val();
             if(GetSecondsFromHMS(s+1) > GetSecondsFromHMS(e)){
                 $(this.$timeEndField).val(GetFormattedTime(GetSecondsFromHMS(s)+.01));
             }
         });
-        this.$timeStartField.blur(() => {
+        this.$timeStartField1.blur(() => {
             let e = $(this.$timeEndField).val();
             let s = $(this.$timeStartField).val();
             if(GetSecondsFromHMS(s+1) > GetSecondsFromHMS(e)){
@@ -107,15 +107,15 @@ class AnnotationGUI {
         });
 
         // Make "Edit polygon" button
-        let $editPolyButton = $("<button>Edit Polygon</button>").button({
+        let $editPolyButton1 = $("<button>Edit Polygon</button>").button({
             icon: "fa fa-pencil",
             showLabel: false
         }).click(() => {
             this.SetVisible(false);
             this.polyEditor.BeginEditing();
         });
-        $editPolyButton.attr('title', "Edit polygon");
-        this.RegisterElement($editPolyButton, this.$postToolbar, -1);
+        $editPolyButton1.attr('title', "Edit polygon");
+        this.RegisterElement($editPolyButton1, this.$postToolbar, -1);
 
         // Make delete button
         this.$deleteButton = $("<button>Delete Annotation</button>").button({
@@ -133,16 +133,16 @@ class AnnotationGUI {
         this.RegisterElement(this.$deleteButton, this.$postToolbar, 1, 'flex-end');
 
         // Make cancel button
-        let $cancelButton = $("<button>Cancel Annotation Editing</button>").button({
+        let $cancelButton1 = $("<button>Cancel Annotation Editing</button>").button({
             icons: {primary: 'fa fa-remove'},
             showLabel: false
         });
-        $cancelButton.attr('title', "Cancel annotation editing");
-        $cancelButton.addClass("waldorf-cancel-button");
-        $cancelButton.click(() => {
+        $cancelButton1.attr('title', "Cancel annotation editing");
+        $cancelButton1.addClass("waldorf-cancel-button");
+        $cancelButton1.click(() => {
             this.Close();
         });
-        this.RegisterElement($cancelButton, this.$postToolbar, 2, 'flex-end');
+        this.RegisterElement($cancelButton1, this.$postToolbar, 2, 'flex-end');
         
         // Make "Submit Annotation" button
         let $submitButton = $("<button>Submit Annotation</button>").button({
@@ -164,9 +164,115 @@ class AnnotationGUI {
         this.RegisterElement($submitButton, this.$postToolbar, 3, 'flex-end');
 
         // Make tags field
+        this.$tagsField1 = $('<select class="form-control" multiple="multiple"></select>');
+        this.$tagsField1.width("100%");
+        this.RegisterElement(this.$tagsField1, this.$postToolbar2, -1);
+        this.$tagsField1.select2({
+            tags: true,
+            placeholder: "Tags",
+            ajax: this.GetTagsQuery(),
+            selectOnBlur: true,
+            // Allow manually entered text in drop down.
+            createTag: function (params) {
+                return {
+                    id: params.term,
+                    text: params.term,
+                    newOption: true
+                }
+            }
+        });
+        // Add custom class for bringing the dropdown to the front (fullscreen fix)
+        this.$tagsField1.data('select2').$dropdown.addClass("select2-dropdown-annotator");
+        
+        // Make annotation text field
+        this.$textField1 = $('<textarea type="text" name="anno-text" id="anno-text" value="" placeholder="Text">');
+        this.$textField1.width("100%");
+        this.$textField1.addClass("ui-widget ui-widget-content ui-corner-all");
+        this.$textField1.attr('title', 'Annotation text');
+        this.$textField1.css("flex-grow", 2);
+        this.RegisterElement(this.$textField1, this.$postToolbar3, -1);
+        
+        /*****
+         * 
+         * //new UI
+         * 
+         */
+        this.$container = $("<div id='create-dialog' class='ui-widget-content center'>").appendTo(this.annotator.player.$container);
+        this.$container.draggable();
+        this.$title = $("<div class='dialog-title'>Create Annotation</div>").appendTo(this.$container);
+
+        // Make cancel button
+        let $exitButton = $("<button>Exit Annotation Editing</button>").button({
+            icons: {primary: 'fa fa-remove'},
+            showLabel: false
+        });
+        $exitButton.css("float", "right");
+        $exitButton.attr('title', "Exit annotation editing");
+        $exitButton.addClass("waldorf-cancel-button");
+        $exitButton.click(() => {
+            this.Close();
+        });
+        this.RegisterElement($exitButton, this.$title, -1);
+
+        this.$tabs = $("<div id='tabs'></div>").appendTo(this.$container);
+    
+        
+        let $tabUI = $("<ul></ul>");
+        let $startUI = $("<li><a href='#start_tab'>Start </a></li>");
+        let $bodyUI = $("<li><a href='#body_tab'>Body </a></li>");
+        let $stopUI = $("<li><a href='#stop_tab'>Stop </a></li>");
+        this.RegisterElement($tabUI, this.$tabs, -1);
+        this.RegisterElement($startUI, $tabUI, -1);
+        this.RegisterElement($bodyUI, $tabUI, -1);
+        this.RegisterElement($stopUI, $tabUI, -1);
+
+        let $startTab = $("<div id='start_tab' class='ui-field-contain'>" + 
+                            "<label for='start_time'>Start Time</label><br>" + 
+                        "</div>");
+        this.RegisterElement($startTab, this.$tabs, -1);
+
+        // Make "Start time" label and field
+        this.$timeStartField = $('<input type="text" name="time-start" id="time-start" value="">').appendTo($startTab);
+        this.$timeStartField.width(72);
+        this.$timeStartField.css("font-family", "Courier, monospace");
+        this.$timeStartField.css("margin-right", "2px");
+        this.$timeStartField.addClass("ui-widget ui-widget-content ui-corner-all");
+        this.$timeStartField.attr('title', "Start time (hh:mm:ss.ss)");
+        this.$timeStartField.on('keypress', function(event){
+            if (event.keyCode == 46 || (event.keyCode >= 48 && event.keyCode <= 58)){ //0-9, period, and colon
+                return true;
+            }
+            return false;
+        });
+
+        //add start marker button
+        this.$startTimeMarker = $("<button style='padding:0; line-height:1.4'>Set End</button>").button({
+            icon: "fa fa-map-marker",
+            showLabel: false
+        }).click(() => {
+            this.$timeStartField[0].value = GetFormattedTime(this.annotator.player.videoElement.currentTime);
+        });
+        this.RegisterElement(this.$startTimeMarker, $startTab, -2);     
+        
+        //start point polygon is added
+        this.$startPolygonSet = $("<button style='padding:0; line-height:1.4'>Start Polygon Set</button>").button({
+            icon: "fa fa-check-square-o",
+            showLabel: false
+        });
+        //this.$startPolygonSet.css("visibility", "inherit");
+        this.$startPolygonSet.css("visibility", "hidden");
+        this.$startPolygonSet.addClass("waldorf-confirm-button");
+        
+        //this.RegisterElement(this.$startPolygonSet, $startTab, -2); 
+
+        let $bodyTab = $("<div id='body_tab'></div>");
+        this.RegisterElement($bodyTab, this.$tabs, -1);
+
+        // Add tags input field
         this.$tagsField = $('<select class="form-control" multiple="multiple"></select>');
         this.$tagsField.width("100%");
-        this.RegisterElement(this.$tagsField, this.$postToolbar2, -1);
+        this.$tagsField.css("margin-top", "-8px");
+        this.RegisterElement(this.$tagsField, $bodyTab, -1);
         this.$tagsField.select2({
             tags: true,
             placeholder: "Tags",
@@ -183,110 +289,100 @@ class AnnotationGUI {
         });
         // Add custom class for bringing the dropdown to the front (fullscreen fix)
         this.$tagsField.data('select2').$dropdown.addClass("select2-dropdown-annotator");
-        
-        // Make annotation text field
-        this.$textField = $('<textarea type="text" name="anno-text" id="anno-text" value="" placeholder="Text">');
-        this.$textField.width("100%");
+
+        // Make notes text field
+        this.$textField = $('<textarea type="text" name="anno-text" id="anno-text" value="" placeholder="Notes">');
+        this.$textField.css("margin-top", "2px");
+        this.$textField.width("98.5%");
         this.$textField.addClass("ui-widget ui-widget-content ui-corner-all");
         this.$textField.attr('title', 'Annotation text');
         this.$textField.css("flex-grow", 2);
-        this.RegisterElement(this.$textField, this.$postToolbar3, -1);
-        
-        //new UI
-        this.$container = $("<div id='draggable' class='ui-widget-content center'>").appendTo(this.annotator.player.$container);
-        this.$title2 = $("<div class='dialog-title'>Create Annotation</div>").appendTo(this.$container);
+        this.RegisterElement(this.$textField, $bodyTab, -1);
 
-        // Make cancel button
-        let $exit_button = $("<button>Exit Annotation Editing</button>").button({
-            icons: {primary: 'fa fa-remove'},
+        let $stopTab = $("<div id='stop_tab'>" + 
+                            "<label for='stop_time'>Stop Time</label><br>" + 
+                        "</div>");
+        this.RegisterElement($stopTab, this.$tabs, -1);
+
+        // Make "Start time" label and field
+        this.$timeEndField = $('<input type="text" name="time-start" id="time-start" value="">').appendTo($stopTab);
+        this.$timeEndField.width(72);
+        this.$timeEndField.css("font-family", "Courier, monospace");
+        this.$timeEndField.css("margin-right", "2px");
+        this.$timeEndField.addClass("ui-widget ui-widget-content ui-corner-all");
+        this.$timeEndField.attr('title', "Start time (hh:mm:ss.ss)");
+        this.$timeEndField.on('keypress', function(event){
+            if (event.keyCode == 46 || (event.keyCode >= 48 && event.keyCode <= 58)){ //0-9, period, and colon
+                return true;
+            }
+            return false;
+        });
+
+        //add start marker button
+        this.$endTimeMarker = $("<button style='padding:0; line-height:1.4'>Set End</button>").button({
+            icon: "fa fa-map-marker",
+            showLabel: false
+        }).click(() => {
+            this.$timeEndField[0].value = GetFormattedTime(this.annotator.player.videoElement.currentTime);
+        });
+        this.RegisterElement(this.$endTimeMarker, $stopTab, -2);
+
+        //stop point polygon is added
+        this.$endPolygonSet = $("<button style='padding:0; line-height:1.4'>End Polygon Set</button>").button({
+            icon: "fa fa-check-square-o",
             showLabel: false
         });
-        $exit_button.css("float", "right");
-        $exit_button.attr('title', "Exit annotation editing");
-        $exit_button.addClass("waldorf-cancel-button");
-        $exit_button.click(() => {
-            this.Close();
-        });
-        this.RegisterElement($exit_button, this.$title2, -1);
+        //this.$endPolygonSet.css("visibility", "inherit");
+        this.$endPolygonSet.css("visibility", "hidden");
+        //this.$endPolygonSet.addClass("waldorf-confirm-button");
+    
+        this.RegisterElement(this.$endPolygonSet, $stopTab, -2); 
 
-        this.$tabs = $("<div id='tabs'></div>").appendTo(this.$container);
-        
-        let $tab_ui = $("<ul></ul>");
-        let $start_ui = $("<li><a href='#start_tab'>Start </a></li>");
-        let $body_ui = $("<li><a href='#body_tab'>Body </a></li>");
-        let $stop_ui = $("<li><a href='#stop_tab'>Stop </a></li>");
-        this.RegisterElement($tab_ui, this.$tabs, -1);
-        this.RegisterElement($start_ui, $tab_ui, -1);
-        this.RegisterElement($body_ui, $tab_ui, -1);
-        this.RegisterElement($stop_ui, $tab_ui, -1);
+        let $buttonPanel = $("<div class='button_panel'></div>").appendTo(this.$container);
 
-        let $start_tab = $("<div id='start_tab'>" + 
-                            "<label for='start_time'>Start Time</label><br>" + 
-                            "<input type='text' id='start_time'>" + 
-                        "</div>");
-        this.RegisterElement($start_tab, this.$tabs, -1);
-
-        let $body_tab = $("<div id='body_tab'> " + 
-                            "<label for='annotation_tags'>Tags</label>" + 
-                            "<input type='text' id='annotation_tags'>" + 
-                            "<br>" + 
-                            "<label for='annotation_notes'>Notes</label>" + 
-                            "<input type='text' id='annotation_notes'>" +
-                        "</div>");
-        this.RegisterElement($body_tab, this.$tabs, -1);
-
-        let $stop_tab = $("<div id='stop_tab'>" + 
-                            "<label for='stop_time'>Stop Time</label>" + 
-                            "<br>" + 
-                            "<input type='text' id='stop_time'>" + 
-                        "</div>");
-        this.RegisterElement($stop_tab, this.$tabs, -1);
-
-        let $button_panel = $("<div class='button_panel'>" + 
-                            //"<label>Start Target</label><br>" +
-                            //"<img src='unknown' >" +
-                            //"<br><br>" + 
-                            //"<button id='cancel_btn' type='button'>Cancel</button>" + 
-                            //"<button id='save_btn' type='button'>Save</button>" +
-                            "</div>").appendTo(this.$container);
-
-
-
-        let $start_target_label = $("<label>Start Target</label><br>");
-        $start_target_label.css("color", "white");
-        this.RegisterElement($start_target_label, $button_panel, -1);
+        let $startTargetLabel = $("<label>Start Target</label><br>");
+        $startTargetLabel.css("color", "white");
+        this.RegisterElement($startTargetLabel, $buttonPanel, -1);
 
         //Make "Edit polygon" button
-        let $edit_poly_button = $("<button>Edit Polygon</button>").button({
+        let $editPolyButton = $("<button>Edit Polygon</button>").button({
              icon: "fa fa-pencil",
              showLabel: false
         }).click(() => {
              this.SetVisible(false);
              this.polyEditor.BeginEditing();
         });
-        $edit_poly_button.attr('title', "Edit polygon");
-        this.RegisterElement($edit_poly_button, $button_panel, -1);
+        $editPolyButton.attr('title', "Edit polygon");
+        this.RegisterElement($editPolyButton, $buttonPanel, -1);
 
         // Make cancel button
-        let $cancel_button = $("<br><br><button>Cancel</button>").button({
+        let $cancelButton = $("<br><br><button>Cancel</button>").button({
             showLabel: true
         }).click(() => {
             this.Close();
         });
-        $cancel_button.css("float", "right");
-        $cancel_button.attr('title', "Exit annotation editing");
+        $cancelButton.css("float", "right");
+        $cancelButton.attr('title', "Exit annotation editing");
         //$cancel_button.addClass("waldorf-cancel-button");
-        this.RegisterElement($cancel_button, $button_panel, -1);
+        this.RegisterElement($cancelButton, $buttonPanel, -1);
         
         // Make save button
-        let $save_button = $("<button>Save</button>").button({
+        let $saveButton = $("<button>Save</button>").button({
             showLabel: true
         }).click(() => {
-            alert("Saving the annotation");
+            this.CommitAnnotationToServer((annotation, oldID) => {
+                if(this.editMode){
+                    this.annotator.UpdateAnnotation(annotation, oldID);
+                } else {
+                    this.annotator.RegisterNewAnnotation(annotation);
+                }
+                this.Close();
+            });
         });
-        $save_button.css("float", "left");
-        this.RegisterElement($save_button, $button_panel, -1);
+        $saveButton.css("float", "left");
+        this.RegisterElement($saveButton, $buttonPanel, -1);
 
+        this.$tabs.tabs().addClass('ui-tabs-vertical');
         //let $script_section = $
         //this.$container.hide();
     }
@@ -471,26 +567,46 @@ class AnnotationGUI {
         let selectors = [];
 
         // Build polygon selector
-        let points = this.polyEditor.GetPoints();
-        if(points.length > 0) {
-            let pointsStr = points.map(item => { return `${item[0]},${item[1]}` }).join(" ");
-            let polygonSelector = {
-                "type": "SvgSelector",
-                "value": `<svg:svg viewBox='0 0 100 100' preserveAspectRatio='none'><polygon points='${pointsStr}' /></svg:svg>` // http://stackoverflow.com/a/24898728
-            }
-            selectors.push(polygonSelector);
-        }
+        // var i = 0;
+        // for(i=0; i < this.polyEditor.$polygons.length; i++) {
+        //     let points = this.polyEditor.$polygons[i]; //this.polyEditor.GetPoints();
+        //     if(points.length > 0) {
+        //         let pointsStr = points.map(item => { return `${item[0]},${item[1]}` }).join(" ");
+                // let polygonSelector = {
+                //     "type": "SvgSelector",
+                //     "value": `<svg:svg viewBox='0 0 100 100' preserveAspectRatio='none'><polygon points='${pointsStr}' /></svg:svg>` // http://stackoverflow.com/a/24898728
+                // }
+                // selectors.push(polygonSelector);
+        //     }
+        // }
 
         let safeEndTime = GetSecondsFromHMS(this.$timeStartField.val());
         if(GetSecondsFromHMS(this.$timeEndField.val()) > GetSecondsFromHMS(this.$timeStartField.val())){
             safeEndTime = GetSecondsFromHMS(this.$timeEndField.val());
         }
+        let startTime = GetSecondsFromHMS(this.$timeStartField.val());
+
+        //Build SvgSelector
+        let pointsStr = this.polyEditor.$polygons[0].map(item => { return `${item[0]},${item[1]}` }).join(" ");
+        let animeStr = this.polyEditor.$polygons[1].map(item => { return `${item[0]},${item[1]}` }).join(" ");
+        var value = "<svg:svg viewBox='0 0 100 100' preserveAspectRatio='none'>";
+        value += "<polygon points='" + pointsStr + "' />";
+        value += "<animate attributeName='points' values='0,0 0,0 0,0 0,0;" + animeStr;
+        value += " begin='" + startTime + "' end='" + safeEndTime + "' />";
+        value += "</svg:svg>";
+
+        let polygonSelector = {
+            "type": "SvgSelector",
+            "value": `${value}` // http://stackoverflow.com/a/24898728
+        }
+        selectors.push(polygonSelector);
+
 
         // Build time selector
         let timeSelector = {
             "type": "FragmentSelector",
             "conformsTo": "http://www.w3.org/TR/media-frags/", // See media fragment specification
-            "value": `t=${GetSecondsFromHMS(this.$timeStartField.val())},${safeEndTime}` // Time interval in seconds
+            "value": `t=${startTime},${safeEndTime}` // Time interval in seconds
         }
         selectors.push(timeSelector);
 

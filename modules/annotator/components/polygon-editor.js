@@ -11,6 +11,7 @@ class PolygonEditor {
         this.annotator = annotator;
         this.baseZ = 2147483649;
         this.$breadcrumbs = [];
+        this.$polygons = [];
 
         // Create the video overlay
         this.$clickSurface = $("<div class='waldorf-edit-overlay waldorf-vp-click-surface'></div>").appendTo(this.annotator.player.$container);
@@ -21,7 +22,7 @@ class PolygonEditor {
 
         // Create the poly object
         this.$poly = $("<div class='waldorf-edit-poly'></div>").appendTo(this.annotator.player.$container);
-        //this.$poly.css("z-index", this.baseZ + 1);
+        this.$poly.css("z-index", this.baseZ + 1);
 
         this.ResizeOverlay();
         this.annotator.player.$container.on("OnFullscreenChange", (event, setFullscreen) => this.ResizeOverlay());
@@ -30,7 +31,7 @@ class PolygonEditor {
         this.$bar = $("<div class='waldorf-vp-post'></div>").appendTo(this.annotator.player.$container);
         this.$postToolbar = $("<div class='flex-toolbar'></div>").appendTo(this.$bar);
         // Invisible expanding divider
-        this.$postToolbar.append($("<div><p style='color:white'>Edit Polygon</p></div>").css("flex-grow", 1).css("order", 0));
+        //-3//this.$postToolbar.append($("<div><p style='color:white'>Edit Polygon</p></div>").css("flex-grow", 1).css("order", 0));
 
 
         // Make "Collect Polygon state" button
@@ -38,28 +39,28 @@ class PolygonEditor {
             icon: "fa fa-camera-retro",
             showLabel: false
         }).click(() => {
-            console.log("Capturing the polygon");
+            //console.log("Capturing the polygon");
             //this.SetVisible(false);
             //this.GetPoints();
 
-            let tmpSelectors = [];
-
             // Build polygon selector
-            let points = this.GetPoints();
-            if(points.length > 0) {
-                let pointsStr = points.map(item => { return `${item[0]},${item[1]}` }).join(" ");
-                let polygonSelector = {
-                    "type": "SvgSelector",
-                    "value": `<svg:svg viewBox='0 0 100 100' preserveAspectRatio='none'><polygon points='${pointsStr}' /></svg:svg>` // http://stackoverflow.com/a/24898728
-                }
-                tmpSelectors.push(polygonSelector);
-            }
-            console.log("tmpSelectors");
-            console.log(tmpSelectors);
+            // let points = this.GetPoints();
+            // if(points.length > 0) {
+            //     let pointsStr = points.map(item => { return `${item[0]},${item[1]}` }).join(" ");
+            //     let polygonSelector = {
+            //         "type": "SvgSelector",
+            //         "value": `<svg:svg viewBox='0 0 100 100' preserveAspectRatio='none'><polygon points='${pointsStr}' /></svg:svg>` // http://stackoverflow.com/a/24898728
+            //     }
+            //     tmpSelectors.push(polygonSelector);
+            // }
+            // console.log("tmpSelectors");
+            // console.log(tmpSelectors);
+            this.annotator.AddPolygonSet(this.annotator.annotation.getPoly());
+
         });
         this.$capPolyButton.css("margin-right", "15px");
         this.$capPolyButton.attr('title', "Capture polygon");
-        this.RegisterElement(this.$capPolyButton, this.$postToolbar, 1, 'flex-end');
+        //-3//this.RegisterElement(this.$capPolyButton, this.$postToolbar, 1, 'flex-end');
 
         // Create undo button
         this.$undoButton = $("<button>Remove Last Point</button>").button({
@@ -71,7 +72,7 @@ class PolygonEditor {
         this.$undoButton.click(() => {
             this.RemoveLastBreadcrumb();
         });
-        this.RegisterElement(this.$undoButton, this.$postToolbar, 1, 'flex-end');
+        //-3//this.RegisterElement(this.$undoButton, this.$postToolbar, 1, 'flex-end');
 
         // Create the confirm button
         this.$confirmButton = $("<button>Finish polygon</button>").button({
@@ -85,7 +86,7 @@ class PolygonEditor {
             this.Done();
             this.annotator.$container.trigger("OnPolygonEditingEnded");
         });
-        this.RegisterElement(this.$confirmButton, this.$postToolbar, 3, 'flex-end');
+        //-3//this.RegisterElement(this.$confirmButton, this.$postToolbar, 3, 'flex-end');
 
         // Create the cancel button
         this.$cancelButton = $("<button>Cancel polygon editing</button>").button({
@@ -100,7 +101,83 @@ class PolygonEditor {
             this.Done();
             this.annotator.$container.trigger("OnPolygonEditingEnded");
         });
-        this.RegisterElement(this.$cancelButton, this.$postToolbar, 2, 'flex-end');
+        //-3//this.RegisterElement(this.$cancelButton, this.$postToolbar, 2, 'flex-end');
+
+        $(window).resize(() => this.ResizeOverlay());
+
+
+        /* 
+        * new UI
+        */
+        this.$editDialog = $("<div id='edit-dialog' class='waldorf-edit-overlay waldorf-vp-click-surface'></div>").appendTo(this.annotator.player.$container);
+        this.$editDialog.draggable();
+        this.$editDialog.css('z-index', this.baseZ + 100);
+        this.$editDialog.click((event) => {
+            this.OnSurfaceClick(event);
+        });
+
+        this.$space = $("<div>&nbsp;</div><hr>");
+        this.RegisterElement(this.$space, this.$editDialog, 1, 'flex-end');
+
+        // Create undo button
+        this.$undoButton1 = $("<button>Remove Last Point</button>").button({
+            icon: "fa fa-undo",
+            showLabel: false
+        });
+        this.$undoButton1.css("margin", "0px 5px 4px 5px");
+        this.$undoButton1.attr('title', "Remove last point");
+        this.$undoButton1.css('z-index', this.baseZ + 105);
+        this.$undoButton1.click(() => {
+            this.RemoveLastBreadcrumb();
+        });
+        this.RegisterElement(this.$undoButton1, this.$editDialog, 1, 'flex-end');
+
+        // Make "Collect Polygon state" button
+        this.$capPolyButton1 = $("<button>Capture Polygon</button>").button({
+            icon: "fa fa-camera-retro",
+            showLabel: false
+        }).click(() => {
+            // console.log("Capturing the polygon");
+            // //this.SetVisible(false);
+            // //this.GetPoints();
+
+            // let tmpSelectors = [];
+
+            // // Build polygon selector
+            // let points = this.GetPoints();
+            // if(points.length > 0) {
+            //     let pointsStr = points.map(item => { return `${item[0]},${item[1]}` }).join(" ");
+            //     let polygonSelector = {
+            //         "type": "SvgSelector",
+            //         "value": `<svg:svg viewBox='0 0 100 100' preserveAspectRatio='none'><polygon points='${pointsStr}' /></svg:svg>` // http://stackoverflow.com/a/24898728
+            //     }
+            //     tmpSelectors.push(polygonSelector);
+            // }
+            // console.log("tmpSelectors");
+            // console.log(tmpSelectors);
+            this.AddPolygonSet();
+            //this.annotator.AddPolygonSet(this.annotator.annotation.getPoly());
+        });
+        this.$capPolyButton1.css("margin", "0px 5px 4px 5px");
+        this.$capPolyButton1.attr('title', "Capture Polygon");
+        this.$capPolyButton1.css('z-index', this.baseZ + 105);
+        this.RegisterElement(this.$capPolyButton1, this.$editDialog, 1, 'flex-end');
+
+        // Create the cancel button
+        this.$cancelButton1 = $("<button>Cancel polygon editing</button>").button({
+            icon: "fa fa-remove",
+            showLabel: false
+        });
+        this.$cancelButton1.css("margin", "0px 5px 4px 5px");
+        this.$cancelButton1.addClass("waldorf-cancel-button");
+        this.$cancelButton1.attr('title', "Cancel Polygon Editing");
+        this.$cancelButton1.click(() => {
+            //Restore the original state
+            this.Restore();
+            this.Done();
+            this.annotator.$container.trigger("OnPolygonEditingEnded");
+        });
+        this.RegisterElement(this.$cancelButton1, this.$editDialog, 2, 'flex-end');
 
         $(window).resize(() => this.ResizeOverlay());
 
@@ -108,6 +185,10 @@ class PolygonEditor {
     }
 
     OnSurfaceClick(event){
+        if ($(event.currentTarget).attr("id") == "edit-dialog") {
+            return;
+        }
+
         // Add a breadcrumb on click
         let target = $(event.currentTarget);
         let x = event.pageX - target.offset().left;
@@ -134,7 +215,7 @@ class PolygonEditor {
         // Percentage representations of breadcrumb width and height
         let offPercentX = ($breadcrumb.outerWidth() / this.$clickSurface.width()) * 100;
         let offPercentY = ($breadcrumb.outerHeight() / this.$clickSurface.height()) * 100;
-
+        // Percentage representations of breadcrumb width and height
         $breadcrumb.css("left", (xPercent - (offPercentX / 2)).toString() + "%");
         $breadcrumb.css("top", (yPercent - (offPercentY / 2)).toString() + "%");
         //$breadcrumb.css("z-index", this.baseZ - 50);
@@ -299,15 +380,17 @@ class PolygonEditor {
 
     BeginEditing(){
         this.$clickSurface.makeVisible(true);
+        this.$editDialog.makeVisible(true);
         this.$poly.makeVisible(true);
-        this.$bar.makeVisible(true);
+        //-3//this.$bar.makeVisible(true);
         this.UpdatePolyClipping();
     }
 
     Done(){
         this.$clickSurface.makeVisible(false);
+        this.$editDialog.makeVisible(false);
         this.$poly.makeVisible(false);
-        this.$bar.makeVisible(false);
+        //-3//this.$bar.makeVisible(false);
     }
 
     ResizeOverlay(){
@@ -338,6 +421,10 @@ class PolygonEditor {
 
     ShowJustPolygon(){
         this.$poly.makeVisible(true);
+    }
+
+    AddPolygonSet() {
+        this.$polygons.push(this.GetPoints());
     }
 
 }
