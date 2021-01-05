@@ -56,7 +56,7 @@ class PolygonOverlay {
             // Create the poly object
             let $poly = $("<div class='waldorf-overlay-poly'></div>").appendTo(this.$videoOverlay);
 
-            let $svgPoly = $("<svg  width='1280px' height='720px' viewBox='0 0 100 100' preserveAspectRatio='none'> " + 
+            let $svgPoly = $("<svg  width='100%' height='100%' viewBox='0 0 100 100' preserveAspectRatio='none'> " + 
                 "<polygon points='" + svgPoints[0] + "' fill='red'> " + 
                 "<animate attributeName='points' fill='freeze' " + 
                     " from='" + svgPoints[0] + "' " + 
