@@ -589,11 +589,11 @@ class AnnotationGUI {
         //Build SvgSelector
         let pointsStr = this.polyEditor.$polygons[0].map(item => { return `${item[0]},${item[1]}` }).join(" ");
         let animeStr = this.polyEditor.$polygons[1].map(item => { return `${item[0]},${item[1]}` }).join(" ");
-        var value = "<svg:svg viewBox='0 0 100 100' preserveAspectRatio='none'>";
+        var value = "<svg viewBox='0 0 100 100' preserveAspectRatio='none'>";
         value += "<polygon points='" + pointsStr + "' />";
-        value += "<animate attributeName='points' values='0,0 0,0 0,0 0,0;" + animeStr;
-        value += " begin='" + startTime + "' end='" + safeEndTime + "' />";
-        value += "</svg:svg>";
+        value += "<animate attributeName='points' from='" + pointsStr + "' to='" + animeStr + "'";
+        value += " start='" + startTime + "' end='" + safeEndTime + "' />";
+        value += "</svg>";
 
         let polygonSelector = {
             "type": "SvgSelector",

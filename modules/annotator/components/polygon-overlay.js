@@ -5,12 +5,14 @@ class PolygonOverlay {
         this.baseZ = 2147483649;
         this.lastAnnotations = [];
 
+        
         // Create the video overlay
         this.$videoOverlay = $("<div class='waldorf-video-overlay'></div>").appendTo(this.annotator.player.$container);
         this.ResizeOverlay();
         this.annotator.player.$container.on("OnFullscreenChange", (event, setFullscreen) => this.ResizeOverlay());
 
         this.annotator.$container.on("OnNewAnnotationSet", (event, annotations) => this.Update(annotations));
+        this.videoDims = this.annotator.player.GetVideoDimensions();
 
         $(window).resize(() => this.ResizeOverlay());
     }
@@ -36,17 +38,34 @@ class PolygonOverlay {
         // polygons.sort(function(a, b) {
         //     return this.GetArea(a) > this.GetArea(b);
         // })
-        
+
         for (let i = 0; i < annotations.length; i++) {
+            let videoDims = this.getPlayerSize();
+            console.log("videoDims width:" + videoDims["width"] + ", height:" + videoDims["height"]);
+
             let annotationPolyPoints = annotations[i].getPoly();
             if (annotationPolyPoints == null) {
                 // Ignore this annotation if it has no polygon
                 continue;
             }
 
+            let svgPoints = annotations[i].getSVGPoints();
+            console.log("svgPoints from:" + svgPoints[0]);
+            console.log("svgPoints to:" + svgPoints[1]);
+
             // Create the poly object
             let $poly = $("<div class='waldorf-overlay-poly'></div>").appendTo(this.$videoOverlay);
 
+            let $svgPoly = $("<svg  width='1280px' height='720px' viewBox='0 0 100 100' preserveAspectRatio='none'> " + 
+                "<polygon points='" + svgPoints[0] + "' fill='red'> " + 
+                "<animate attributeName='points' fill='freeze' " + 
+                    " from='" + svgPoints[0] + "' " + 
+                    " to='" + svgPoints[1] + "' " + 
+                    " begin='click' dur='10s' /> " + 
+                "</polygon> " + 
+                "</svg>").appendTo(this.$videoOverlay);
+
+            
             $poly.clipPath(annotationPolyPoints, {
                 isPercentage: true,
                 svgDefId: 'annotatorPolySvg'
@@ -54,6 +73,8 @@ class PolygonOverlay {
             $poly.click(() => {
                 this.annotator.$container.trigger("OnPolyClicked", annotations[i]);
             });
+
+
 
             this.AddTooltip($poly, annotations[i]);
             
@@ -113,6 +134,10 @@ class PolygonOverlay {
 
         let widthDiff = (this.annotator.player.$video.width() - videoDims.width) / 2;
         this.$videoOverlay.css('left', widthDiff);
+    }
+
+    getPlayerSize() {
+        return this.annotator.player.GetVideoDimensions();
     }
 
 }

@@ -74,6 +74,19 @@ class Annotation {
         return pointsData;
     }
 
+    getSVGPoints() {
+        let pointsSelector = this.target.selector.filter(item => item.type === "SvgSelector");
+
+        if(pointsSelector.length == 0) return null;
+
+        // Parse the points array from the annotation
+        let pointsSvg = pointsSelector[0].value;
+        let parser = new DOMParser();
+        let xmlDoc = parser.parseFromString(pointsSvg, "text/xml");
+        return [xmlDoc.getElementsByTagName("animate")[0].getAttribute("from"), 
+        xmlDoc.getElementsByTagName("animate")[0].getAttribute("to")];
+    }
+
 }
 
 
