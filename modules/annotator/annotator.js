@@ -254,7 +254,18 @@ class VideoAnnotator {
         this.annotationsNow = this.annotationManager.AnnotationsAtTime(time);
 
         if(this.annotationsNow.equals(this.lastAnnotationSet)){
-            //console.log("Skipping");
+            //console.log("annotator.js:257 OnTimeUpdate Skipping");
+
+            if (this.polyOverlay.svgElements.length > 0) {
+                // console.log("annotator.js:257 " + 
+                // this.polyOverlay.svgElements[0].getCurrentTime() +
+                //  " - " + this.polyOverlay.animateElements[0].getCurrentTime());
+                //this.polyOverlay.animateElements[0].setAttribute("fill", "freeze");
+                this.polyOverlay.animateElements[0].beginElement();
+                this.polyOverlay.svgElements[0].setCurrentTime(this.polyOverlay.svgElements[0].getCurrentTime()+(time - this.annotationsNow[0].beginTime));
+                //this.polyOverlay.animateElements[0].setAttribute("fill", "remove");
+                this.polyOverlay.animateElements[0].endElement();
+            }
             return;
         }
 
@@ -264,6 +275,7 @@ class VideoAnnotator {
     }
 
     UpdateViews(){
+        //console.log("annotator.js:267 UpdateViews");
         this.annotationsNow = this.annotationManager.AnnotationsAtTime(this.player.videoElement.currentTime);
 
         // Update the info container

@@ -182,6 +182,7 @@ class VideoPlayerBar {
     }
 
     OnTimeUpdate(time){
+        //console.log("video-player-bar.js:185 OnTimeUpdate is called");
         let duration = this.player.videoElement.duration;
 
         // Update the time text

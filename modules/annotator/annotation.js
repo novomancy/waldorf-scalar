@@ -74,7 +74,7 @@ class Annotation {
         return pointsData;
     }
 
-    getSVGPoints() {
+    getSVGPolyPoints() {
         let pointsSelector = this.target.selector.filter(item => item.type === "SvgSelector");
 
         if(pointsSelector.length == 0) return null;
