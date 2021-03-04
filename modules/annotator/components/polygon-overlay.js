@@ -6,6 +6,7 @@ class PolygonOverlay {
         this.animateElements = [];
         this.baseZ = 2147483649;
         this.lastAnnotations = [];
+        this.svgElementsHash = {};
 
         
         // Create the video overlay
@@ -42,9 +43,6 @@ class PolygonOverlay {
         // })
 
         for (let i = 0; i < annotations.length; i++) {
-            //console.log("polygon-overlay.js:44 Update(annotations) is called");
-            let videoDims = this.getPlayerSize();
-            //console.log("videoDims width:" + videoDims["width"] + ", height:" + videoDims["height"]);
 
             let annotationPolyPoints = annotations[i].getPoly();
             if (annotationPolyPoints == null) {
@@ -53,16 +51,10 @@ class PolygonOverlay {
             }
 
             let svgPolyPoints = annotations[i].getSVGPolyPoints();
-            //console.log("svgPoints from:" + svgPoints[0]);
-            //console.log("svgPoints to:" + svgPoints[1]);
-            //console.log("beginTime: " + annotations[i].beginTime + ", endTime: " + annotations[i].endTime);
-
+        
             let duration = annotations[i].endTime - annotations[i].beginTime;
 
             // Create the poly object
-            //let $poly = $("<div class='waldorf-overlay-poly'></div>").appendTo(this.$videoOverlay);
-
-            //let $svgPoly = $("<svg  width='100%' height='100%' viewBox='0 0 100 100' preserveAspectRatio='none'></svg>").appendTo(this.$videoOverlay); 
             let $svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
             $svg.setAttribute('width', '100%');
             $svg.setAttribute('height', '100%');
@@ -70,18 +62,10 @@ class PolygonOverlay {
             $svg.setAttribute('preserveAspectRatio', 'none');
             this.$videoOverlay.append($svg);
 
-            //let $polygon = $("<polygon points='" + svgPolyPoints[0] + "' fill='rgba(0, 118, 255, 0.55)'> </polygon>").appendTo($svg); 
             let $polygon = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
             $polygon.setAttribute('points', svgPolyPoints[0]);
             $polygon.setAttribute('fill', 'rgba(0, 118, 255, 0.55)');
             $svg.appendChild($polygon);
-
-            //let $animate1 =  $("<animate attributeName='points' fill='rgba(0, 118, 255, 0.55)' " + 
-            //        " from='" + svgPolyPoints[0] + "' " + 
-            //        " to='" + svgPolyPoints[1] + "' " + 
-            //       // " startTime='" + annotations[i].beginTime + "'" +
-            //       // " endTime='" + annotations[i].endTime + "'" +
-            //        " begin='indefinite' dur='" + duration + "s' /> ").appendTo($polygon);
 
             let $animate = document.createElementNS('http://www.w3.org/2000/svg', 'animate');
             $animate.setAttribute('attributeName', 'points');
@@ -91,6 +75,15 @@ class PolygonOverlay {
             $animate.setAttribute('begin', 'indefinite');
             $animate.setAttribute('dur', duration + "s");
             $polygon.appendChild($animate);
+
+            let $svgHash = {
+                svgElement: $svg,
+                polygon: $polygon,
+                animate: $animate
+            };
+
+            this.svgElementsHash[annotations[i].id] = $svgHash;
+
             
             // $poly.clipPath(annotationPolyPoints, {
             //     isPercentage: true,
@@ -100,18 +93,17 @@ class PolygonOverlay {
             //     this.annotator.$container.trigger("OnPolyClicked", annotations[i]);
             // });
 
-            //let elements = document.getElementsByTagName("animate");
-            //elements[0].beginElement()
-
-            //start the polygon animation
-            //console.log($svg.getCurrentTime());
-            // $animate.beginElement();
-            // $svg.setCurrentTime($svg.getCurrentTime()+4);
-            // $animate.endElement();
-
+            // $($svg).clipPath(annotationPolyPoints, {
+            //     isPercentage: true,
+            //     svgDefId: 'annotatorPolySvg'
+            // });
+            // $($svg).click(() => {
+            //     this.annotator.$container.trigger("OnPolyClicked", annotations[i]);
+            // });
+            // this.AddTooltip($($svg), annotations[i]);
             // this.AddTooltip($poly, annotations[i]);
+
             // this.polyElements.push($poly);
-            // this.svgElements.push($svgPoly);
             this.svgElements.push($svg);
             this.animateElements.push($animate);
         }
@@ -147,10 +139,10 @@ class PolygonOverlay {
 
     Clear(){
         // Clear all the polygons from the DOM
-        for(let i = 0; i < this.polyElements.length; i++){
-            this.polyElements[i].data("qtip").destroy(true);
-            this.polyElements[i].remove();
-        }
+        // for(let i = 0; i < this.polyElements.length; i++){
+        //     this.polyElements[i].data("qtip").destroy(true);
+        //     this.polyElements[i].remove();
+        // }
         
         // Clear all the polygons from the DOM
         for(let i = 0; i < this.svgElements.length; i++){

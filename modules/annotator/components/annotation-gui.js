@@ -587,19 +587,21 @@ class AnnotationGUI {
         let startTime = GetSecondsFromHMS(this.$timeStartField.val());
 
         //Build SvgSelector
-        let pointsStr = this.polyEditor.$polygons[0].map(item => { return `${item[0]},${item[1]}` }).join(" ");
-        let animeStr = this.polyEditor.$polygons[1].map(item => { return `${item[0]},${item[1]}` }).join(" ");
-        var value = "<svg viewBox='0 0 100 100' preserveAspectRatio='none'>";
-        value += "<polygon points='" + pointsStr + "' />";
-        value += "<animate attributeName='points' from='" + pointsStr + "' to='" + animeStr + "'";
-        value += " start='" + startTime + "' end='" + safeEndTime + "' />";
-        value += "</svg>";
+        if (this.polyEditor.$polygons.length > 0) {
+            let pointsStr = this.polyEditor.$polygons[0].map(item => { return `${item[0]},${item[1]}` }).join(" ");
+            let animeStr = this.polyEditor.$polygons[1].map(item => { return `${item[0]},${item[1]}` }).join(" ");
+            let value = "<svg viewBox='0 0 100 100' preserveAspectRatio='none'>";
+            value += "<polygon points='" + pointsStr + "' />";
+            value += "<animate attributeName='points' from='" + pointsStr + "' to='" + animeStr + "'";
+            value += " start='" + startTime + "' end='" + safeEndTime + "' />";
+            value += "</svg>";
 
-        let polygonSelector = {
-            "type": "SvgSelector",
-            "value": `${value}` // http://stackoverflow.com/a/24898728
+            let polygonSelector = {
+                "type": "SvgSelector",
+                "value": `${value}` // http://stackoverflow.com/a/24898728
+            }
+            selectors.push(polygonSelector);
         }
-        selectors.push(polygonSelector);
 
 
         // Build time selector

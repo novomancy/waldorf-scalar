@@ -238,9 +238,6 @@ class VideoAnnotator {
             });
             this.player.controlBar.RegisterElement(this.$uploadAnnotationButton, 2, 'flex-end');
         }
-
-        
-
         this.gui = new AnnotationGUI(this);
 
     }
@@ -253,25 +250,22 @@ class VideoAnnotator {
     OnTimeUpdate(time){
         this.annotationsNow = this.annotationManager.AnnotationsAtTime(time);
 
-        if(this.annotationsNow.equals(this.lastAnnotationSet)){
-            //console.log("annotator.js:257 OnTimeUpdate Skipping");
-
-            if (this.polyOverlay.svgElements.length > 0) {
-                // console.log("annotator.js:257 " + 
-                // this.polyOverlay.svgElements[0].getCurrentTime() +
-                //  " - " + this.polyOverlay.animateElements[0].getCurrentTime());
-                //this.polyOverlay.animateElements[0].setAttribute("fill", "freeze");
-                this.polyOverlay.animateElements[0].beginElement();
-                this.polyOverlay.svgElements[0].setCurrentTime(this.polyOverlay.svgElements[0].getCurrentTime()+(time - this.annotationsNow[0].beginTime));
-                //this.polyOverlay.animateElements[0].setAttribute("fill", "remove");
-                this.polyOverlay.animateElements[0].endElement();
-            }
+        if(this.annotationsNow.equals(this.lastAnnotationSet)){  
+            this.SetAnnotationTimePosition(time);
             return;
-        }
-
+        } 
         this.lastAnnotationSet = this.annotationsNow;
 
         this.UpdateViews();
+    }
+
+    SetAnnotationTimePosition(time, annotation_id){
+
+        if (this.polyOverlay.svgElements.length > 0) {
+            this.polyOverlay.animateElements[0].beginElement();
+            this.polyOverlay.svgElements[0].setCurrentTime(this.polyOverlay.svgElements[0].getCurrentTime()+(time - this.annotationsNow[0].beginTime));
+            this.polyOverlay.animateElements[0].endElement();
+        }
     }
 
     UpdateViews(){
@@ -282,6 +276,7 @@ class VideoAnnotator {
         this.infoContainer.Rebuild(this.annotationsNow, this.clearContainer);
 
         this.$container.trigger("OnNewAnnotationSet", [this.annotationsNow]);
+        this.SetAnnotationTimePosition(this.player.videoElement.currentTime);
     }
 
     GetAnnotations(){
