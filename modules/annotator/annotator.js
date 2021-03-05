@@ -260,12 +260,16 @@ class VideoAnnotator {
     }
 
     SetAnnotationTimePosition(time, annotation_id){
-
-        if (this.polyOverlay.svgElements.length > 0) {
-            this.polyOverlay.animateElements[0].beginElement();
-            this.polyOverlay.svgElements[0].setCurrentTime(this.polyOverlay.svgElements[0].getCurrentTime()+(time - this.annotationsNow[0].beginTime));
-            this.polyOverlay.animateElements[0].endElement();
+        if (this.polyOverlay.svgElementsHash[annotation_id]) {
+            this.polyOverlay.svgElementsHash[annotation_id].animate.beginElement();
+            this.polyOverlay.svgElementsHash[annotation_id].svgElement.setCurrentTime(this.polyOverlay.svgElementsHash[annotation_id].svgElement.getCurrentTime() + (time - svgElementsHash[annotation_id].beginTime))
+            this.polyOverlay.svgElementsHash[annotation_id].animate.endElement();
         }
+        // if (this.polyOverlay.svgElements.length > 0) {
+        //     this.polyOverlay.animateElements[0].beginElement();
+        //     this.polyOverlay.svgElements[0].setCurrentTime(this.polyOverlay.svgElements[0].getCurrentTime()+(time - this.annotationsNow[0].beginTime));
+        //     this.polyOverlay.animateElements[0].endElement();
+        // }
     }
 
     UpdateViews(){

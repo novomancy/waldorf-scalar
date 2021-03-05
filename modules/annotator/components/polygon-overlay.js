@@ -79,11 +79,14 @@ class PolygonOverlay {
             let $svgHash = {
                 svgElement: $svg,
                 polygon: $polygon,
-                animate: $animate
+                animate: $animate,
+                beginTime: annotations[i].beginTime
             };
 
             this.svgElementsHash[annotations[i].id] = $svgHash;
 
+            // Create the poly object
+            // let $poly = $("<div class='waldorf-overlay-poly'></div>").appendTo(this.$videoOverlay);
             
             // $poly.clipPath(annotationPolyPoints, {
             //     isPercentage: true,
@@ -92,18 +95,9 @@ class PolygonOverlay {
             // $poly.click(() => {
             //     this.annotator.$container.trigger("OnPolyClicked", annotations[i]);
             // });
-
-            // $($svg).clipPath(annotationPolyPoints, {
-            //     isPercentage: true,
-            //     svgDefId: 'annotatorPolySvg'
-            // });
-            // $($svg).click(() => {
-            //     this.annotator.$container.trigger("OnPolyClicked", annotations[i]);
-            // });
-            // this.AddTooltip($($svg), annotations[i]);
             // this.AddTooltip($poly, annotations[i]);
-
             // this.polyElements.push($poly);
+
             this.svgElements.push($svg);
             this.animateElements.push($animate);
         }
