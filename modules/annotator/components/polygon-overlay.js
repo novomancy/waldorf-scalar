@@ -55,12 +55,19 @@ class PolygonOverlay {
             let duration = annotations[i].endTime - annotations[i].beginTime;
 
             // Create the poly object
-            let $svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-            $svg.setAttribute('width', '100%');
-            $svg.setAttribute('height', '100%');
-            $svg.setAttribute('viewBox', '0 0 100 100');
-            $svg.setAttribute('preserveAspectRatio', 'none');
-            this.$videoOverlay.append($svg);
+            let $svg;
+            if (this.svgElements.length == 0) {
+                $svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+                $svg.setAttribute('width', '100%');
+                $svg.setAttribute('height', '100%');
+                $svg.setAttribute('viewBox', '0 0 100 100');
+                $svg.setAttribute('preserveAspectRatio', 'none');
+                this.$videoOverlay.append($svg);
+                this.svgElements.push($svg);
+            } else {
+                $svg = this.svgElements[0];
+            }
+            
 
             let $polygon = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
             $polygon.setAttribute('points', svgPolyPoints[0]);
@@ -98,7 +105,8 @@ class PolygonOverlay {
             // this.AddTooltip($poly, annotations[i]);
             // this.polyElements.push($poly);
 
-            this.svgElements.push($svg);
+            
+            this.polyElements.push($polygon);
             this.animateElements.push($animate);
         }
 
@@ -133,17 +141,17 @@ class PolygonOverlay {
 
     Clear(){
         // Clear all the polygons from the DOM
-        // for(let i = 0; i < this.polyElements.length; i++){
-        //     this.polyElements[i].data("qtip").destroy(true);
-        //     this.polyElements[i].remove();
-        // }
+        for(let i = 0; i < this.polyElements.length; i++){
+            //this.polyElements[i].data("qtip").destroy(true);
+            this.animateElements[i].remove();
+            this.polyElements[i].remove();
+        }
         
         // Clear all the polygons from the DOM
         for(let i = 0; i < this.svgElements.length; i++){
             this.svgElements[i].remove();
-            this.animateElements[i].remove();
         }
-
+        
         // Mark the array as empty
         this.polyElements = [];
         this.svgElements = [];
