@@ -12,6 +12,7 @@ class PolygonEditor {
         this.baseZ = 2147483649;
         this.$breadcrumbs = [];
         this.$polygons = [];
+        this.$tempBreadCrumbs = [];
 
         // Create the video overlay
         this.$clickSurface = $("<div class='waldorf-edit-overlay waldorf-vp-click-surface'></div>").appendTo(this.annotator.player.$container);
@@ -20,6 +21,9 @@ class PolygonEditor {
             this.OnSurfaceClick(event);
         });
 
+        // Create the poly object for start position polygon
+        this.$startPoly = "";
+        
         // Create the poly object
         this.$poly = $("<div class='waldorf-edit-poly'></div>").appendTo(this.annotator.player.$container);
         this.$poly.css("z-index", this.baseZ + 1);
@@ -292,6 +296,15 @@ class PolygonEditor {
         // }
     }
 
+    ResetPolygons() {
+        if (this.$startPoly) {
+            this.$startPoly.clipPath([], {
+                svgDefId: 'annotatorPolyEditorSvgStart'
+            });
+        }
+        this.$polygons = [];
+    }
+
     Restore(){
         this.InitPoly(this.originalJSON);
     }
@@ -301,8 +314,6 @@ class PolygonEditor {
 
         // If JSON was specified, generate breadcrumbs from it.
         if(points != null){
-            // Parse the points array from the annotation
-
             // Put down the breadcrumbs
             for(let point of points){
                 this.AddBreadcrumb(point[0], point[1]);
@@ -314,7 +325,34 @@ class PolygonEditor {
         this.originalJSON = points;
     }
 
+    AddStartPolygon() {
+        if (this.$polygons.length > 0) {
+            let startPolygon = this.$polygons[0]; //.map(item => { return `${item[0]},${item[1]}` }).join(" ");;
+            
+            // Create the poly object
+            this.$startPoly = $("<div class='waldorf-start-poly'></div>").appendTo(this.$clickSurface);
+            this.$startPoly.css("z-index", this.baseZ + 1000);
+
+            if(startPolygon.length < 3){
+                this.$startPoly.clipPath([], {
+                    svgDefId: 'annotatorPolyEditorSvgStart'
+                });
+                return;
+            }
+            
+            this.$startPoly.clipPath(startPolygon, {
+                isPercentage: true,
+                svgDefId: 'annotatorStartPolySvg'
+            });
+
+            startPolygon.map((point) => {
+                this.AddBreadcrumb(point[0], point[1]);
+            });
+        }
+    }
+
     UpdatePolyClipping(){
+        
         if(this.$breadcrumbs.length < 3){
             this.$poly.clipPath([], {
                 svgDefId: 'annotatorPolyEditorSvg'
@@ -383,6 +421,7 @@ class PolygonEditor {
         this.$editDialog.makeVisible(true);
         this.$poly.makeVisible(true);
         //-3//this.$bar.makeVisible(true);
+        this.AddStartPolygon();
         this.UpdatePolyClipping();
     }
 
@@ -425,6 +464,7 @@ class PolygonEditor {
 
     AddPolygonSet() {
         this.$polygons.push(this.GetPoints());
+        this.$tempBreadCrumbs.push([this.$breadcrumbs]);
     }
 
 }

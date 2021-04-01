@@ -53,6 +53,29 @@
         //mix-blend-mode: overlay;
         //background-blend-mode: overlay;
     }
+
+    // Editor polygon lives next to the overlay same as overlay
+    + .waldorf-start-poly {
+        position: absolute;
+        background-color: rgba(224, 133, 41, 0.55);
+        width: 100%;
+        height: 100%;
+        z-index: $base-z + 10;
+        pointer-events: none;
+        //mix-blend-mode: overlay;
+        //background-blend-mode: overlay;
+    }
+}
+
+.waldorf-start-poly {
+    position: absolute;
+    background-color: rgba(239, 14, 247, 0.55);
+    width: 100%;
+    height: 100%;
+    z-index: $base-z + 10;
+    pointer-events: none;
+    //mix-blend-mode: overlay;
+    //background-blend-mode: overlay;
 }
 
 .waldorf-tickbar {

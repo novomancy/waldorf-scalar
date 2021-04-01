@@ -62,6 +62,8 @@ class PolygonOverlay {
                 $svg.setAttribute('height', '100%');
                 $svg.setAttribute('viewBox', '0 0 100 100');
                 $svg.setAttribute('preserveAspectRatio', 'none');
+
+                //$svg.addEventListener("click", this.ClickEvent);
                 this.$videoOverlay.append($svg);
                 this.svgElements.push($svg);
             } else {
@@ -72,6 +74,7 @@ class PolygonOverlay {
             let $polygon = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
             $polygon.setAttribute('points', svgPolyPoints[0]);
             $polygon.setAttribute('fill', 'rgba(0, 118, 255, 0.55)');
+            
             $svg.appendChild($polygon);
 
             let $animate = document.createElementNS('http://www.w3.org/2000/svg', 'animate');
@@ -104,13 +107,16 @@ class PolygonOverlay {
             // });
             // this.AddTooltip($poly, annotations[i]);
             // this.polyElements.push($poly);
-
             
             this.polyElements.push($polygon);
             this.animateElements.push($animate);
         }
 
         //this.lastAnnotations = annotations;
+    }
+
+    ClickEvent(event) {
+        console.log("animate is clicked");
     }
 
     AddTooltip($poly, annotation){
@@ -140,16 +146,20 @@ class PolygonOverlay {
     }
 
     Clear(){
-        // Clear all the polygons from the DOM
-        for(let i = 0; i < this.polyElements.length; i++){
+        // Clear all  animate element from the DOM
+        for(let ai = 0; ai < this.animateElements.length; ai++){
             //this.polyElements[i].data("qtip").destroy(true);
-            this.animateElements[i].remove();
-            this.polyElements[i].remove();
+            this.animateElements[ai].remove();
+        }
+
+        // Clear all polygons 
+        for(let pi = 0; pi < this.polyElements.length; pi++) {
+            this.polyElements[pi].remove();
         }
         
-        // Clear all the polygons from the DOM
-        for(let i = 0; i < this.svgElements.length; i++){
-            this.svgElements[i].remove();
+        // Clear all  svg elements from the DOM
+        for(let si = 0; si < this.svgElements.length; si++){
+            this.svgElements[si].remove();
         }
         
         // Mark the array as empty

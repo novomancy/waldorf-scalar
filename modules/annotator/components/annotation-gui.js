@@ -114,23 +114,23 @@ class AnnotationGUI {
             this.SetVisible(false);
             this.polyEditor.BeginEditing();
         });
-        $editPolyButton1.attr('title', "Edit polygon");
+        $editPolyButton1.attr('title', "Edit polygon test");
         this.RegisterElement($editPolyButton1, this.$postToolbar, -1);
 
-        // Make delete button
-        this.$deleteButton = $("<button>Delete Annotation</button>").button({
-            icon: "fa fa-bomb",
-            showLabel: false
-        });
-        this.$deleteButton.css("margin-right", "15px");
-        this.$deleteButton.attr('title', "Delete annotation");
-        this.$deleteButton.click(() => {
-            this.annotator.server.DeleteAnnotation(this.originalAnnotation).done((response) => {
-                this.annotator.DeregisterAnnotation(this.originalAnnotation);
-                this.Close();
-            });
-        });
-        this.RegisterElement(this.$deleteButton, this.$postToolbar, 1, 'flex-end');
+        // // Make delete button
+        // this.$deleteButton = $("<button>Delete Annotation</button>").button({
+        //     icon: "fa fa-bomb",
+        //     showLabel: false
+        // });
+        // this.$deleteButton.css("margin-right", "15px");
+        // this.$deleteButton.attr('title', "Delete annotation");
+        // this.$deleteButton.click(() => {
+        //     this.annotator.server.DeleteAnnotation(this.originalAnnotation).done((response) => {
+        //         this.annotator.DeregisterAnnotation(this.originalAnnotation);
+        //         this.Close();
+        //     });
+        // });
+        // this.RegisterElement(this.$deleteButton, this.$postToolbar, 1, 'flex-end');
 
         // Make cancel button
         let $cancelButton1 = $("<button>Cancel Annotation Editing</button>").button({
@@ -140,6 +140,7 @@ class AnnotationGUI {
         $cancelButton1.attr('title', "Cancel annotation editing");
         $cancelButton1.addClass("waldorf-cancel-button");
         $cancelButton1.click(() => {
+            this.polyEditor.ResetPolygons();
             this.Close();
         });
         this.RegisterElement($cancelButton1, this.$postToolbar, 2, 'flex-end');
@@ -210,6 +211,7 @@ class AnnotationGUI {
         $exitButton.attr('title', "Exit annotation editing");
         $exitButton.addClass("waldorf-cancel-button");
         $exitButton.click(() => {
+            this.polyEditor.ResetPolygons();
             this.Close();
         });
         this.RegisterElement($exitButton, this.$title, -1);
@@ -350,15 +352,33 @@ class AnnotationGUI {
              showLabel: false
         }).click(() => {
              this.SetVisible(false);
+             console.log("annotation-gui:353 Create");
              this.polyEditor.BeginEditing();
         });
-        $editPolyButton.attr('title', "Edit polygon");
+        $editPolyButton.attr('title', "Edit polygon test2");
         this.RegisterElement($editPolyButton, $buttonPanel, -1);
+
+        // Make delete button
+        this.$deleteButton = $("<button>Delete Annotation</button>").button({
+            icon: "fa fa-bomb",
+            showLabel: false
+        });
+        this.$deleteButton.css("margin-right", "15px");
+        this.$deleteButton.attr('title', "Delete annotation");
+        this.$deleteButton.click(() => {
+            this.annotator.server.DeleteAnnotation(this.originalAnnotation).done((response) => {
+                this.annotator.DeregisterAnnotation(this.originalAnnotation);
+                this.Close();
+            });
+        });
+        this.RegisterElement(this.$deleteButton, $buttonPanel, -1);
+
 
         // Make cancel button
         let $cancelButton = $("<br><br><button>Cancel</button>").button({
             showLabel: true
         }).click(() => {
+            this.polyEditor.ResetPolygons();
             this.Close();
         });
         $cancelButton.css("float", "right");
@@ -376,6 +396,7 @@ class AnnotationGUI {
                 } else {
                     this.annotator.RegisterNewAnnotation(annotation);
                 }
+                this.polyEditor.ResetPolygons();
                 this.Close();
             });
         });
@@ -444,6 +465,8 @@ class AnnotationGUI {
     BeginEditing(annotation = null, forceNew = false){
         // Open the GUI if it isn't already
         this.Open();
+        console.log("annotation-gui: BeginEditing 447");
+        console.log(this.polyEditor.$polygons);
 
         //console.log(annotation);
 

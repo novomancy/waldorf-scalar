@@ -139,6 +139,14 @@ class VideoAnnotator {
             }
         });
 
+        this.$container.on("OnPolygonClicked", (event, annotation) => {
+            console.log("OnPolygonClicked event captured");
+        });
+
+        this.$container.on("OnAnimationClicked", (event, annotation) => {
+            console.log("OnAnimationClicked event captured");
+        });
+
         this.gui.$container.on("OnGUIClosed", (event) => {
             this.$addAnnotationButton.button("enable");
         });
