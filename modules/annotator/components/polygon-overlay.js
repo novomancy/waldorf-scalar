@@ -163,9 +163,10 @@ class PolygonOverlay {
         }
         
         // Mark the array as empty
+        this.animateElements = [];
         this.polyElements = [];
         this.svgElements = [];
-        this.animateElements = [];
+        this.svgElementsHash = {};
 
     }
 

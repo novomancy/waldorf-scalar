@@ -268,21 +268,20 @@ class VideoAnnotator {
     }
 
     SetAnnotationTimePosition(time){
+        //console.log("time: " + time);
+        //console.log(navigator.appName);
         for (let i = 0; i < this.annotationsNow.length; i++ ) {
             let annotation_id = this.annotationsNow[i].id;
             if (this.polyOverlay.svgElementsHash[annotation_id]) {
                 this.polyOverlay.svgElementsHash[annotation_id].animate.beginElement();
                 let time_diff = time - this.annotationsNow[i].beginTime;
-                this.polyOverlay.svgElementsHash[annotation_id].svgElement.setCurrentTime(this.polyOverlay.svgElementsHash[annotation_id].svgElement.getCurrentTime() + time_diff)
+                let current_time = this.polyOverlay.svgElementsHash[annotation_id].svgElement.getCurrentTime();
+                //console.log("\t i:" + i + " (" + annotation_id + "), svg current_time:" + current_time + ", animate time_diff: " + time_diff);
+                this.polyOverlay.svgElementsHash[annotation_id].svgElement.setCurrentTime(current_time + time_diff);
                 this.polyOverlay.svgElementsHash[annotation_id].animate.endElement();
             }
         }
         
-        // if (this.polyOverlay.svgElements.length > 0) {
-        //     this.polyOverlay.animateElements[0].beginElement();
-        //     this.polyOverlay.svgElements[0].setCurrentTime(this.polyOverlay.svgElements[0].getCurrentTime()+(time - this.annotationsNow[0].beginTime));
-        //     this.polyOverlay.animateElements[0].endElement();
-        // }
     }
 
     UpdateViews(){

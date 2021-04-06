@@ -261,47 +261,104 @@ class ServerInterface {
     }
 
     DeleteAnnotation(annotation){
+
         let key;
         if (this.annotator.apiKey){
             key = this.annotator.apiKey;
             let email_storage = localStorage.getItem('waldorf_user_email');
+            let name_storage = localStorage.getItem('waldorf_user_name');
             if (email_storage === null) {
                 console.error("[Server Interface] You are not logged in!");
                 this.annotator.messageOverlay.ShowError("You are not logged in!");
-                let deferred = $.Deferred();
-                deferred.reject({
-                    success: false,
-                    data: "Not logged in."
-                });
-                return deferred.promise();
+                return false;
             }
+            if(name_storage == null) name_storage = email_storage;
         } else {
             key = localStorage.getItem('waldorf_auth_token');
             if (key === null) {
                 console.error("[Server Interface] You are not logged in!");
                 this.annotator.messageOverlay.ShowError("You are not logged in!");
-                let deferred = $.Deferred();
-                deferred.reject({
-                    success: false,
-                    data: "Not logged in."
-                });
-                return deferred.promise();
+                return false;
             }
         }
 
+        if(this.annotator.apiKey){
+            if(annotation["creator"] == null) annotation["creator"] = {};
+            annotation["creator"]["email"] = localStorage.getItem('waldorf_user_email');
+            annotation["creator"]["nickname"] = localStorage.getItem('waldorf_user_name');
+            // annotation["creator"]["native"] = 0;
+            // annotation["creator"]["scalar:urn"] =  "urn:scalar:version:" + annotation.id
+            // annotation["creator"]["api_key"] = key;
+        }
+
+        //setaction in annotation payload
+        annotation["request"]["items"]["action"] = "delete";
+        // annotation["request"]["items"]["native"] = 0;
+        // annotation["request"]["items"]["scalar:urn"] = "urn:scalar:version:" + annotation.id;
+        // annotation["request"]["items"]["api_key"] = key;
+        // annotation["request"]["email"] = localStorage.getItem('waldorf_user_email');
+        // annotation["request"]["nickname"] = localStorage.getItem('waldorf_user_name');
+
+        annotation["native"] = 0;
+        annotation["scalar:urn"] = "urn:scalar:version:" + annotation.id;
+        annotation["api_key"] = key;
+        annotation["email"] = localStorage.getItem('waldorf_user_email');
+        annotation["nickname"] = localStorage.getItem('waldorf_user_name');
+        //console.log(localStorage.getItem('waldorf_user_email'));
+
+        // let key;
+        // if (this.annotator.apiKey){
+        //     key = this.annotator.apiKey;
+        //     let email_storage = localStorage.getItem('waldorf_user_email');
+        //     if (email_storage === null) {
+        //         console.error("[Server Interface] You are not logged in!");
+        //         this.annotator.messageOverlay.ShowError("You are not logged in!");
+        //         let deferred = $.Deferred();
+        //         deferred.reject({
+        //             success: false,
+        //             data: "Not logged in."
+        //         });
+        //         return deferred.promise();
+        //     }
+        // } else {
+        //     key = localStorage.getItem('waldorf_auth_token');
+        //     if (key === null) {
+        //         console.error("[Server Interface] You are not logged in!");
+        //         this.annotator.messageOverlay.ShowError("You are not logged in!");
+        //         let deferred = $.Deferred();
+        //         deferred.reject({
+        //             success: false,
+        //             data: "Not logged in."
+        //         });
+        //         return deferred.promise();
+        //     }
+        // }
+
+
         console.log("Deleting annotation " + annotation.id);
+        console.log(annotation);
         return $.ajax({
             url: this.baseURL + "api/delete",
-            type: "DELETE",
-            data: {
-                "id": annotation.id
-            },
+            type: "POST",
+            dataType: 'json', // Necessary for Rails to see this data type correctly
+            contentType: 'application/json',  // Necessary for Rails to see this data type correctly
+            data: annotation,
+            //data: JSON.stringify(annotation),  // Stringify necessary for Rails to see this data type correctly
+            // data: {
+            //     //"id": annotation.id,
+            //     "scalar:urn": "urn:scalar:version:" + annotation.id,
+            //     "native": 0,
+            //     "action": 'DELETE'
+            // },
             async: true,
             context: this,
             beforeSend: function (xhr) {
                 xhr.setRequestHeader('Authorization', this.make_write_auth(key));
             },
             error: (response) => {
+                console.log("Delete error response");
+                console.log(response);
+                console.log(response.responseText);
                 var returned_response = "undefined error while deleting the annotation";
                 if (response.responseJSON) {
                     response.responseJSON.error.code[0].value + " : " + response.responseJSON.error.message[0].value ;
