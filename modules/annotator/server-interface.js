@@ -292,18 +292,19 @@ class ServerInterface {
         }
 
         //setaction in annotation payload
-        annotation["request"]["items"]["action"] = "delete";
+        // annotation["request"]["items"]["action"] = "delete";
         // annotation["request"]["items"]["native"] = 0;
         // annotation["request"]["items"]["scalar:urn"] = "urn:scalar:version:" + annotation.id;
         // annotation["request"]["items"]["api_key"] = key;
         // annotation["request"]["email"] = localStorage.getItem('waldorf_user_email');
         // annotation["request"]["nickname"] = localStorage.getItem('waldorf_user_name');
 
-        annotation["native"] = 0;
-        annotation["scalar:urn"] = "urn:scalar:version:" + annotation.id;
-        annotation["api_key"] = key;
-        annotation["email"] = localStorage.getItem('waldorf_user_email');
-        annotation["nickname"] = localStorage.getItem('waldorf_user_name');
+        // annotation["action"] = "DELETE";
+        // annotation["native"] = "false";
+        // annotation["scalar:urn"] = "urn:scalar:version:" + annotation.id;
+        // annotation["api_key"] = key; //"18ca72be826d0043de9ce47c4d81f04f01bf395a";
+        // annotation["email"] = localStorage.getItem('waldorf_user_email'); //'siva@dartmouth.edu';
+        // annotation["nickname"] = localStorage.getItem('waldorf_user_name'); //'Siva Kandasamy'; 
         //console.log(localStorage.getItem('waldorf_user_email'));
 
         // let key;
@@ -340,9 +341,9 @@ class ServerInterface {
         return $.ajax({
             url: this.baseURL + "api/delete",
             type: "POST",
-            dataType: 'json', // Necessary for Rails to see this data type correctly
+            //dataType: 'json', // Necessary for Rails to see this data type correctly
             contentType: 'application/json',  // Necessary for Rails to see this data type correctly
-            data: annotation,
+            //data: annotation,
             //data: JSON.stringify(annotation),  // Stringify necessary for Rails to see this data type correctly
             // data: {
             //     //"id": annotation.id,
@@ -350,11 +351,19 @@ class ServerInterface {
             //     "native": 0,
             //     "action": 'DELETE'
             // },
-            async: true,
-            context: this,
-            beforeSend: function (xhr) {
-                xhr.setRequestHeader('Authorization', this.make_write_auth(key));
+
+            data: {
+                "scalar:urn": "urn:scalar:version:" + annotation.id,
+                "native": "true",
+                "action": "DELETE",
+                "api_key": "do3D40s9aDkgk4RfaaFoeignbmd",
+                "id": "siva@dartmouth.edu"
             },
+            async: true,
+            // context: this,
+            // beforeSend: function (xhr) {
+            //     xhr.setRequestHeader('Authorization', this.make_write_auth(key));
+            // },
             error: (response) => {
                 console.log("Delete error response");
                 console.log(response);

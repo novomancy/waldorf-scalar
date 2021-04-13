@@ -269,7 +269,15 @@ class VideoAnnotator {
 
     SetAnnotationTimePosition(time){
         //console.log("time: " + time);
-        //console.log(navigator.appName);
+        //Check safari and multiple geometric annotation
+        if (this.IsSafari() && this.annotationsNow.length > 1) {
+            let msg = "Multiple geometric annotations are detected.<br>";
+            msg += "Safari doesn't support multiple geometric annotations.<br>";
+            msg += "Chrome or Firefox are recommended.";
+            this.messageOverlay.ShowMessage(msg, 2.0);
+            return; //no animation for safari browser with multiple geometric annotation
+        }
+
         for (let i = 0; i < this.annotationsNow.length; i++ ) {
             let annotation_id = this.annotationsNow[i].id;
             if (this.polyOverlay.svgElementsHash[annotation_id]) {
@@ -430,6 +438,13 @@ class VideoAnnotator {
         // required properties are not present.
 
         return true;
+    }
+
+    // checking whether the browser is safari or not
+    IsSafari() {
+        //ref: https://stackoverflow.com/questions/49872111/detect-safari-and-stop-script
+        let isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+        return isSafari;
     }
 
 
