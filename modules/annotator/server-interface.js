@@ -338,44 +338,28 @@ class ServerInterface {
 
         console.log("Deleting annotation " + annotation.id);
         console.log(annotation);
-        return $.ajax({
-            url: this.baseURL + "api/delete",
-            type: "POST",
-            //dataType: 'json', // Necessary for Rails to see this data type correctly
-            contentType: 'application/json',  // Necessary for Rails to see this data type correctly
-            //data: annotation,
-            //data: JSON.stringify(annotation),  // Stringify necessary for Rails to see this data type correctly
-            // data: {
-            //     //"id": annotation.id,
-            //     "scalar:urn": "urn:scalar:version:" + annotation.id,
-            //     "native": 0,
-            //     "action": 'DELETE'
-            // },
-
-            data: {
+        let del_url = this.baseURL + "api/delete";
+        let del_data = {
                 "scalar:urn": "urn:scalar:version:" + annotation.id,
-                "native": "true",
+                "native": "false",
                 "action": "DELETE",
-                "api_key": "do3D40s9aDkgk4RfaaFoeignbmd",
+                "api_key": "REMOVED",
                 "id": "siva@dartmouth.edu"
-            },
-            async: true,
-            // context: this,
-            // beforeSend: function (xhr) {
-            //     xhr.setRequestHeader('Authorization', this.make_write_auth(key));
-            // },
-            error: (response) => {
+            };
+        
+
+        return $.post(del_url, del_data, function(response){
+            {
                 console.log("Delete error response");
                 console.log(response);
                 console.log(response.responseText);
-                var returned_response = "undefined error while deleting the annotation";
-                if (response.responseJSON) {
-                    response.responseJSON.error.code[0].value + " : " + response.responseJSON.error.message[0].value ;
-                }
-                console.error(`Could not delete the annotation. Message:\n ${returned_response}`);
-                this.annotator.messageOverlay.ShowError(`Could not delete the annotation!<br>(${returned_response})`);
-            }
-
+                // var returned_response = "undefined error while deleting the annotation";
+                // if (response.responseJSON) {
+                //     response.responseJSON.error.code[0].value + " : " + response.responseJSON.error.message[0].value ;
+                // }
+                // console.error(`Could not delete the annotation. Message:\n ${returned_response}`);
+                // this.annotator.messageOverlay.ShowError(`Could not delete the annotation!<br>(${returned_response})`);
+            }  
         }).done((response) => {
             console.log("Successfully deleted the annotation.");
             this.annotator.messageOverlay.ShowMessage("Successfully deleted the annotation.");
@@ -388,7 +372,58 @@ class ServerInterface {
             }
             console.error(`Could not delete the annotation. Message:\n ${returned_response}`);
             this.annotator.messageOverlay.ShowError(`Could not delete the annotation!<br>(${returned_response})`);
-        })
+        });
+        // return $.ajax({
+        //     url: this.baseURL + "api/delete",
+        //     type: "POST",
+        //     //dataType: 'json', // Necessary for Rails to see this data type correctly
+        //     contentType: 'application/json',  // Necessary for Rails to see this data type correctly
+        //     //data: annotation,
+        //     //data: JSON.stringify(annotation),  // Stringify necessary for Rails to see this data type correctly
+        //     // data: {
+        //     //     //"id": annotation.id,
+        //     //     "scalar:urn": "urn:scalar:version:" + annotation.id,
+        //     //     "native": 0,
+        //     //     "action": 'DELETE'
+        //     // },
+
+        //     data: {
+        //         "scalar:urn": "urn:scalar:version:" + annotation.id,
+        //         "native": "true",
+        //         "action": "DELETE",
+        //         "api_key": "do3D40s9aDkgk4RfaaFoeignbmd",
+        //         "id": "siva@dartmouth.edu"
+        //     },
+        //     async: true,
+        //     // context: this,
+        //     // beforeSend: function (xhr) {
+        //     //     xhr.setRequestHeader('Authorization', this.make_write_auth(key));
+        //     // },
+        //     error: (response) => {
+        //         console.log("Delete error response");
+        //         console.log(response);
+        //         console.log(response.responseText);
+        //         var returned_response = "undefined error while deleting the annotation";
+        //         if (response.responseJSON) {
+        //             response.responseJSON.error.code[0].value + " : " + response.responseJSON.error.message[0].value ;
+        //         }
+        //         console.error(`Could not delete the annotation. Message:\n ${returned_response}`);
+        //         this.annotator.messageOverlay.ShowError(`Could not delete the annotation!<br>(${returned_response})`);
+        //     }
+
+        // }).done((response) => {
+        //     console.log("Successfully deleted the annotation.");
+        //     this.annotator.messageOverlay.ShowMessage("Successfully deleted the annotation.");
+        // }).fail((response) => {
+        //     //console.error(`Could not delete the annotation. Message:\n ${response.responseJSON.detail}`);
+        //     //this.annotator.messageOverlay.ShowError(`Could not delete the annotation!<br>(${response.responseJSON.detail})`);
+        //     var returned_response = "undefined failure while deleting the annotation";
+        //     if (response.responseJSON) {
+        //         response.responseJSON.error.code[0].value + " : " + response.responseJSON.error.message[0].value ;
+        //     }
+        //     console.error(`Could not delete the annotation. Message:\n ${returned_response}`);
+        //     this.annotator.messageOverlay.ShowError(`Could not delete the annotation!<br>(${returned_response})`);
+        // })
     }
 
 }

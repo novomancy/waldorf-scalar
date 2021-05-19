@@ -48,7 +48,11 @@ class VideoAnnotator {
         //Determines whether or not the annotation container is cleared every time it updates
         this.clearContainer = typeof args.clearContainer === 'undefined' ? true : args.clearContainer;
         //Determines whether or not to create a navigable index of annotations
-        this.displayIndex = typeof args.displayIndex === 'undefined' ? false : args.displayIndex;        
+        this.displayIndex = typeof args.displayIndex === 'undefined' ? false : args.displayIndex;   
+        
+        //Determine the language of the annotation
+        this.onomyLanguage = typeof args.onomyLanguage === 'undefined' ? '' : args.onomyLanguage;
+
 
 
         //localURL implies kiosk mode

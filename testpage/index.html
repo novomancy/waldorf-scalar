@@ -104,26 +104,28 @@
         }
     
         function launchWaldorf(){
-        //This configuration connects to a live Scalar server to edit and share annotations
-        //Note that it's not necessary to delay this or put it in a function call,
-        //it's only done here for demonstration purposes so you can see the original
-        //video and then the wrapped version after.
-        var serverAddress = "https://scalar.usc.edu/dev/semantic-annotation-tool/";
-        var tagsAddress = "https://onomy.org/published/83/json";
-        var apiKey = "do3D40s9aDkgk4RfaaFoeignbmd";
-        var localURLAddress = "http://localhost:3000/annotation1.json";
-        $("video").first().annotate({serverURL: serverAddress, 
-                                     tagsURL: tagsAddress, 
-                                     apiKey: apiKey, 
-                                     kioskMode: false,
-                                     showManifest: true,
-                                     clearContainer: false,
-                                     renderer: customRenderer,
-                                     unrenderer: customUnrenderer,
-                                     callback: cb,
-                                     displayIndex: true,
-                                     cmsUsername: "John Bell",
-                                     cmsEmail: "user@example.com"});
+            //This configuration connects to a live Scalar server to edit and share annotations
+            //Note that it's not necessary to delay this or put it in a function call,
+            //it's only done here for demonstration purposes so you can see the original
+            //video and then the wrapped version after.
+            var serverAddress = "https://scalar.usc.edu/dev/semantic-annotation-tool/";
+            var tagsAddress = "https://onomy.org/published/83/json";
+            //var tagsAddress = "https://onomy.org/published/93/json";
+            var apiKey = "do3D40s9aDkgk4RfaaFoeignbmd";
+            var localURLAddress = "http://localhost:3000/annotation1.json";
+            $("video").first().annotate({serverURL: serverAddress, 
+                                        tagsURL: tagsAddress, 
+                                        apiKey: apiKey, 
+                                        kioskMode: false,
+                                        showManifest: true,
+                                        clearContainer: false,
+                                        renderer: customRenderer,
+                                        unrenderer: customUnrenderer,
+                                        callback: cb,
+                                        displayIndex: true,
+                                        cmsUsername: "John Bell",
+                                        cmsEmail: "user@example.com",
+                                        onomyLanguage: "zh-Hans"});
         }
 
         // For demonstration purposes:

@@ -650,24 +650,50 @@ class AnnotationGUI {
     }
 
     GetTagsQuery(){
+        console.log("this.annotator.onomyLanguage: " + this.annotator.onomyLanguage);
         return {
             url: this.annotator.tagsURL,
             dataType: 'json',
             delay: 250,
             cache: true,
+            onomyLanguage: this.annotator.onomyLanguage,
             processResults: function (data) {
                 // Parse the labels into the format expected by Select2
+                // multilingual tags
+                let multilingual_tags = [];
+                let m_index = 1;
+
                 let tags = [];
                 let index = 1;
                 for(let term of data["terms"]){
+                    //if onomyLanguage is defined collect multilingual tags
+                    if(this.ajaxOptions.onomyLanguage != '' && term['labels'] != undefined) {
+                        for(let label of term["labels"]) {
+                            let xml_lang = label["xml:lang"];
+                            let m_label = label["rdfs:label"]
+                            if (xml_lang == this.ajaxOptions.onomyLanguage && m_label && m_label.trim != "") {
+                                multilingual_tags.push({
+                                    id: m_index,
+                                    text: m_label
+                                });
+                                m_index++;
+                            }
+                        }
+                    }
                     tags.push({
                         id: index,
                         text: term["rdfs:label"]
                     });
                     index++;
                 }
+
+                let return_tags = multilingual_tags
+                if (return_tags.length == 0) {
+                    return_tags = tags
+                }
                 return {
-                    results: tags
+                    //results: tags - use tags when the language is not defined
+                    results: return_tags
                 };
             }
         }
