@@ -343,8 +343,8 @@ class ServerInterface {
                 "scalar:urn": "urn:scalar:version:" + annotation.id,
                 "native": "false",
                 "action": "DELETE",
-                "api_key": "REMOVED",
-                "id": "siva@dartmouth.edu"
+                "api_key": this.annotator.apiKey,
+                "id": this.annotator.id
             };
         
 

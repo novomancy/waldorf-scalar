@@ -53,6 +53,8 @@ showManifest: false             //showManifest adds a button to pop a new window
                                 //json. kioskMode: true implies showManifest: true
 tagsURL: tagsAddress            //If you have an external tagging vocabulary, provide the 
                                 //URL to it here
+onomyLanguage: languageName     //If the external tagging vocabulary supports multilingual
+                                //provide the language name here. Refer: xml:lang attribute value
 displayIndex: true              //Whether or not to display an index of annotations
 
 User options:
