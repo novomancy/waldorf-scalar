@@ -286,65 +286,16 @@ class ServerInterface {
             if(annotation["creator"] == null) annotation["creator"] = {};
             annotation["creator"]["email"] = localStorage.getItem('waldorf_user_email');
             annotation["creator"]["nickname"] = localStorage.getItem('waldorf_user_name');
-            // annotation["creator"]["native"] = 0;
-            // annotation["creator"]["scalar:urn"] =  "urn:scalar:version:" + annotation.id
-            // annotation["creator"]["api_key"] = key;
+
         }
 
-        //setaction in annotation payload
-        // annotation["request"]["items"]["action"] = "delete";
-        // annotation["request"]["items"]["native"] = 0;
-        // annotation["request"]["items"]["scalar:urn"] = "urn:scalar:version:" + annotation.id;
-        // annotation["request"]["items"]["api_key"] = key;
-        // annotation["request"]["email"] = localStorage.getItem('waldorf_user_email');
-        // annotation["request"]["nickname"] = localStorage.getItem('waldorf_user_name');
-
-        // annotation["action"] = "DELETE";
-        // annotation["native"] = "false";
-        // annotation["scalar:urn"] = "urn:scalar:version:" + annotation.id;
-        // annotation["api_key"] = key; //"18ca72be826d0043de9ce47c4d81f04f01bf395a";
-        // annotation["email"] = localStorage.getItem('waldorf_user_email'); //'siva@dartmouth.edu';
-        // annotation["nickname"] = localStorage.getItem('waldorf_user_name'); //'Siva Kandasamy'; 
-        //console.log(localStorage.getItem('waldorf_user_email'));
-
-        // let key;
-        // if (this.annotator.apiKey){
-        //     key = this.annotator.apiKey;
-        //     let email_storage = localStorage.getItem('waldorf_user_email');
-        //     if (email_storage === null) {
-        //         console.error("[Server Interface] You are not logged in!");
-        //         this.annotator.messageOverlay.ShowError("You are not logged in!");
-        //         let deferred = $.Deferred();
-        //         deferred.reject({
-        //             success: false,
-        //             data: "Not logged in."
-        //         });
-        //         return deferred.promise();
-        //     }
-        // } else {
-        //     key = localStorage.getItem('waldorf_auth_token');
-        //     if (key === null) {
-        //         console.error("[Server Interface] You are not logged in!");
-        //         this.annotator.messageOverlay.ShowError("You are not logged in!");
-        //         let deferred = $.Deferred();
-        //         deferred.reject({
-        //             success: false,
-        //             data: "Not logged in."
-        //         });
-        //         return deferred.promise();
-        //     }
-        // }
-
-
-        console.log("Deleting annotation " + annotation.id);
-        console.log(annotation);
         let del_url = this.baseURL + "api/delete";
         let del_data = {
                 "scalar:urn": "urn:scalar:version:" + annotation.id,
                 "native": "false",
                 "action": "DELETE",
-                "api_key": this.annotator.apiKey,
-                "id": this.annotator.id
+                "api_key": annotation.request.items.api_key,
+                "id": annotation.request.items.id
             };
         
 
@@ -353,19 +304,11 @@ class ServerInterface {
                 console.log("Delete error response");
                 console.log(response);
                 console.log(response.responseText);
-                // var returned_response = "undefined error while deleting the annotation";
-                // if (response.responseJSON) {
-                //     response.responseJSON.error.code[0].value + " : " + response.responseJSON.error.message[0].value ;
-                // }
-                // console.error(`Could not delete the annotation. Message:\n ${returned_response}`);
-                // this.annotator.messageOverlay.ShowError(`Could not delete the annotation!<br>(${returned_response})`);
             }  
         }).done((response) => {
             console.log("Successfully deleted the annotation.");
             this.annotator.messageOverlay.ShowMessage("Successfully deleted the annotation.");
         }).fail((response) => {
-            //console.error(`Could not delete the annotation. Message:\n ${response.responseJSON.detail}`);
-            //this.annotator.messageOverlay.ShowError(`Could not delete the annotation!<br>(${response.responseJSON.detail})`);
             var returned_response = "undefined failure while deleting the annotation";
             if (response.responseJSON) {
                 response.responseJSON.error.code[0].value + " : " + response.responseJSON.error.message[0].value ;
@@ -373,57 +316,6 @@ class ServerInterface {
             console.error(`Could not delete the annotation. Message:\n ${returned_response}`);
             this.annotator.messageOverlay.ShowError(`Could not delete the annotation!<br>(${returned_response})`);
         });
-        // return $.ajax({
-        //     url: this.baseURL + "api/delete",
-        //     type: "POST",
-        //     //dataType: 'json', // Necessary for Rails to see this data type correctly
-        //     contentType: 'application/json',  // Necessary for Rails to see this data type correctly
-        //     //data: annotation,
-        //     //data: JSON.stringify(annotation),  // Stringify necessary for Rails to see this data type correctly
-        //     // data: {
-        //     //     //"id": annotation.id,
-        //     //     "scalar:urn": "urn:scalar:version:" + annotation.id,
-        //     //     "native": 0,
-        //     //     "action": 'DELETE'
-        //     // },
-
-        //     data: {
-        //         "scalar:urn": "urn:scalar:version:" + annotation.id,
-        //         "native": "true",
-        //         "action": "DELETE",
-        //         "api_key": "do3D40s9aDkgk4RfaaFoeignbmd",
-        //         "id": "siva@dartmouth.edu"
-        //     },
-        //     async: true,
-        //     // context: this,
-        //     // beforeSend: function (xhr) {
-        //     //     xhr.setRequestHeader('Authorization', this.make_write_auth(key));
-        //     // },
-        //     error: (response) => {
-        //         console.log("Delete error response");
-        //         console.log(response);
-        //         console.log(response.responseText);
-        //         var returned_response = "undefined error while deleting the annotation";
-        //         if (response.responseJSON) {
-        //             response.responseJSON.error.code[0].value + " : " + response.responseJSON.error.message[0].value ;
-        //         }
-        //         console.error(`Could not delete the annotation. Message:\n ${returned_response}`);
-        //         this.annotator.messageOverlay.ShowError(`Could not delete the annotation!<br>(${returned_response})`);
-        //     }
-
-        // }).done((response) => {
-        //     console.log("Successfully deleted the annotation.");
-        //     this.annotator.messageOverlay.ShowMessage("Successfully deleted the annotation.");
-        // }).fail((response) => {
-        //     //console.error(`Could not delete the annotation. Message:\n ${response.responseJSON.detail}`);
-        //     //this.annotator.messageOverlay.ShowError(`Could not delete the annotation!<br>(${response.responseJSON.detail})`);
-        //     var returned_response = "undefined failure while deleting the annotation";
-        //     if (response.responseJSON) {
-        //         response.responseJSON.error.code[0].value + " : " + response.responseJSON.error.message[0].value ;
-        //     }
-        //     console.error(`Could not delete the annotation. Message:\n ${returned_response}`);
-        //     this.annotator.messageOverlay.ShowError(`Could not delete the annotation!<br>(${returned_response})`);
-        // })
     }
 
 }
