@@ -3,6 +3,17 @@
         "http://www.w3.org/ns/anno.jsonld",
         "http://iiif.io/api/presentation/3/context.json"
     ],
+    "service":{
+        "client_id": "scalar",
+        "client_ver": "2.5.12",
+        "items": {
+            "native": false,
+            "id": "usersid",
+            "api_key": "putanapikeyhere",
+            "action": "add",
+            "format": "json"
+        }  
+    },
     "id": "http://scalar.dartmouth.edu/sample_book/sample_anno_api_endpoint_url.php",
     "type": "Manifest",
     "label": {
