@@ -545,18 +545,20 @@ class AnnotationGUI {
     GetAnnotationObject(){
 
         let annotation = new Annotation(this.originalAnnotation);
+        console.log("this.originalAnnotation: " + JSON.stringify(this.originalAnnotation));
 
-        // // Create and add the creator metadata if it's available
-        // if(serverJSON.metadata.userName && serverJSON.metadata.userEmail){
-        //     let creator = {
-        //         //id: "Unspecified",
-        //         "type": "Person",
-        //         "nickname": serverJSON.metadata.userName,
-        //         "email": serverJSON.metadata.userEmail
-        //     };
-        //     annotation["creator"] = creator;
-        // }
+        annotation["body"] = this.BuildAnnotationBodyV1();
+        annotation["target"] = this.BuildAnnotationTargetV1();
 
+        // Recompute read-only access properties after all other properties have been set
+        annotation.recalculate();
+
+        // Clone the object so we don't modify anything by changing this object
+        let clone = JSON.parse(JSON.stringify(annotation))
+        return clone;
+    }
+
+    BuildAnnotationBodyV1() {
         let body = [];
 
         // Build text descriptor
@@ -580,28 +582,16 @@ class AnnotationGUI {
             body.push(bodyTag);
         }
 
-        annotation["body"] = body;
+        return body;
+    }
 
+    BuildAnnotationTargetV1() {
         let target = {
             "id": this.annotator.url, // URL of the video
             "type": "Video"
         }
 
         let selectors = [];
-
-        // Build polygon selector
-        // var i = 0;
-        // for(i=0; i < this.polyEditor.$polygons.length; i++) {
-        //     let points = this.polyEditor.$polygons[i]; //this.polyEditor.GetPoints();
-        //     if(points.length > 0) {
-        //         let pointsStr = points.map(item => { return `${item[0]},${item[1]}` }).join(" ");
-                // let polygonSelector = {
-                //     "type": "SvgSelector",
-                //     "value": `<svg:svg viewBox='0 0 100 100' preserveAspectRatio='none'><polygon points='${pointsStr}' /></svg:svg>` // http://stackoverflow.com/a/24898728
-                // }
-                // selectors.push(polygonSelector);
-        //     }
-        // }
 
         let safeEndTime = GetSecondsFromHMS(this.$timeStartField.val());
         if(GetSecondsFromHMS(this.$timeEndField.val()) > GetSecondsFromHMS(this.$timeStartField.val())){
@@ -638,15 +628,7 @@ class AnnotationGUI {
         // Finalize target section
         target["selector"] = selectors;
 
-        
-        annotation["target"] = target;
-
-        // Recompute read-only access properties after all other properties have been set
-        annotation.recalculate();
-
-        // Clone the object so we don't modify anything by changing this object
-        let clone = JSON.parse(JSON.stringify(annotation))
-        return clone;
+        return target;
     }
 
     GetTagsQuery(){

@@ -95,7 +95,10 @@ class ServerInterface {
     FetchAnnotations(searchKey, searchParam) {
         //This is replaced by this.baseURL, which is defined in config
         //var book_url = 'http://scalar.usc.edu/dev/semantic-annotation-tool/';  // This will be defined in the Book's JS
-        var ajax_url = this.baseURL + 'rdf/file/' + searchParam.replace(this.baseURL,'') + '?format=oac&prov=1&rec=2';
+        //https://scalar.usc.edu/dev/semantic-annotation-tool/rdf/file/media/Inception%20Corgi%20Flop.mp4?format=oac&prov=1&rec=2
+        var ajax_url = this.baseURL + 'rdf/file/' + searchParam.replace(this.baseURL, '') + '?format=oac&prov=1&rec=2';
+        //var ajax_url = this.baseURL + 'rdf/file/' + searchParam.replace(this.baseURL,'') + '?format=iiif&prov=1&rec=2';
+        //console.log("ajax_url: " + ajax_url);
         return $.ajax({
             url: ajax_url,
             type: "GET",
@@ -105,33 +108,18 @@ class ServerInterface {
         }).done(function (data) {
             console.log('[Server Interface] Fetched ' + data.length + ' annotations for ' + searchKey + ': "' + searchParam + '".');
         }).fail(function (response) {
-            //console.error('[Server Interface] Error fetching annotations for ' + searchKey + ': "' + searchParam + '"\n' + response.responseJSON.detail + '.');
-            //_this2.annotator.messageOverlay.ShowError('Could not retrieve annotations!<br>(' + response.responseJSON.detail + ')');
             var returned_response = response.responseJSON.error.code[0].value + " : " + response.responseJSON.error.message[0].value ;
             console.error('[Server Interface] Error fetching annotations for ' + searchKey + ': "' + searchParam + '"\n ' + returned_response);
             _this2.annotator.messageOverlay.ShowError('Could not retrieve annotations!<br>(' + returned_response + ')');
 
         });  
-
-
-        // return $.ajax({
-        //     url: this.baseURL + "/api/getAnnotationsByLocation",
-        //     type: "GET",
-        //     data: { [searchKey]: searchParam },
-        //     dataType: "json",
-        //     async: true
-        // }).done((data) => {
-        //     console.log(`Fetched ${data.length} annotations for ${searchKey}: "${searchParam}".`);
-        // }).fail((response) => {
-        //     console.error(`Error fetching annotations for ${searchKey}: "${searchParam}"\n${response.responseJSON.detail}.`);
-        //     this.annotator.messageOverlay.ShowError(`Could not retrieve annotations!<br>(${response.responseJSON.detail})`);
-        // });
     }
 
     PostAnnotation(callback){
         console.log("Posting annotation...");
         let annotation = this.annotator.gui.GetAnnotationObject();
-        console.log(annotation);
+        // console.log(annotation);
+        // console.log("annotation: " + JSON.stringify(annotation));
 
         let key;
         if (this.annotator.apiKey){
@@ -157,41 +145,39 @@ class ServerInterface {
             if(annotation["creator"] == null) annotation["creator"] = {};
             annotation["creator"]["email"] = localStorage.getItem('waldorf_user_email');
             annotation["creator"]["nickname"] = localStorage.getItem('waldorf_user_name');
-            //annotation.metadata.userEmail = localStorage.getItem('waldorf_user_email');
-            //anno_data["email"] = localStorage.getItem('waldorf_user_email'); // Email
         }
-        
-        //data = JSON.stringify(data);
-        //console.log(anno_data);
 
         //setaction in annotation payload
         annotation["request"]["items"]["action"] = "add";
-        
-        $.ajax({
-            //url: this.baseURL + "/api/addAnnotation",
-            url: this.baseURL + "api/add",
-            type: "POST",
-            dataType: 'json', // Necessary for Rails to see this data type correctly
-            contentType: 'application/json',  // Necessary for Rails to see this data type correctly
-            data: JSON.stringify(annotation),  // Stringify necessary for Rails to see this data type correctly
-            async: true,
-            context: this,
-            beforeSend: function (xhr) {
-                xhr.setRequestHeader('Authorization', this.make_write_auth(key));
-            },
-            success: (data) => {
-                console.log("Successfully posted new annotation.");
-                this.annotator.messageOverlay.ShowMessage("Successfully created new annotation.");
-                annotation.id = data.id; // Append the ID given by the response
-                if(callback) callback(annotation);
-            },
-            error: (response) => {
-                var returned_response = response.responseJSON.error.code[0].value + " : " + response.responseJSON.error.message[0].value ;
-                console.error(`Could not post new annotation! Message:\n ${returned_response}`);
-                this.annotator.messageOverlay.ShowError(`Could not post new annotation!<br>(${returned_response})`);
-            }
 
-        });
+        console.log("PostAnnotation payload: " + JSON.stringify(annotation));
+        
+        // TODO: SIVA: Hided for debugging IIIF json format generation 7/6/2021
+        // $.ajax({
+        //     //url: this.baseURL + "/api/addAnnotation",
+        //     url: this.baseURL + "api/add",
+        //     type: "POST",
+        //     dataType: 'json', // Necessary for Rails to see this data type correctly
+        //     contentType: 'application/json',  // Necessary for Rails to see this data type correctly
+        //     data: JSON.stringify(annotation),  // Stringify necessary for Rails to see this data type correctly
+        //     async: true,
+        //     context: this,
+        //     beforeSend: function (xhr) {
+        //         xhr.setRequestHeader('Authorization', this.make_write_auth(key));
+        //     },
+        //     success: (data) => {
+        //         console.log("Successfully posted new annotation.");
+        //         this.annotator.messageOverlay.ShowMessage("Successfully created new annotation.");
+        //         annotation.id = data.id; // Append the ID given by the response
+        //         if(callback) callback(annotation);
+        //     },
+        //     error: (response) => {
+        //         var returned_response = response.responseJSON.error.code[0].value + " : " + response.responseJSON.error.message[0].value ;
+        //         console.error(`Could not post new annotation! Message:\n ${returned_response}`);
+        //         this.annotator.messageOverlay.ShowError(`Could not post new annotation!<br>(${returned_response})`);
+        //     }
+
+        // });
     }
 
     EditAnnotation(callback){

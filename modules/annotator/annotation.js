@@ -3,7 +3,8 @@ class Annotation {
 
     constructor(json = null){
 
-        this["@context"] = "http://www.w3.org/ns/anno.jsonld";
+        this["@context"] = ["http://www.w3.org/ns/anno.jsonld",
+                        "http://iiif.io/api/presentation/3/context.json"];
         this["request"] = {
             "client_id": "scalar",
             "client_ver": "2.5.12",
@@ -15,11 +16,12 @@ class Annotation {
                 "format": "json"
             }
         };
-        this["type"] = "Annotation";
+        this["type"] = "Manifest";
         this["motivation"] = "highlighting";
 
         this["body"] = [];
         this["target"] = {};
+        this["items"] = [];
 
         //delete this.beginTime;
         //delete this.endTime;
