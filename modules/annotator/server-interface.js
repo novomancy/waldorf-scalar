@@ -119,7 +119,7 @@ class ServerInterface {
         console.log("Posting annotation...");
         let annotation = this.annotator.gui.GetAnnotationObject();
         // console.log(annotation);
-        // console.log("annotation: " + JSON.stringify(annotation));
+        console.log("annotation: " + JSON.stringify(annotation));
 
         let key;
         if (this.annotator.apiKey){

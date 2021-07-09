@@ -545,10 +545,11 @@ class AnnotationGUI {
     GetAnnotationObject(){
 
         let annotation = new Annotation(this.originalAnnotation);
-        console.log("this.originalAnnotation: " + JSON.stringify(this.originalAnnotation));
+        //console.log("this.originalAnnotation: " + JSON.stringify(this.originalAnnotation)); //prints null
 
         annotation["body"] = this.BuildAnnotationBodyV1();
-        annotation["target"] = this.BuildAnnotationTargetV1();
+        annotation["target"] = this.BuildAnnotationTarget();
+        annotation["items"] = this.BuildAnnotationItems();
 
         // Recompute read-only access properties after all other properties have been set
         annotation.recalculate();
@@ -556,6 +557,67 @@ class AnnotationGUI {
         // Clone the object so we don't modify anything by changing this object
         let clone = JSON.parse(JSON.stringify(annotation))
         return clone;
+    }
+
+    BuildAnnotationItems() {
+
+        let buildTime = new Date().toISOString(); //"2020-08-16T12:00:00Z"
+        let items = [{
+            "id": "", //TODO: "art:url" from annotation json file
+            "type": "Canvas",
+            "height": 480, //TODO:
+            "width": 640, //TODO:
+            "duration": 143, //TODO:
+            "content": [{
+                "id": "", //TODO: media file reference id - check the incoming annotation collection for id
+                "type": "Video",
+                "height": 480, //TODO:
+                "width": 640, //TODO:
+                "duration": 143, //TODO:
+                "label": {
+                    "en": "Inception Corgi Flop" //TODO: "dcterms:title" from the annotation json file
+                },
+                "description": {
+                    "en": ""
+                }
+            }],
+            "items": [{
+                "id": "",  
+                "type": "AnnotationPage",
+                "generator": "http://github.com/anvc/scalar",
+                "generated": buildTime, 
+                "items": [{
+                    "id": "", //Annotation id - after successful data saving
+                    "type": "Annotation",
+                    "generator": "http://github.com/novomancy/waldorf-scalar", //TODO: config value
+                    "motivation": "highlighting",
+                    "creator": this.BuildCreatorTemplate(), //TODO: 
+                    "created": buildTime,  
+                    "rights": "https://creativecommons.org/licenses/by/4.0/",
+                }],
+                "body": this.BuildAnnotationBodyV2(), //TODO: 
+                "target": this.BuildAnnotationTarget()
+            }]
+    
+        }];
+
+
+        return items;
+                
+    }
+
+    //TODO:
+    BuildCreatorTemplate() {
+        return {
+            "type": "Person",
+            "nickname": "John Bell",
+            "email_sha1": "beee4014ad7bbf78f8930b668ae30ee12424ed1e"
+        }
+    }
+
+    //TODO: build with tags entries from onomy
+    BuildAnnotationBodyV2() {
+        return this.BuildAnnotationBodyV1();
     }
 
     BuildAnnotationBodyV1() {
@@ -585,7 +647,7 @@ class AnnotationGUI {
         return body;
     }
 
-    BuildAnnotationTargetV1() {
+    BuildAnnotationTarget() {
         let target = {
             "id": this.annotator.url, // URL of the video
             "type": "Video"
@@ -611,6 +673,7 @@ class AnnotationGUI {
 
             let polygonSelector = {
                 "type": "SvgSelector",
+                "conformsTo": "http://www.w3.org/TR/media-frags/", //added for v2
                 "value": `${value}` // http://stackoverflow.com/a/24898728
             }
             selectors.push(polygonSelector);
@@ -649,6 +712,7 @@ class AnnotationGUI {
                 let index = 1;
                 for(let term of data["terms"]){
                     //if onomyLanguage is defined collect multilingual tags
+                    let terms_id = term["rdfs:about"]
                     if(this.ajaxOptions.onomyLanguage != '' && term['labels'] != undefined) {
                         for(let label of term["labels"]) {
                             let xml_lang = label["xml:lang"];
@@ -656,7 +720,8 @@ class AnnotationGUI {
                             if (xml_lang == this.ajaxOptions.onomyLanguage && m_label && m_label.trim != "") {
                                 multilingual_tags.push({
                                     id: m_index,
-                                    text: m_label
+                                    text: m_label,
+                                    termid: terms_id
                                 });
                                 m_index++;
                             }
@@ -664,7 +729,8 @@ class AnnotationGUI {
                     }
                     tags.push({
                         id: index,
-                        text: term["rdfs:label"]
+                        text: term["rdfs:label"],
+                        termid: terms_id
                     });
                     index++;
                 }
@@ -673,6 +739,8 @@ class AnnotationGUI {
                 if (return_tags.length == 0) {
                     return_tags = tags
                 }
+                console.log("return_tags");
+                console.log(return_tags);
                 return {
                     //results: tags - use tags when the language is not defined
                     results: return_tags

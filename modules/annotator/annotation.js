@@ -5,7 +5,18 @@ class Annotation {
 
         this["@context"] = ["http://www.w3.org/ns/anno.jsonld",
                         "http://iiif.io/api/presentation/3/context.json"];
-        this["request"] = {
+        // this["request"] = {
+        //     "client_id": "scalar",
+        //     "client_ver": "2.5.12",
+        //     "items": {
+        //         "native": false,
+        //         "id": "__CHECK_CONFIG_FILE__ID__",
+        //         "api_key": "__CHECK_CONFIG_FILE__API_KEY__",
+        //         "action": "TOBEFILLED",
+        //         "format": "json"
+        //     }
+        // };
+        this["service"] = {
             "client_id": "scalar",
             "client_ver": "2.5.12",
             "items": {
@@ -40,10 +51,15 @@ class Annotation {
 
     readConfig() {
         const config = require("../annotator-config.json"); 
-        this["request"]["client_id"] = config.client_id;
-        this["request"]["client_ver"] = config.client_ver;
-        this["request"]["items"]["id"] = config.id;
-        this["request"]["items"]["api_key"] = config.api_key;
+        // this["request"]["client_id"] = config.client_id;
+        // this["request"]["client_ver"] = config.client_ver;
+        // this["request"]["items"]["id"] = config.id;
+        // this["request"]["items"]["api_key"] = config.api_key;
+
+        this["service"]["client_id"] = config.client_id;
+        this["service"]["client_ver"] = config.client_ver;
+        this["service"]["items"]["id"] = config.id;
+        this["service"]["items"]["api_key"] = config.api_key;
     }
 
     /// Compute read only easy access properties
