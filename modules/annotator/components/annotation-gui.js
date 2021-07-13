@@ -25,176 +25,7 @@ class AnnotationGUI {
     }
 
     Create(){
-        //this.$container = $("<div class='waldorf-vp-post'></div>").appendTo(this.annotator.player.$container);
-        this.$postToolbar = $("<div class='flex-toolbar'></div>").appendTo(this.$container);
-        this.$postToolbar.css("margin-bottom", "5px");
-        this.$postToolbar2 = $("<div class='flex-toolbar'></div>").appendTo(this.$container);
-        this.$postToolbar2.css("margin-bottom", "5px");
-        this.$postToolbar3 = $("<div class='flex-toolbar'></div>").appendTo(this.$container);
-
-        this.$postToolbar.append($("<div></div>").css("flex-grow", 1).css("order", 0));
-
-        // Make title div
-        let $titleDiv = $("<div></div>");
-        this.$titleLabel = $("<p style='color:#ffffff; margin-right: 15px;'>Create Annotation</p>").appendTo($titleDiv);
-        this.RegisterElement($titleDiv, this.$postToolbar, -10);
-        
-        // Make "Start time" label and field
-        let $timeStartContainer = $('<div class="ui-field-contain"></div>');
-        let $timeStartLabel = $('<label for="time-start">Start:</label>').appendTo($timeStartContainer);
-        this.$timeStartField1 = $('<input type="text" name="time-start" id="time-start" value="">').appendTo($timeStartContainer);
-        this.$timeStartField1.width(50);
-        this.$timeStartField1.css("font-family", "Courier, monospace");
-        this.$timeStartField1.addClass("ui-widget ui-widget-content ui-corner-all");
-        this.$timeStartField1.attr('title', "Start time (hh:mm:ss.ss)");
-        this.$timeStartField1.on('keypress', function(event){
-            if (event.keyCode == 46 || (event.keyCode >= 48 && event.keyCode <= 58)){ //0-9, period, and colon
-                return true;
-            }
-            return false;
-        });
-        this.RegisterElement($timeStartContainer, this.$postToolbar, -5);
-
-        //add marker button
-        this.$timeStartButton = $("<button style='padding:0'>Set Start</button>").button({
-            icon: "fa fa-map-marker",
-            showLabel: false
-        }).click(() => {
-            this.$timeStartField[0].value = GetFormattedTime(this.annotator.player.videoElement.currentTime);
-        });
-        this.RegisterElement(this.$timeStartButton, this.$postToolbar, -4);   
-        
-        // Make "End time" label and field
-        let $timeEndContainer = $('<div class="ui-field-contain"></div>');
-        let $timeEndLabel = $('<label for="time-end">End:</label>').appendTo($timeEndContainer);
-        this.$timeEndField1 = $('<input type="text" name="time-end" id="time-end" value="0">').appendTo($timeEndContainer);
-        this.$timeEndField1.width(50);
-        this.$timeEndField1.css("font-family", "Courier, monospace");
-        this.$timeEndField1.addClass("ui-widget ui-widget-content ui-corner-all");
-        this.$timeEndField1.attr('title', "End time (hh:mm:ss.ss)");
-        this.$timeEndField1.on('keypress', function(event){
-            if (event.keyCode == 46 || (event.keyCode >= 48 && event.keyCode <= 58)){ //0-9, period, and colon
-                return true;
-            }
-            return false;
-        });
-
-        this.RegisterElement($timeEndContainer, this.$postToolbar, -3);
-
-        //add marker button
-        this.$timeEndButton = $("<button style='padding:0'>Set End</button>").button({
-            icon: "fa fa-map-marker",
-            showLabel: false
-        }).click(() => {
-            this.$timeEndField[0].value = GetFormattedTime(this.annotator.player.videoElement.currentTime);
-        });
-        this.RegisterElement(this.$timeEndButton, this.$postToolbar, -2);         
-
-        //Add some error checking...
-        this.$timeEndField1.blur(() => {
-            let e = $(this.$timeEndField).val();
-            let s = $(this.$timeStartField).val();
-            if(GetSecondsFromHMS(s+1) > GetSecondsFromHMS(e)){
-                $(this.$timeEndField).val(GetFormattedTime(GetSecondsFromHMS(s)+.01));
-            }
-        });
-        this.$timeStartField1.blur(() => {
-            let e = $(this.$timeEndField).val();
-            let s = $(this.$timeStartField).val();
-            if(GetSecondsFromHMS(s+1) > GetSecondsFromHMS(e)){
-                $(this.$timeEndField).val(GetFormattedTime(GetSecondsFromHMS(s)+.01));
-            }
-        });
-
-        // Make "Edit polygon" button
-        let $editPolyButton1 = $("<button>Edit Polygon</button>").button({
-            icon: "fa fa-pencil",
-            showLabel: false
-        }).click(() => {
-            this.SetVisible(false);
-            this.polyEditor.BeginEditing();
-        });
-        $editPolyButton1.attr('title', "Edit polygon test");
-        this.RegisterElement($editPolyButton1, this.$postToolbar, -1);
-
-        // // Make delete button
-        // this.$deleteButton = $("<button>Delete Annotation</button>").button({
-        //     icon: "fa fa-bomb",
-        //     showLabel: false
-        // });
-        // this.$deleteButton.css("margin-right", "15px");
-        // this.$deleteButton.attr('title', "Delete annotation");
-        // this.$deleteButton.click(() => {
-        //     this.annotator.server.DeleteAnnotation(this.originalAnnotation).done((response) => {
-        //         this.annotator.DeregisterAnnotation(this.originalAnnotation);
-        //         this.Close();
-        //     });
-        // });
-        // this.RegisterElement(this.$deleteButton, this.$postToolbar, 1, 'flex-end');
-
-        // Make cancel button
-        let $cancelButton1 = $("<button>Cancel Annotation Editing</button>").button({
-            icons: {primary: 'fa fa-remove'},
-            showLabel: false
-        });
-        $cancelButton1.attr('title', "Cancel annotation editing");
-        $cancelButton1.addClass("waldorf-cancel-button");
-        $cancelButton1.click(() => {
-            this.polyEditor.ResetPolygons();
-            this.Close();
-        });
-        this.RegisterElement($cancelButton1, this.$postToolbar, 2, 'flex-end');
-        
-        // Make "Submit Annotation" button
-        let $submitButton = $("<button>Submit Annotation</button>").button({
-            icons: {primary: 'fa fa-check'},
-            showLabel: false
-        });
-        $submitButton.attr('title', "Save annotation to database");
-        $submitButton.addClass("waldorf-confirm-button");
-        $submitButton.click(() => {
-            this.CommitAnnotationToServer((annotation, oldID) => {
-                if(this.editMode){
-                    this.annotator.UpdateAnnotation(annotation, oldID);
-                } else {
-                    this.annotator.RegisterNewAnnotation(annotation);
-                }
-                this.Close();
-            });
-        });
-        this.RegisterElement($submitButton, this.$postToolbar, 3, 'flex-end');
-
-        // Make tags field
-        this.$tagsField1 = $('<select class="form-control" multiple="multiple"></select>');
-        this.$tagsField1.width("100%");
-        this.RegisterElement(this.$tagsField1, this.$postToolbar2, -1);
-        this.$tagsField1.select2({
-            tags: true,
-            placeholder: "Tags",
-            ajax: this.GetTagsQuery(),
-            selectOnBlur: true,
-            // Allow manually entered text in drop down.
-            createTag: function (params) {
-                return {
-                    id: params.term,
-                    text: params.term,
-                    newOption: true
-                }
-            }
-        });
-        // Add custom class for bringing the dropdown to the front (fullscreen fix)
-        this.$tagsField1.data('select2').$dropdown.addClass("select2-dropdown-annotator");
-        
-        // Make annotation text field
-        this.$textField1 = $('<textarea type="text" name="anno-text" id="anno-text" value="" placeholder="Text">');
-        this.$textField1.width("100%");
-        this.$textField1.addClass("ui-widget ui-widget-content ui-corner-all");
-        this.$textField1.attr('title', 'Annotation text');
-        this.$textField1.css("flex-grow", 2);
-        this.RegisterElement(this.$textField1, this.$postToolbar3, -1);
-        
-        /*****
-         * 
+        /*
          * //new UI
          * 
          */
@@ -338,6 +169,22 @@ class AnnotationGUI {
         this.$endPolygonSet.css("visibility", "hidden");
         //this.$endPolygonSet.addClass("waldorf-confirm-button");
     
+        //Add some error checking...
+        this.$timeEndField.blur(() => {
+            let e = $(this.$timeEndField).val();
+            let s = $(this.$timeStartField).val();
+            if(GetSecondsFromHMS(s+1) > GetSecondsFromHMS(e)){
+                $(this.$timeEndField).val(GetFormattedTime(GetSecondsFromHMS(s)+.01));
+            }
+        });
+        this.$timeStartField.blur(() => {
+            let e = $(this.$timeEndField).val();
+            let s = $(this.$timeStartField).val();
+            if(GetSecondsFromHMS(s+1) > GetSecondsFromHMS(e)){
+                $(this.$timeEndField).val(GetFormattedTime(GetSecondsFromHMS(s)+.01));
+            }
+        });
+
         this.RegisterElement(this.$endPolygonSet, $stopTab, -2); 
 
         let $buttonPanel = $("<div class='button_panel'></div>").appendTo(this.$container);
@@ -520,11 +367,11 @@ class AnnotationGUI {
 
         // Modify GUI based on edit mode
         if(this.editMode) {
-            this.$titleLabel.text("Edit Annotation");
+            this.$title.text("Edit Annotation");
             this.$deleteButton.button("enable");
         }
         else {
-            this.$titleLabel.text("Create Annotation");
+            this.$title.text("Create Annotation");
             this.$deleteButton.button("disable");
         }
 
