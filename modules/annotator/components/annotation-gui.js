@@ -396,7 +396,7 @@ class AnnotationGUI {
 
         annotation["body"] = this.BuildAnnotationBodyV1();
         annotation["target"] = this.BuildAnnotationTarget();
-        annotation["items"] = this.BuildAnnotationItems();
+        //annotation["items"] = this.BuildAnnotationItems();
 
         // Recompute read-only access properties after all other properties have been set
         annotation.recalculate();
@@ -458,7 +458,7 @@ class AnnotationGUI {
         return {
             "type": "Person",
             "nickname": "John Bell",
-            "email_sha1": "beee4014ad7bbf78f8930b668ae30ee12424ed1e"
+            "email_sha1": "REMOVED"
         }
     }
 
@@ -553,32 +553,56 @@ class AnnotationGUI {
                 // Parse the labels into the format expected by Select2
                 // multilingual tags
                 let multilingual_tags = [];
+                //let m_comments = {};
+                //let comments = {};
                 let m_index = 1;
 
                 let tags = [];
                 let index = 1;
+                //let root_comment = data["rdfs:comment"];
                 for(let term of data["terms"]){
                     //if onomyLanguage is defined collect multilingual tags
-                    let terms_id = term["rdfs:about"]
+                    //let terms_id = term["rdfs:about"];
                     if(this.ajaxOptions.onomyLanguage != '' && term['labels'] != undefined) {
                         for(let label of term["labels"]) {
                             let xml_lang = label["xml:lang"];
-                            let m_label = label["rdfs:label"]
+                            let m_label = label["rdfs:label"];
                             if (xml_lang == this.ajaxOptions.onomyLanguage && m_label && m_label.trim != "") {
                                 multilingual_tags.push({
                                     id: m_index,
-                                    text: m_label,
-                                    termid: terms_id
+                                    text: m_label
                                 });
-                                m_index++;
                             }
                         }
+                        // if (term['comments'] != undefined) {
+                        //     for (let label of term['comments']) {
+                        //         let xml_lang = label["xml:lang"];
+                        //         let m_comment = label["rdfs:comments"]; //TODO: change to comment after fixing Onomy
+                        //         if (xml_lang == this.ajaxOptions.onomyLanguage && m_comment && m_comment.trim != "") {
+                        //             m_comments[m_index] = m_comment;
+                        //         } 
+                        //     }
+                        // }
+                        
+                        // // push the root value if it is blank
+                        // if (m_comments[m_index].comment == undefined || m_comments[m_index].comment.trim == "") {
+                        //     m_comments[m_index] = root_comment
+                        // }
+                        m_index++;
                     }
+                    
                     tags.push({
                         id: index,
-                        text: term["rdfs:label"],
-                        termid: terms_id
+                        text: term["rdfs:label"]
                     });
+
+                    // let node_comment = term["rdfs:comment"];
+                    // if (node_comment.trim == "") {
+                    //     node_comment = root_comment;
+                    // }
+
+                    // comments[index] = node_comment;
+
                     index++;
                 }
 

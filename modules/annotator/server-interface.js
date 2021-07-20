@@ -148,36 +148,35 @@ class ServerInterface {
         }
 
         //setaction in annotation payload
-        annotation["request"]["items"]["action"] = "add";
+        annotation["request"]["items"]["action"] = "add"; //TODO: ver2
 
         console.log("PostAnnotation payload: " + JSON.stringify(annotation));
         
-        // TODO: SIVA: Hided for debugging IIIF json format generation 7/6/2021
-        // $.ajax({
-        //     //url: this.baseURL + "/api/addAnnotation",
-        //     url: this.baseURL + "api/add",
-        //     type: "POST",
-        //     dataType: 'json', // Necessary for Rails to see this data type correctly
-        //     contentType: 'application/json',  // Necessary for Rails to see this data type correctly
-        //     data: JSON.stringify(annotation),  // Stringify necessary for Rails to see this data type correctly
-        //     async: true,
-        //     context: this,
-        //     beforeSend: function (xhr) {
-        //         xhr.setRequestHeader('Authorization', this.make_write_auth(key));
-        //     },
-        //     success: (data) => {
-        //         console.log("Successfully posted new annotation.");
-        //         this.annotator.messageOverlay.ShowMessage("Successfully created new annotation.");
-        //         annotation.id = data.id; // Append the ID given by the response
-        //         if(callback) callback(annotation);
-        //     },
-        //     error: (response) => {
-        //         var returned_response = response.responseJSON.error.code[0].value + " : " + response.responseJSON.error.message[0].value ;
-        //         console.error(`Could not post new annotation! Message:\n ${returned_response}`);
-        //         this.annotator.messageOverlay.ShowError(`Could not post new annotation!<br>(${returned_response})`);
-        //     }
+        $.ajax({
+            //url: this.baseURL + "/api/addAnnotation",
+            url: this.baseURL + "api/add",
+            type: "POST",
+            dataType: 'json', // Necessary for Rails to see this data type correctly
+            contentType: 'application/json',  // Necessary for Rails to see this data type correctly
+            data: JSON.stringify(annotation),  // Stringify necessary for Rails to see this data type correctly
+            async: true,
+            context: this,
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader('Authorization', this.make_write_auth(key));
+            },
+            success: (data) => {
+                console.log("Successfully posted new annotation.");
+                this.annotator.messageOverlay.ShowMessage("Successfully created new annotation.");
+                annotation.id = data.id; // Append the ID given by the response
+                if(callback) callback(annotation);
+            },
+            error: (response) => {
+                var returned_response = response.responseJSON.error.code[0].value + " : " + response.responseJSON.error.message[0].value ;
+                console.error(`Could not post new annotation! Message:\n ${returned_response}`);
+                this.annotator.messageOverlay.ShowError(`Could not post new annotation!<br>(${returned_response})`);
+            }
 
-        // });
+        });
     }
 
     EditAnnotation(callback){
