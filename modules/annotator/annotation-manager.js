@@ -3,6 +3,7 @@ import { Annotation } from "./annotation.js";
 class AnnotationManager {
     constructor(){
         this.annotations = [];
+        this.onomyVocabulary = [];
     }
 
     PopulateFromJSON(json){
@@ -58,6 +59,15 @@ class AnnotationManager {
         this.cached = filtered;
 
         return filtered;
+    }
+
+    GetOnomyVocabulary() {
+        return this.onomyVocabulary;
+    }
+
+    UpdateOnomyVocabulary(vocabulary) {
+        console.log("annotation-manager.js:65 UpdateOnomyVocabulary is called");
+        this.onomyVocabulary = vocabulary;
     }
 
 }

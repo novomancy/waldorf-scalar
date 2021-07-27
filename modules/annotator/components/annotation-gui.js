@@ -199,7 +199,7 @@ class AnnotationGUI {
              showLabel: false
         }).click(() => {
              this.SetVisible(false);
-             console.log("annotation-gui:353 Create");
+             //console.log("annotation-gui:353 Create");
              this.polyEditor.BeginEditing();
         });
         $editPolyButton.attr('title', "Edit polygon test2");
@@ -542,14 +542,21 @@ class AnnotationGUI {
     }
 
     GetTagsQuery(){
-        console.log("this.annotator.onomyLanguage: " + this.annotator.onomyLanguage);
+        if (this.annotator.annotationManager != undefined && this.annotator.annotationManager.onomyVocabulary.length > 0) {
+            return this.annotator.annotationManager.onomyVocabulary;
+        }
+
         return {
             url: this.annotator.tagsURL,
             dataType: 'json',
             delay: 250,
             cache: true,
             onomyLanguage: this.annotator.onomyLanguage,
+            parseFunction: this.OnomyVocabularProcess,
             processResults: function (data) {
+                return this.ajaxOptions.parseFunction(data, this.ajaxOptions.onomyLanguage);
+            },
+            processResultsOld: function (data) {
                 // Parse the labels into the format expected by Select2
                 // multilingual tags
                 let multilingual_tags = [];
@@ -620,7 +627,75 @@ class AnnotationGUI {
         }
     }
     
+    OnomyVocabularProcess(data, onomyLanguage) {  
+        // Parse the labels into the format expected by Select2
+        // multilingual tags
+        let multilingual_tags = [];
+        let m_comments = {};
+        let comments = {};
+        let m_index = 1;
 
+        let tags = [];
+        let index = 1;
+        
+        for(let term of data["terms"]){
+            //if onomyLanguage is defined collect multilingual tags
+            let terms_id = term["rdfs:about"];
+            let terms_comment = term["rdfs:comment"];
+            if (onomyLanguage != '' && term['labels'] != undefined) {
+                let t_label = "";
+                let t_comment = "";
+
+                //get labels
+                for(let label of term["labels"]) {
+                    let xml_lang = label["xml:lang"];
+                    let m_label = label["rdfs:label"];
+                    if (xml_lang == onomyLanguage && m_label && m_label.trim != "") {
+                        t_label = m_label;
+                    }
+                }
+                //get comments
+                for (let label of term['comments']) {
+                    let xml_lang = label["xml:lang"];
+                    let m_comment = label["rdfs:comments"]; //TODO: change to comment after fixing Onomy
+                    if (xml_lang == onomyLanguage && m_comment) {
+                        t_comment = m_comment;
+                    } 
+                }
+            
+                // use the term comment value if comment is blank
+                if (t_comment == undefined || t_comment.trim == "") {
+                    t_comment = terms_comment
+                }
+                multilingual_tags.push({
+                    id: m_index,
+                    text: t_label,
+                    terms_id: terms_id,
+                    comment: t_comment
+                });
+                m_index++;
+            }
+                    
+            tags.push({
+                id: index,
+                text: term["rdfs:label"],
+                terms_id: term["rdfs:about"],
+                comment: term["rdfs:comment"]
+            });
+
+            index++;
+        }
+
+        let return_tags = multilingual_tags
+        if (return_tags.length == 0) {
+            return_tags = tags
+        }
+        //console.log("return_tags");
+        //console.log(return_tags);
+        return {
+            results: return_tags,
+        };
+    }
 
 
 

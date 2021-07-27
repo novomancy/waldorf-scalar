@@ -66,6 +66,17 @@ class VideoAnnotator {
         this.annotationManager = new AnnotationManager();
         this.sessionManager = new SessionManager(this);
 
+        //load onomy vocabulary
+        $.ajax(this.gui.GetTagsQuery()).done((vocabulary)=>{
+            console.log("OnomyVocabulary is loaded");
+            //console.log(vocabulary);
+            //console.log(JSON.stringify(vocabulary));
+            let parsedVocabulary = this.gui.OnomyVocabularProcess(vocabulary);
+            //console.log(parseVocabulary);
+            //console.log(JSON.stringify(parseVocabulary));
+            this.annotationManager.UpdateOnomyVocabulary(parsedVocabulary);
+        });
+
         //localURL takes precendence - if it is anything but '' then do not load from server
         if(this.localURL == ''){
             this.server = new ServerInterface(this);
