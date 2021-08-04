@@ -17,17 +17,17 @@
     <!-- Import JQueryUI -->
     <!-- <script src="http://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
     <link rel="stylesheet" href="http://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css"> -->
-    <script src="../vendor/jquery-ui-1.12.1.min.js"></script>
-    <link rel="stylesheet" href="../vendor/jquery-ui.css">
+    <!-- <script src="../vendor/jquery-ui-1.12.1.min.js"></script>
+    <link rel="stylesheet" href="../vendor/jquery-ui.css"> -->
 
     <!-- This is loading out of order using grunt so loading manually here - JPB -->
     <!-- <link href="http://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.1/css/select2.min.css" rel="stylesheet" />
     <script src="http://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.1/js/select2.min.js"></script> -->
-    <link href="../vendor/select2.min.css" rel="stylesheet" />
-    <script src="../vendor/select2.min.js"></script>
+    <!-- <link href="../vendor/select2.min.css" rel="stylesheet" />
+    <script src="../vendor/select2.min.js"></script> -->
     <!-- Annotator Core -->
-    <script type="text/javascript" src="../dist/annotator-frontend-scalar.js"></script>
-    <link rel="stylesheet" href="../dist/annotator-frontend.css">
+    <!-- <script type="text/javascript" src="../dist/annotator-frontend-scalar.js"></script>
+    <link rel="stylesheet" href="../dist/annotator-frontend.css"> -->
 
     <!-- Dependencies we should include in the project instead of here -->
 
@@ -41,105 +41,114 @@
          If you manually create a div with that class, though, annotations will be inserted into the existing div. -->
     <div class='waldorf-info' aria-live='polite' aria-atomic='true'></div>
     <div class="waldorf-index" aria-live="polite" role="navigation"></div>
-    <script>     
-        //This is an advanced option to create a custom renderer for annotations
-        var customRenderer = function(annotator, annotation, index){
-            //In this case we're attaching a div for each annotation to the container (defined by class='waldorf-info')
-            var $panel = $("<p></p>").appendTo($("<div></div>").appendTo(annotator.infoContainer.$container));
+    <script>
 
-            // Add clickable header that brings up the edit interface if kioskMode is off.
-            var $header = $(`<b style="color: #ff0000">Custom Annotation ${index + 1}:</b><br>`);
-            if(annotator.kioskMode==false){
-                $header = $(`<a href='' title='Edit Annotation'><b style="color: #ff0000">Custom Annotation ${index + 1}:</b><br></a>`);
-                $header.click( (event) => {
-                    event.preventDefault();
-                    annotator.gui.BeginEditing(annotation);
-                });
-            }
-            $panel.append($header);
-            var $content = $("<p></p>");
+        $('head').append('<link rel="stylesheet" href="../vendor/jquery-ui.css" type="text/css" />');
+        $('head').append('<link rel="stylesheet" href="../vendor/select2.min.css" type="text/css" />');
+        $('head').append('<link rel="stylesheet" href="../dist/annotator-frontend.css" type="text/css" />');
+            $.when(
+                $.getScript('../vendor/jquery-ui-1.12.1.min.js'),
+                $.getScript('../vendor/select2.min.js'),
+                $.getScript('../dist/annotator-frontend-scalar.js')
+            ).done(function(){
+                //This is an advanced option to create a custom renderer for annotations
+                var customRenderer = function(annotator, annotation, index){
+                    //In this case we're attaching a div for each annotation to the container (defined by class='waldorf-info')
+                    var $panel = $("<p></p>").appendTo($("<div></div>").appendTo(annotator.infoContainer.$container));
+
+                    // Add clickable header that brings up the edit interface if kioskMode is off.
+                    var $header = $(`<b style="color: #ff0000">Custom Annotation ${index + 1}:</b><br>`);
+                    if(annotator.kioskMode==false){
+                        $header = $(`<a href='' title='Edit Annotation'><b style="color: #ff0000">Custom Annotation ${index + 1}:</b><br></a>`);
+                        $header.click( (event) => {
+                            event.preventDefault();
+                            annotator.gui.BeginEditing(annotation);
+                        });
+                    }
+                    $panel.append($header);
+                    var $content = $("<p></p>");
+                    
+                    //Append the content of the annotation itself. Key terms are:
+                    //annotation.body - the body of the annotation (see the filter below to grab the right node)
+                    //annotation.tags - an array of tags
+                    //annotation.beginTime and .endTime - these are floats of seconds
+                    //annotation.creator - email address of the person credited with the annotation
+                    $content.append("<b>Text: </b> " + annotation.body.filter(item => item.purpose === "describing")[0].value);
+                    $content.append("<br>");
+                    $content.append("<b>Tags: </b> " + annotation.tags.join(", "));
+                    $content.append("<br>");
+                    $content.append("<b>Time: </b> " 
+                            + annotation.beginTime
+                            + " - " 
+                            + annotation.endTime);
+                    $content.append("<br>");
+
+                    $content.append("<b>Submitted by:</b><br />"
+                    + (annotation.creator != null ? annotation.creator.nickname + ' (' + annotation.creator.email + ')' : "unspecified")
+                            );
+
+                    //attach the annotation to the container and return the container
+                    $panel.append($content);
+                    return $panel;
+                }
+
+                //This is an advanced option to create a function that runs when annotations are removed
+                var customUnrenderer = function(annotator){
+                    console.log('[Sample Page] Unrendering');
+                    annotator.infoContainer.$container.empty();
+                }
+
+                //This is an advanced option to create a callback function after creating a video annotator
+                waldorf = false;
+                var cb = function(_waldorf){
+                    waldorf = _waldorf;
+                    //This won't work immediately because the annotations aren't loaded, but
+                    //you can do the same thing later by watching for the OnAnnotationsLoaded event
+                    console.log("[Sample Page] Nothing to see here" + waldorf.GetAnnotations());
+                    waldorf.$container.on("OnAnnotationsLoaded", function(){
+                        console.log("[Sample Page] Now it works");
+                        console.log(waldorf.GetAnnotations());
+                    });
+
+                }
             
-            //Append the content of the annotation itself. Key terms are:
-            //annotation.body - the body of the annotation (see the filter below to grab the right node)
-            //annotation.tags - an array of tags
-            //annotation.beginTime and .endTime - these are floats of seconds
-            //annotation.creator - email address of the person credited with the annotation
-            $content.append("<b>Text: </b> " + annotation.body.filter(item => item.purpose === "describing")[0].value);
-            $content.append("<br>");
-            $content.append("<b>Tags: </b> " + annotation.tags.join(", "));
-            $content.append("<br>");
-            $content.append("<b>Time: </b> " 
-                    + annotation.beginTime
-                    + " - " 
-                    + annotation.endTime);
-            $content.append("<br>");
+                function launchWaldorf(){
+                    //This configuration connects to a live Scalar server to edit and share annotations
+                    //Note that it's not necessary to delay this or put it in a function call,
+                    //it's only done here for demonstration purposes so you can see the original
+                    //video and then the wrapped version after.
+                    var serverAddress = "https://scalar.usc.edu/dev/semantic-annotation-tool/";
+                    var tagsAddress = "https://onomy.org/published/83/json";
+                    //var tagsAddress = "https://onomy.org/published/94/json";
+                    var apiKey = "do3D40s9aDkgk4RfaaFoeignbmd";
+                    var localURLAddress = "http://localhost:3000/annotation1.json";
+                    $("video").first().annotate({serverURL: serverAddress, 
+                                                tagsURL: tagsAddress, 
+                                                apiKey: apiKey, 
+                                                kioskMode: false,
+                                                showManifest: true,
+                                                clearContainer: false,
+                                                renderer: customRenderer,
+                                                unrenderer: customUnrenderer,
+                                                callback: cb,
+                                                displayIndex: true,
+                                                cmsUsername: "John Bell",
+                                                cmsEmail: "user@example.com",
+                                                onomyLanguage: "zh-Hans"});
+                }
 
-            $content.append("<b>Submitted by:</b><br />"
-            + (annotation.creator != null ? annotation.creator.nickname + ' (' + annotation.creator.email + ')' : "unspecified")
-                    );
+                // For demonstration purposes:
+                setTimeout(launchWaldorf, 2000);
 
-            //attach the annotation to the container and return the container
-            $panel.append($content);
-            return $panel;
-        }
+                //...alternatively...
 
-        //This is an advanced option to create a function that runs when annotations are removed
-        var customUnrenderer = function(annotator){
-            console.log('[Sample Page] Unrendering');
-            annotator.infoContainer.$container.empty();
-        }
+                //$(document).ready(function(){ launchWaldorf() });
 
-        //This is an advanced option to create a callback function after creating a video annotator
-        waldorf = false;
-        var cb = function(_waldorf){
-            waldorf = _waldorf;
-            //This won't work immediately because the annotations aren't loaded, but
-            //you can do the same thing later by watching for the OnAnnotationsLoaded event
-            console.log("[Sample Page] Nothing to see here" + waldorf.GetAnnotations());
-            waldorf.$container.on("OnAnnotationsLoaded", function(){
-                console.log("[Sample Page] Now it works");
-                console.log(waldorf.GetAnnotations());
+                //This configuration loads annotations from a static W3C OA-formatted file
+                // var localAnnotations = "/testpage/annotation_cache.json";
+                // var tagsAddress = "https://onomy.org/published/83/json";
+                // $("video").first().annotate({localURL: localAnnotations}); //kioskMode=true is implied
             });
-
-        }
-    
-        function launchWaldorf(){
-            //This configuration connects to a live Scalar server to edit and share annotations
-            //Note that it's not necessary to delay this or put it in a function call,
-            //it's only done here for demonstration purposes so you can see the original
-            //video and then the wrapped version after.
-            var serverAddress = "https://scalar.usc.edu/dev/semantic-annotation-tool/";
-            var tagsAddress = "https://onomy.org/published/83/json";
-            //var tagsAddress = "https://onomy.org/published/94/json";
-            var apiKey = "do3D40s9aDkgk4RfaaFoeignbmd";
-            var localURLAddress = "http://localhost:3000/annotation1.json";
-            $("video").first().annotate({serverURL: serverAddress, 
-                                        tagsURL: tagsAddress, 
-                                        apiKey: apiKey, 
-                                        kioskMode: false,
-                                        showManifest: true,
-                                        clearContainer: false,
-                                        renderer: customRenderer,
-                                        unrenderer: customUnrenderer,
-                                        callback: cb,
-                                        displayIndex: true,
-                                        cmsUsername: "John Bell",
-                                        cmsEmail: "user@example.com",
-                                        onomyLanguage: "zh-Hans"});
-        }
-
-        // For demonstration purposes:
-        setTimeout(launchWaldorf, 2000);
-
-        //...alternatively...
-
-        //$(document).ready(function(){ launchWaldorf() });
-
-        //This configuration loads annotations from a static W3C OA-formatted file
-        // var localAnnotations = "/testpage/annotation_cache.json";
-        // var tagsAddress = "https://onomy.org/published/83/json";
-        // $("video").first().annotate({localURL: localAnnotations}); //kioskMode=true is implied
-
     </script>
 
 </body>
