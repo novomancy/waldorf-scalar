@@ -22,6 +22,25 @@ module.exports = function (grunt) {
                     // The result file's extension is always .js
                     "./dist/annotator-frontend.js": ["./modules/main.js"]
                 }
+            },
+            scalar_dist: {
+                options: {
+                    browserifyOptions: {
+                        // Enable inline sourcemap generation so that
+                        // stack traces reference the original files' lines
+                        debug: true
+                    },
+                    transform: [
+                        
+                    ],
+                    exclude: ['jquery', 'jquery-ui']
+                },
+                files: {
+                    // if the source file has an extension of es6 then
+                    // we change the name of the source file accordingly.
+                    // The result file's extension is always .js
+                    "./dist/annotator-frontend-scalar.js": ["./modules/main.js"]
+                }
             }
         },
         sass: {
