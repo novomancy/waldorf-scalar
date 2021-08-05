@@ -175,7 +175,6 @@ class ServerInterface {
                 console.error(`Could not post new annotation! Message:\n ${returned_response}`);
                 this.annotator.messageOverlay.ShowError(`Could not post new annotation!<br>(${returned_response})`);
             }
-
         });
     }
 

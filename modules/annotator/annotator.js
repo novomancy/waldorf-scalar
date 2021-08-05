@@ -53,8 +53,7 @@ class VideoAnnotator {
         //Determine the language of the annotation
         this.onomyLanguage = typeof args.onomyLanguage === 'undefined' ? '' : args.onomyLanguage;
 
-
-
+        this.onomyVocabulary = [];
         //localURL implies kiosk mode
         if(this.localURL != '') this.kioskMode = true;
 
@@ -75,6 +74,7 @@ class VideoAnnotator {
             //console.log(parseVocabulary);
             //console.log(JSON.stringify(parseVocabulary));
             this.annotationManager.UpdateOnomyVocabulary(parsedVocabulary);
+            this.onomyVocabulary = parsedVocabulary;
         });
 
         //localURL takes precendence - if it is anything but '' then do not load from server

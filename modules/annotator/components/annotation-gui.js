@@ -106,6 +106,8 @@ class AnnotationGUI {
         this.$tagsField.width("100%");
         this.$tagsField.css("margin-top", "-8px");
         this.RegisterElement(this.$tagsField, $bodyTab, -1);
+        console.log("annotation-gui.js:109 -> this.annotator.annotationManager.onomyVocabulary");
+        console.log(this.annotator.annotationManager);
         this.$tagsField.select2({
             tags: true,
             placeholder: "Tags",
@@ -464,7 +466,52 @@ class AnnotationGUI {
 
     //TODO: build with tags entries from onomy
     BuildAnnotationBodyV2() {
-        return this.BuildAnnotationBodyV1();
+        let body = [];
+
+        // Build text descriptor
+        let bodyText = {
+            "type" : "TextualBody",
+            "value" : this.$textField.val(),
+            "format" : "text/plain",
+            "language" : "en",
+            "purpose": "describing"
+        };
+        body.push(bodyText);
+
+        // Build tag descriptors
+        //let tags = this.$tagsField.select2("data").map((item) => { return item.text; });
+        let selected_tags = this.$tagsField.select2("data").map((item) => { return {id: item.id, text: item.text}});
+        let onomy_map = this.annotator.annotationManager.onomyVocabulary.results.reduce(function(acc, curr) {acc[curr['id']] = curr; return acc;}, {});
+
+        for(let tag of selected_tags){
+            let onomy_ref = onomy_map[tag.id];
+            let bodyTag = {}
+            if (onomy_ref) {
+                bodyTag = {
+                    "type": "SpecificResource",
+                    "purpose": "tagging",
+                    "source": {
+                      "id": onomy_ref.terms_id,
+                      "format": "application/json",
+                      "label": {
+                        "en": onomy_ref.text
+                      },
+                      "description": {
+                        "en": onomy_ref.comment
+                      }
+                    }
+                  }
+            } else {
+                bodyTag = {
+                    "type": "TextualBody",
+                    "purpose": "tagging",
+                    "value": tag.text
+                }
+            }
+            body.push(bodyTag);
+        }
+
+        return body;
     }
 
     BuildAnnotationBodyV1() {
@@ -541,7 +588,7 @@ class AnnotationGUI {
         return target;
     }
 
-    GetTagsQuery(){
+    GetTagsQuery() {
         if (this.annotator.annotationManager != undefined && this.annotator.annotationManager.onomyVocabulary.length > 0) {
             return this.annotator.annotationManager.onomyVocabulary;
         }
@@ -552,82 +599,17 @@ class AnnotationGUI {
             delay: 250,
             cache: true,
             onomyLanguage: this.annotator.onomyLanguage,
+            annotationManager: this.annotator.annotationManager,
             parseFunction: this.OnomyVocabularProcess,
             processResults: function (data) {
-                return this.ajaxOptions.parseFunction(data, this.ajaxOptions.onomyLanguage);
-            },
-            processResultsOld: function (data) {
-                // Parse the labels into the format expected by Select2
-                // multilingual tags
-                let multilingual_tags = [];
-                //let m_comments = {};
-                //let comments = {};
-                let m_index = 1;
-
-                let tags = [];
-                let index = 1;
-                //let root_comment = data["rdfs:comment"];
-                for(let term of data["terms"]){
-                    //if onomyLanguage is defined collect multilingual tags
-                    //let terms_id = term["rdfs:about"];
-                    if(this.ajaxOptions.onomyLanguage != '' && term['labels'] != undefined) {
-                        for(let label of term["labels"]) {
-                            let xml_lang = label["xml:lang"];
-                            let m_label = label["rdfs:label"];
-                            if (xml_lang == this.ajaxOptions.onomyLanguage && m_label && m_label.trim != "") {
-                                multilingual_tags.push({
-                                    id: m_index,
-                                    text: m_label
-                                });
-                            }
-                        }
-                        // if (term['comments'] != undefined) {
-                        //     for (let label of term['comments']) {
-                        //         let xml_lang = label["xml:lang"];
-                        //         let m_comment = label["rdfs:comments"]; //TODO: change to comment after fixing Onomy
-                        //         if (xml_lang == this.ajaxOptions.onomyLanguage && m_comment && m_comment.trim != "") {
-                        //             m_comments[m_index] = m_comment;
-                        //         } 
-                        //     }
-                        // }
-                        
-                        // // push the root value if it is blank
-                        // if (m_comments[m_index].comment == undefined || m_comments[m_index].comment.trim == "") {
-                        //     m_comments[m_index] = root_comment
-                        // }
-                        m_index++;
-                    }
-                    
-                    tags.push({
-                        id: index,
-                        text: term["rdfs:label"]
-                    });
-
-                    // let node_comment = term["rdfs:comment"];
-                    // if (node_comment.trim == "") {
-                    //     node_comment = root_comment;
-                    // }
-
-                    // comments[index] = node_comment;
-
-                    index++;
-                }
-
-                let return_tags = multilingual_tags
-                if (return_tags.length == 0) {
-                    return_tags = tags
-                }
-                console.log("return_tags");
-                console.log(return_tags);
-                return {
-                    //results: tags - use tags when the language is not defined
-                    results: return_tags
-                };
+                return this.ajaxOptions.parseFunction(data, this.ajaxOptions.onomyLanguage, this.ajaxOptions.annotationManager);
             }
         }
     }
     
-    OnomyVocabularProcess(data, onomyLanguage) {  
+    OnomyVocabularProcess(data, onomyLanguage, annotationManager) {  
+        console.log("annotationManager");
+        console.log(annotationManager);
         // Parse the labels into the format expected by Select2
         // multilingual tags
         let multilingual_tags = [];
