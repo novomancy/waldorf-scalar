@@ -1,0 +1,114 @@
+{
+    "@context": [
+        "http://www.w3.org/ns/anno.jsonld",
+        "http://iiif.io/api/presentation/3/context.json"
+    ],
+    "service":{
+        "client_id": "scalar",
+        "client_ver": "2.5.12",
+        "items": {
+            "native": false,
+            "id": "usersid",
+            "api_key": "putanapikeyhere",
+            "action": "add",
+            "format": "json"
+        }  
+    },
+    "id": "http://scalar.dartmouth.edu/sample_book/sample_anno_api_endpoint_url.php",
+    "type": "Manifest",
+    "label": {
+        "en": "Annotations for \"African American Atheletes Protest Against San Jose State Fraternities\""
+    },
+    "rights": "https://creativecommons.org/licenses/by/4.0/",
+    "items": [
+        {
+            "id": "http://scalar.dartmouth.edu/sample_book/sample_scalar_media_page",
+            "type": "Canvas",
+            "height": 480,
+            "width": 640,
+            "duration": 143,
+            "content": [
+                {
+                    "id": "http://mediaecology.dartmouth.edu/collections/acrh/batv/KPIX%2033445.mp4",
+                    "type": "Video",
+                    "height": 480,
+                    "width": 640,
+                    "duration": 143,
+                    "label": {
+                        "en": "African American Atheletes Protest Against San Jose State Fraternities"
+                    },
+                    "description": {
+                        "en": "KPIX News footage from September 19th 1967 featuring a report by Belva Davis on allegations of racial discrimination at San Jose State University, from a group of African American athletes led by Dr. Harry Edwards. Includes scenes of student body President Vic Lee and Dr. Edwards speaking at press conferences. Opening graphic designed by Carrie Hawks."
+                    }
+                }
+            ],
+            "items": [
+                {
+                    "id": "http://scalar.dartmouth.edu/sample_book/sample_anno_page",
+                    "type": "AnnotationPage",
+                    "generator": "http://github.com/anvc/scalar",
+                    "generated": "2020-08-16T12:00:00Z",
+                    "items": [
+                        {
+                            "id": "http://scalar.dartmouth.edu/sample_book/sample_annotation1",
+                            "type": "Annotation",
+                            "generator": "http://github.com/novomancy/waldorf-scalar",
+                            "motivation": "highlighting",
+                            "creator": {
+                                "type": "Person",
+                                "nickname": "John Bell",
+                                "email_sha1": "beee4014ad7bbf78f8930b668ae30ee12424ed1e"
+                            },
+                            "created": "2020-05-01T14:21:08Z",
+                            "rights": "https://creativecommons.org/licenses/by/4.0/",
+                            "body": [
+                                {
+                                    "type": "TextualBody",
+                                    "value": "Close up (CU) on Belva Davis, the same news reporter. She states that, today,  the associated student body president, Vic Lee, and the leader of the demonstrators, Harry Edwards, held a press conference to discuss the situation. ",
+                                    "format": "text/plain",
+                                    "language": "en",
+                                    "purpose": "describing"
+                                },
+                                {
+                                    "type": "SpecificResource",
+                                    "purpose": "tagging",
+                                    "source": {
+                                        "id": "http://onomy.org/published/93/term/5772",
+                                        "format": "application/json",
+                                        "label": {
+                                            "en": "editing"
+                                        },
+                                        "description": {
+                                            "en": "the activity of selecting the scenes to be shown and putting them together to create a film"
+                                        }
+                                    }
+                                },
+                                {
+                                    "type": "TextualBody",
+                                    "purpose": "tagging",
+                                    "value": "Edwards, Harry"
+                                }
+                            ],
+                            "target": {
+                                "id": "http://mediaecology.dartmouth.edu/collections/acrh/batv/KPIX%2033445.mp4",
+                                "type": "Video",
+                                "selector": [
+                                    {
+                                        "type": "FragmentSelector",
+                                        "conformsTo": "http://www.w3.org/TR/media-frags/",
+                                        "value": "t=44.11,54.18"
+                                    },
+                                    {
+                                        "type": "SvgSelector",
+                                        "conformsTo": "http://www.w3.org/TR/SVG/",
+                                        "value": "<svg:svg viewBox='0 0 100 100' preserveAspectRatio='none'><polygon points='23.22509765625,11.458333333333334 83.69384765625,10 83.69384765625,71.66666666666667 21.81884765625,74.375'><animate attributeName='points' values='0,0 0,0 0,0 0,0;23.22509765625,11.458333333333334 83.69384765625,10 83.69384765625,71.66666666666667 21.81884765625,74.375' begin='44.11s' end='54.18s' /></svg:svg>"
+                                    }
+                                ]
+                            }
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}
