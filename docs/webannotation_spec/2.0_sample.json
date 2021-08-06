@@ -17,7 +17,7 @@
     "id": "http://scalar.dartmouth.edu/sample_book/sample_anno_api_endpoint_url.php",
     "type": "Manifest",
     "label": {
-        "en": ["Annotations for \"African American Atheletes Protest Against San Jose State Fraternities\""]
+        "en": ["Annotations for \"African American Atheletes Protest Against San Jose State Fraternities\""] 
     },
     "rights": "https://creativecommons.org/licenses/by/4.0/",
     "items": [
