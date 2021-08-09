@@ -252,6 +252,8 @@ class AnnotationGUI {
         $saveButton.css("float", "left");
         this.RegisterElement($saveButton, $buttonPanel, -1);
 
+        //https://stackoverflow.com/questions/13837304/jquery-ui-non-ajax-tab-loading-whole-website-into-itself
+        $('base').remove();
         this.$tabs.tabs().addClass('ui-tabs-vertical');
         //let $script_section = $
         //this.$container.hide();
