@@ -57,6 +57,10 @@ class VideoAnnotator {
         //localURL implies kiosk mode
         if(this.localURL != '') this.kioskMode = true;
 
+        //additional data from annotations collected from scalar to be added in API 2.0 
+        this.contentLabel = "";
+        this.artURL = "";
+
         this.Wrap();
         this.PopulateControls();
 
@@ -67,12 +71,8 @@ class VideoAnnotator {
 
         //load onomy vocabulary
         $.ajax(this.gui.GetTagsQuery()).done((vocabulary)=>{
-            console.log("OnomyVocabulary is loaded");
-            //console.log(vocabulary);
-            //console.log(JSON.stringify(vocabulary));
-            let parsedVocabulary = this.gui.OnomyVocabularProcess(vocabulary);
-            //console.log(parseVocabulary);
-            //console.log(JSON.stringify(parseVocabulary));
+            //console.log("OnomyVocabulary is loaded");
+            let parsedVocabulary = this.gui.OnomyVocabularProcess(vocabulary, this.onomyLanguage);
             this.annotationManager.UpdateOnomyVocabulary(parsedVocabulary);
             this.onomyVocabulary = parsedVocabulary;
         });
@@ -88,6 +88,10 @@ class VideoAnnotator {
             	//json.shift()  // Assume first node is a content node
             	for (var j = json.length-1; j >= 0; j--) {
                     if(json[j].type != "Annotation"){
+                        var annotation_info = json[j];
+                        this.contentLabel = annotation_info["dcterms:title"];
+                        this.artURL = annotation_info["art:url"];
+                        console.log(annotation_info["dcterms:title"]);
                         json.splice(j,1);
                     } else {
             		    for (var k = 0; k < json[j].target.selector.length; k++) {
@@ -125,6 +129,10 @@ class VideoAnnotator {
                 var json = data;
                 for (var j = json.length-1; j >= 0; j--) {
                     if(json[j].type != "Annotation"){
+                        var annotation_info = json[j];
+                        this.contentLabel = annotation_info["dcterms:title"];
+                        this.artURL = annotation_info["art:url"];
+                        console.log(annotation_info["dcterms:title"]);
                         json.splice(j,1);
                     } else {
             		    for (var k = 0; k < json[j].target.selector.length; k++) {

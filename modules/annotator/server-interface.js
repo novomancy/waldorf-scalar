@@ -147,8 +147,16 @@ class ServerInterface {
             annotation["creator"]["nickname"] = localStorage.getItem('waldorf_user_name');
         }
 
-        //setaction in annotation payload
-        annotation["request"]["items"]["action"] = "add"; //TODO: ver2
+        //clean annotation
+        if (annotation["annotation_version"] == "v1") {
+            annotation["request"]["items"]["action"] = "add";
+            delete annotation["items"];
+        } else {
+            annotation["service"]["items"]["action"] = "add";
+            delete annotation["target"];
+            delete annotation["body"];
+        }
+        delete annotation["annotation_version"];
 
         console.log("PostAnnotation payload: " + JSON.stringify(annotation));
         

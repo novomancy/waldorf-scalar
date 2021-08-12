@@ -316,11 +316,7 @@ class AnnotationGUI {
     BeginEditing(annotation = null, forceNew = false){
         // Open the GUI if it isn't already
         this.Open();
-        console.log("annotation-gui: BeginEditing 447");
-        console.log(this.polyEditor.$polygons);
-
-        //console.log(annotation);
-
+        
         // Populate data from the passed in annotation
         if (annotation || forceNew) {
             // Populate the fields from the annotation
@@ -397,11 +393,15 @@ class AnnotationGUI {
 
         let annotation = new Annotation(this.originalAnnotation);
         //console.log("this.originalAnnotation: " + JSON.stringify(this.originalAnnotation)); //prints null
-
+       
+        
+        // ver1 
         annotation["body"] = this.BuildAnnotationBodyV1();
         annotation["target"] = this.BuildAnnotationTarget();
-        //annotation["items"] = this.BuildAnnotationItems();
-
+        
+        // ver2 
+        annotation["items"] = this.BuildAnnotationItems();
+    
         // Recompute read-only access properties after all other properties have been set
         annotation.recalculate();
 
@@ -411,43 +411,52 @@ class AnnotationGUI {
     }
 
     BuildAnnotationItems() {
-
         let buildTime = new Date().toISOString(); //"2020-08-16T12:00:00Z"
+        let videoDuration = this.annotator.player.videoElement.duration;
+        let videoWidth = this.annotator.player.videoElement.videoWidth;
+        let videoHeight = this.annotator.player.videoElement.videoHeight;
+
+        // let videoDimension = this.annotator.player.GetVideoDimensions()
+        // videoWidth = videoDimension.width;
+        // videoHeight = videoDimension.height;
+
+
         let items = [{
-            "id": "", //TODO: "art:url" from annotation json file
+            "id": this.annotator.url, //TODO: scalar specific email - should be supplied to plugin 
             "type": "Canvas",
-            "height": 480, //TODO:
-            "width": 640, //TODO:
-            "duration": 143, //TODO:
+            "height": videoHeight,
+            "width": videoWidth,
+            "duration": videoDuration, 
             "content": [{
-                "id": "", //TODO: media file reference id - check the incoming annotation collection for id
+                "id": this.annotator.url, 
                 "type": "Video",
-                "height": 480, //TODO:
-                "width": 640, //TODO:
-                "duration": 143, //TODO:
+                "height": videoHeight,
+                "width": videoWidth,
+                "duration": videoDuration,
                 "label": {
-                    "en": "Inception Corgi Flop" //TODO: "dcterms:title" from the annotation json file
+                    "en": this.annotator.contentLabel //"dcterms:title" from the annotation json file from scalar
                 },
                 "description": {
                     "en": ""
                 }
             }],
             "items": [{
-                "id": "",  
+                "id": this.annotator.serverURL,  
                 "type": "AnnotationPage",
                 "generator": "http://github.com/anvc/scalar",
                 "generated": buildTime, 
                 "items": [{
                     "id": "", //Annotation id - after successful data saving
                     "type": "Annotation",
-                    "generator": "http://github.com/novomancy/waldorf-scalar", //TODO: config value
+                    "generator": "http://github.com/novomancy/waldorf-scalar", 
                     "motivation": "highlighting",
-                    "creator": this.BuildCreatorTemplate(), //TODO: 
+                    "creator": this.BuildCreatorTemplate(),  
                     "created": buildTime,  
                     "rights": "https://creativecommons.org/licenses/by/4.0/",
+                    "body": this.BuildAnnotationBodyV2(),
+                    "target": this.BuildAnnotationTarget()
                 }],
-                "body": this.BuildAnnotationBodyV2(), //TODO: 
-                "target": this.BuildAnnotationTarget()
+                
             }]
     
         }];
@@ -457,16 +466,15 @@ class AnnotationGUI {
                 
     }
 
-    //TODO:
     BuildCreatorTemplate() {
         return {
             "type": "Person",
-            "nickname": "John Bell",
-            "email_sha1": "REMOVED"
+            "nickname": localStorage.getItem('waldorf_user_name'),
+            "email_sha1": localStorage.getItem('waldorf_user_email')
         }
     }
 
-    //TODO: build with tags entries from onomy
+    //Build with tags entries from onomy
     BuildAnnotationBodyV2() {
         let body = [];
 
@@ -543,6 +551,7 @@ class AnnotationGUI {
         return body;
     }
 
+    //used both v1 and v2
     BuildAnnotationTarget() {
         let target = {
             "id": this.annotator.url, // URL of the video
@@ -557,6 +566,14 @@ class AnnotationGUI {
         }
         let startTime = GetSecondsFromHMS(this.$timeStartField.val());
 
+        // Build time selector
+        let timeSelector = {
+            "type": "FragmentSelector",
+            "conformsTo": "http://www.w3.org/TR/media-frags/", // See media fragment specification
+            "value": `t=${startTime},${safeEndTime}` // Time interval in seconds
+        }
+        selectors.push(timeSelector);
+
         //Build SvgSelector
         if (this.polyEditor.$polygons.length > 0) {
             let pointsStr = this.polyEditor.$polygons[0].map(item => { return `${item[0]},${item[1]}` }).join(" ");
@@ -569,20 +586,11 @@ class AnnotationGUI {
 
             let polygonSelector = {
                 "type": "SvgSelector",
-                "conformsTo": "http://www.w3.org/TR/media-frags/", //added for v2
+                "conformsTo": "http://www.w3.org/TR/SVG/", //added for v2
                 "value": `${value}` // http://stackoverflow.com/a/24898728
             }
             selectors.push(polygonSelector);
         }
-
-
-        // Build time selector
-        let timeSelector = {
-            "type": "FragmentSelector",
-            "conformsTo": "http://www.w3.org/TR/media-frags/", // See media fragment specification
-            "value": `t=${startTime},${safeEndTime}` // Time interval in seconds
-        }
-        selectors.push(timeSelector);
 
         // Finalize target section
         target["selector"] = selectors;
@@ -604,14 +612,12 @@ class AnnotationGUI {
             annotationManager: this.annotator.annotationManager,
             parseFunction: this.OnomyVocabularProcess,
             processResults: function (data) {
-                return this.ajaxOptions.parseFunction(data, this.ajaxOptions.onomyLanguage, this.ajaxOptions.annotationManager);
+                return this.ajaxOptions.parseFunction(data, this.ajaxOptions.onomyLanguage);
             }
         }
     }
     
-    OnomyVocabularProcess(data, onomyLanguage, annotationManager) {  
-        console.log("annotationManager");
-        console.log(annotationManager);
+    OnomyVocabularProcess(data, onomyLanguage) {  
         // Parse the labels into the format expected by Select2
         // multilingual tags
         let multilingual_tags = [];

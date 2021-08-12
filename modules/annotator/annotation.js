@@ -2,46 +2,52 @@
 class Annotation {
 
     constructor(json = null){
-        this["@context"] = "http://www.w3.org/ns/anno.jsonld";
-        // this["@context"] = ["http://www.w3.org/ns/anno.jsonld",
-        //                 "http://iiif.io/api/presentation/3/context.json"];
-        
-        this["request"] = {
-            "client_id": "scalar",
-            "client_ver": "2.5.12",
-            "items": {
-                "native": false,
-                "id": "__CHECK_CONFIG_FILE__ID__",
-                "api_key": "__CHECK_CONFIG_FILE__API_KEY__",
-                "action": "TOBEFILLED",
-                "format": "json"
-            }
-        };
+        let version = "v2";
 
-        //TODO: ver2
-        // this["service"] = {
-        //     "client_id": "scalar",
-        //     "client_ver": "2.5.12",
-        //     "items": {
-        //         "native": false,
-        //         "id": "__CHECK_CONFIG_FILE__ID__",
-        //         "api_key": "__CHECK_CONFIG_FILE__API_KEY__",
-        //         "action": "TOBEFILLED",
-        //         "format": "json"
-        //     }
-        // };
-        //this["type"] = "Manifest"; //TODO: ver2
-        this["type"] = "Annotation"; //TODO: ver1
-        this["motivation"] = "highlighting";
-
-        this["body"] = [];
-        this["target"] = {};
-        //this["items"] = []; //TODO: ver2
+        // ver1
+        if (version == "v1") {
+            this["@context"] = "http://www.w3.org/ns/anno.jsonld";
+            
+            this["request"] = {
+                "client_id": "scalar",
+                "client_ver": "2.5.12",
+                "items": {
+                    "native": false,
+                    "id": "__CHECK_CONFIG_FILE__ID__",
+                    "api_key": "__CHECK_CONFIG_FILE__API_KEY__",
+                    "action": "TOBEFILLED",
+                    "format": "json"
+                }
+            };
+            this["type"] = "Annotation";  
+            this["motivation"] = "highlighting";
+            this["body"] = [];
+            this["target"] = {};
+            this["annotation_version"] = "v1";
+        } else {
+            // ver2 docs/webannotation_spec/sample_2.0.json
+            this["@context"] = ["http://www.w3.org/ns/anno.jsonld",
+                            "http://iiif.io/api/presentation/3/context.json"];
+            this["service"] = {
+                "client_id": "scalar",
+                "client_ver": "2.5.12",
+                "items": {
+                    "native": false,
+                    "id": "__CHECK_CONFIG_FILE__ID__",
+                    "api_key": "__CHECK_CONFIG_FILE__API_KEY__",
+                    "action": "TOBEFILLED",
+                    "format": "json"
+                }
+            };
+            this["type"] = "Manifest";
+            this["items"] = []; 
+            this["annotation_version"] = "v2";
+        }
 
         //delete this.beginTime;
         //delete this.endTime;
         //delete this.tags;
-        this.readConfig();
+        this.readConfig(version);
 
         if(json) {
             // Merge the json into this class.
@@ -53,20 +59,24 @@ class Annotation {
 
     }
 
-    readConfig() {
+    readConfig(version) {
         const config = require("../annotator-config.json");
-        //ver1
-        this["request"]["client_id"] = config.client_id;
-        this["request"]["client_ver"] = config.client_ver;
-        this["request"]["items"]["id"] = config.id;
-        this["request"]["items"]["api_key"] = config.api_key;
-
-        //TODO: Ver2
-        // this["service"]["client_id"] = config.client_id;
-        // this["service"]["client_ver"] = config.client_ver;
-        // this["service"]["items"]["id"] = config.id;
-        // this["service"]["items"]["api_key"] = config.api_key;
+        if (version == "v1") {
+            // ver1
+            this["request"]["client_id"] = config.client_id;
+            this["request"]["client_ver"] = config.client_ver;
+            this["request"]["items"]["id"] = config.id;
+            this["request"]["items"]["api_key"] = config.api_key;
+        } else {
+            // ver2
+            this["service"]["client_id"] = config.client_id;
+            this["service"]["client_ver"] = config.client_ver;
+            this["service"]["items"]["id"] = config.id;
+            this["service"]["items"]["api_key"] = config.api_key;
+        }
     }
+
+
 
     /// Compute read only easy access properties
     recalculate() {

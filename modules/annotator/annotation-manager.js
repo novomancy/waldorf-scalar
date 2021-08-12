@@ -66,7 +66,6 @@ class AnnotationManager {
     }
 
     UpdateOnomyVocabulary(vocabulary) {
-        console.log("annotation-manager.js:65 UpdateOnomyVocabulary is called");
         this.onomyVocabulary = vocabulary;
     }
 
