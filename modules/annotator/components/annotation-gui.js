@@ -401,6 +401,9 @@ class AnnotationGUI {
         
         // ver2 
         annotation["items"] = this.BuildAnnotationItems();
+        annotation["label"] = {
+            "en": this.annotator.contentLabel
+        };
     
         // Recompute read-only access properties after all other properties have been set
         annotation.recalculate();
@@ -420,9 +423,8 @@ class AnnotationGUI {
         // videoWidth = videoDimension.width;
         // videoHeight = videoDimension.height;
 
-
         let items = [{
-            "id": this.annotator.url, //TODO: scalar specific email - should be supplied to plugin 
+            "id": this.annotator.url, //TODO: scalar specific url - should be supplied to plugin 
             "type": "Canvas",
             "height": videoHeight,
             "width": videoWidth,

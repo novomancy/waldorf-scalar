@@ -2,7 +2,7 @@
 class Annotation {
 
     constructor(json = null){
-        let version = "v2";
+        let version = "v1";
 
         // ver1
         if (version == "v1") {

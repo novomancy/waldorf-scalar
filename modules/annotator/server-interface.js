@@ -158,6 +158,8 @@ class ServerInterface {
         }
         delete annotation["annotation_version"];
 
+        annotation["id"] = this.baseURL + "api/add";
+
         console.log("PostAnnotation payload: " + JSON.stringify(annotation));
         
         $.ajax({
