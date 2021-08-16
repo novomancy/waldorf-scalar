@@ -21,7 +21,7 @@ class VideoAnnotator {
             console.log('Called for a new VideoAnnotator without passing a player!');
             return false;
         }
-        this.player =  args.player;
+        this.player = args.player;  // Bring in the argument from the constructor
         
 
         //These config options are required for saving annotations to a server
