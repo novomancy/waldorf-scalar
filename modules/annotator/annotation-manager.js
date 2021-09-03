@@ -7,27 +7,36 @@ class AnnotationManager {
     }
 
     PopulateFromJSON(json){
+    
         if (json.length == 0){
             console.warn("JSON contains no annotations.");
         }
 
-        this.annotations = [];
-        for(let object of json){
-            this.RegisterAnnotation(object);
+        if ('undefined' == typeof(json.items)) {  // Version 1
+            for(let object of json){
+                this.RegisterAnnotation(object);
+            }
+        } else {  // Version 2
+            for (let object of json.items[0].items) {
+                this.RegisterAnnotation(object, JSON.parse(JSON.stringify(json.items[0])));
+            }
         }
 
     }
 
-    RegisterAnnotation(jsonObject){
+    RegisterAnnotation(jsonObject, canvasObject){
         //console.log("Registering new annotation with ID " + jsonObject.id);
-        let anno = new Annotation(jsonObject);
+        let anno = new Annotation(jsonObject, canvasObject);
         this.annotations.push(anno);
     }
 
     RemoveAnnotation(id){
-        //console.log("Removing: " + id);
         this.annotations = this.annotations.filter((obj) => {
-            return obj.id !== id;
+            if ('undefined' == typeof(obj.items)) { // Version 1
+                return id !== obj.id;
+            } else { // Version 2
+                return id !== obj.items[0].items[0].items[0].id;
+            }
         });
     }
 
@@ -37,7 +46,8 @@ class AnnotationManager {
     UpdateAnnotation(annotation, oldID){
         //console.log("Updating annotation ID " + oldID + " to " + annotation.metadata.id);
         this.RemoveAnnotation(oldID);
-        this.RegisterAnnotation(annotation);
+        //this.RegisterAnnotation(annotation);
+        this.PopulateFromJSON(annotation);
     }
 
     AnnotationsAtTime(time){

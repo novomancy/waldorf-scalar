@@ -33,7 +33,11 @@ class TickBar {
         let $tick = $("<div class='waldorf-tickbar-tick'></div>").appendTo(this.$tickBar);
 
         // Add the ID of the annotation to its corresponding tick so we can reference it later
-        $tick.data("annotation-id", annotation.id);
+        if ('undefined' == typeof(annotation.items)) { // Ver 1
+            $tick.data("annotation-id", annotation.id);
+        } else { // Ver 2
+            $tick.data("annotation-id", annotation.items[0].items[0].items[0].id);
+        }
 
         let beginTime = annotation.beginTime;
         let beginPercent = beginTime / this.annotator.player.videoElement.duration;
@@ -51,6 +55,7 @@ class TickBar {
         // Remove the object from the document, and the array
         let newTicks = [];
         for(let $tick of this.ticks){
+            console.log('Tick: ' + $tick.data("annotation-id"));
             if($tick.data("annotation-id") == id){
                 console.log(`Removed tick ${id}`);
                 $tick.remove();

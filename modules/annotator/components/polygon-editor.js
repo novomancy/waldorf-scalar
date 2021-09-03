@@ -43,7 +43,6 @@ class PolygonEditor {
             icon: "fa fa-camera-retro",
             showLabel: false
         }).click(() => {
-            //console.log("Capturing the polygon");
             //this.SetVisible(false);
             //this.GetPoints();
 
@@ -93,12 +92,12 @@ class PolygonEditor {
         //-3//this.RegisterElement(this.$confirmButton, this.$postToolbar, 3, 'flex-end');
 
         // Create the cancel button
-        this.$cancelButton = $("<button>Cancel polygon editing</button>").button({
+        this.$cancelButton = $("<button>Stop polygon editing</button>").button({
             icon: "fa fa-remove",
             showLabel: false
         });
         this.$cancelButton.addClass("waldorf-cancel-button");
-        this.$cancelButton.attr('title', "Cancel polygon editing");
+        this.$cancelButton.attr('title', "Stop polygon editing");
         this.$cancelButton.click(() => {
             //Restore the original state
             this.Restore();
@@ -141,7 +140,6 @@ class PolygonEditor {
             icon: "fa fa-camera-retro",
             showLabel: false
         }).click(() => {
-            // console.log("Capturing the polygon");
             // //this.SetVisible(false);
             // //this.GetPoints();
 
@@ -168,13 +166,13 @@ class PolygonEditor {
         this.RegisterElement(this.$capPolyButton1, this.$editDialog, 1, 'flex-end');
 
         // Create the cancel button
-        this.$cancelButton1 = $("<button>Cancel polygon editing</button>").button({
+        this.$cancelButton1 = $("<button>Stop polygon editing</button>").button({
             icon: "fa fa-remove",
             showLabel: false
         });
         this.$cancelButton1.css("margin", "0px 5px 4px 5px");
         this.$cancelButton1.addClass("waldorf-cancel-button");
-        this.$cancelButton1.attr('title', "Cancel Polygon Editing");
+        this.$cancelButton1.attr('title', "Stop Polygon Editing");
         this.$cancelButton1.click(() => {
             //Restore the original state
             this.Restore();
@@ -421,7 +419,7 @@ class PolygonEditor {
         this.$editDialog.makeVisible(true);
         this.$poly.makeVisible(true);
         //-3//this.$bar.makeVisible(true);
-        this.AddStartPolygon();
+        //this.AddStartPolygon();
         this.UpdatePolyClipping();
     }
 
@@ -463,8 +461,23 @@ class PolygonEditor {
     }
 
     AddPolygonSet() {
-        this.$polygons.push(this.GetPoints());
-        this.$tempBreadCrumbs.push([this.$breadcrumbs]);
+
+        if (this.$polygons.length > 1) {
+            this.$polygons = [];
+            this.$tempBreadCrumbs = [];
+        }
+
+        if (!this.$polygons.length) {
+            this.$polygons[0] = this.GetPoints();
+            this.$tempBreadCrumbs[0] = [this.$breadcrumbs];
+            var msg = "Successfully captured first polygon.";
+        } else {
+            this.$polygons[1] = this.GetPoints();
+            this.$tempBreadCrumbs[1] = [this.$breadcrumbs];
+            var msg = "Successfully captured second polygon.";
+        } 
+        this.annotator.messageOverlay.ShowMessage(msg);
+
     }
 
 }

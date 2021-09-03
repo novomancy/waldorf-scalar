@@ -60,6 +60,7 @@ class VideoAnnotator {
         //additional data from annotations collected from scalar to be added in API 2.0 
         this.contentLabel = "";
         this.artURL = "";
+        this.annotationPageURL = "";
 
         this.Wrap();
         this.PopulateControls();
@@ -85,21 +86,27 @@ class VideoAnnotator {
             // Load annotations from server based on the player's video URL
             this.server.FetchAnnotations('location', this.player.videoElement.currentSrc)
             .done((json)=>{
-            	//json.shift()  // Assume first node is a content node
-            	for (var j = json.length-1; j >= 0; j--) {
-                    if(json[j].type != "Annotation"){
-                        var annotation_info = json[j];
-                        this.contentLabel = annotation_info["dcterms:title"];
-                        this.artURL = annotation_info["art:url"];
-                        console.log(annotation_info["dcterms:title"]);
-                        json.splice(j,1);
-                    } else {
-            		    for (var k = 0; k < json[j].target.selector.length; k++) {
-            			    if ('FragmentSelector' != json[j].target.selector[k].type) continue;
-            			    json[j].target.selector[k].value = json[j].target.selector[k].value.replace('#t=npt:','t=');
+                if ('undefined' == typeof(json.items)) {  // Version 1
+                    //json.shift()  // Assume first node is a content node
+                    for (var j = json.length-1; j >= 0; j--) {
+                        if(json[j].type != "Annotation"){
+                            var annotation_info = json[j];
+                            this.contentLabel = annotation_info["dcterms:title"];
+                            this.artURL = annotation_info["art:url"];
+                            console.log(annotation_info["dcterms:title"]);
+                            json.splice(j,1);
+                        } else {
+                            for (var k = 0; k < json[j].target.selector.length; k++) {
+                                if ('FragmentSelector' != json[j].target.selector[k].type) continue;
+                                json[j].target.selector[k].value = json[j].target.selector[k].value.replace('#t=npt:','t=');
+                            }
                         }
                     }
-            	}
+                } else {  // Version 2
+                    this.contentLabel = json.label.en[0];
+                    this.artURL = json.items[0].content.id;
+                    this.annotationPageURL = json.items[0].items[0].items[0].id;
+                }
 
                 this.annotationManager.PopulateFromJSON(json);
                 this.AnnotationsLoaded();
@@ -127,20 +134,26 @@ class VideoAnnotator {
             }).done((data) => {
                 console.log(`Fetched ${data.length} annotations from local cache.`);
                 var json = data;
-                for (var j = json.length-1; j >= 0; j--) {
-                    if(json[j].type != "Annotation"){
-                        var annotation_info = json[j];
-                        this.contentLabel = annotation_info["dcterms:title"];
-                        this.artURL = annotation_info["art:url"];
-                        console.log(annotation_info["dcterms:title"]);
-                        json.splice(j,1);
-                    } else {
-            		    for (var k = 0; k < json[j].target.selector.length; k++) {
-            			    if ('FragmentSelector' != json[j].target.selector[k].type) continue;
-            			    json[j].target.selector[k].value = json[j].target.selector[k].value.replace('#t=npt:','t=');
+                if ('undefined' == typeof(json.items)) {  // Version 1
+                    //json.shift()  // Assume first node is a content node
+                    for (var j = json.length-1; j >= 0; j--) {
+                        if(json[j].type != "Annotation"){
+                            var annotation_info = json[j];
+                            this.contentLabel = annotation_info["dcterms:title"];
+                            this.artURL = annotation_info["art:url"];
+                            console.log(annotation_info["dcterms:title"]);
+                            json.splice(j,1);
+                        } else {
+                            for (var k = 0; k < json[j].target.selector.length; k++) {
+                                if ('FragmentSelector' != json[j].target.selector[k].type) continue;
+                                json[j].target.selector[k].value = json[j].target.selector[k].value.replace('#t=npt:','t=');
+                            }
                         }
                     }
-            	}
+                } else {  // Version 2
+                    this.contentLabel = json.label.en[0];
+                    this.artURL = json.items[0].content.id;
+                }
                 this.annotationManager.PopulateFromJSON(data);
                 this.AnnotationsLoaded();
             }).fail((response) => {
@@ -339,7 +352,8 @@ class VideoAnnotator {
 
     RegisterNewAnnotation(annotation){
         //console.log(annotation);
-        this.annotationManager.RegisterAnnotation(annotation);
+        //this.annotationManager.RegisterAnnotation(annotation);
+        this.annotationManager.PopulateFromJSON(annotation);
 
         // Throw event for listening objects (e.g. tick-bar)
         this.$container.trigger("OnAnnotationRegistered", [annotation]);
@@ -360,11 +374,18 @@ class VideoAnnotator {
     }
 
     DeregisterAnnotation(annotation){
-        this.annotationManager.RemoveAnnotation(annotation.id);
+        var id = '';
+        if ('undefined' == typeof(annotation.items)) { // Ver 1
+            id = annotation.id;
+        } else { // Ver 2
+            id = annotation.items[0].items[0].items[0].id;
+        }
+        
+        this.annotationManager.RemoveAnnotation(id);
         //this.annotationsNow = this.annotationManager.AnnotationsAtTime(this.player.videoElement.currentTime);
 
         // Throw event for listening objects (e.g. tick-bar)
-        this.$container.trigger("OnAnnotationRemoved", [annotation.id]);
+        this.$container.trigger("OnAnnotationRemoved", [id]);
 
         // Update dependent views
         this.UpdateViews();

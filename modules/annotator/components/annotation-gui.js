@@ -204,7 +204,7 @@ class AnnotationGUI {
              //console.log("annotation-gui:353 Create");
              this.polyEditor.BeginEditing();
         });
-        $editPolyButton.attr('title', "Edit polygon test2");
+        $editPolyButton.attr('title', "Edit polygon");
         this.RegisterElement($editPolyButton, $buttonPanel, -1);
 
         // Make delete button
@@ -215,7 +215,7 @@ class AnnotationGUI {
         this.$deleteButton.css("margin-right", "15px");
         this.$deleteButton.attr('title', "Delete annotation");
         this.$deleteButton.click(() => {
-            this.annotator.server.DeleteAnnotation(this.originalAnnotation).done((response) => {
+            this.annotator.server.DeleteAnnotation(this.originalAnnotation, () => {
                 this.annotator.DeregisterAnnotation(this.originalAnnotation);
                 this.Close();
             });
@@ -333,7 +333,13 @@ class AnnotationGUI {
             console.log(annotation);
             this.$timeStartField.val(GetFormattedTime(annotation.beginTime));
             this.$timeEndField.val(GetFormattedTime(annotation.endTime));
-            this.$textField.val(annotation.body.filter(item => item.purpose == "describing")[0].value);
+            if ('undefined' == typeof(annotation.items)) { // Version 1
+                this.$textField.val(annotation.body.filter(item => item.purpose == "describing")[0].value);
+                // Version 1 doesn't have a this.id context
+            } else { // Version 2
+                this.$textField.val(annotation.items[0].items[0].items[0].body.filter(item => item.purpose == "describing")[0].value);
+                this.id = annotation.items[0].items[0].items[0].id;
+            }
             // Reset the tags field
             this.$tagsField.val("").trigger("change");
             this.$tagsField.find("option").remove();
@@ -343,8 +349,17 @@ class AnnotationGUI {
                 this.$tagsField.trigger("change");
             }
 
-            this.polyEditor.InitPoly(annotation.getPoly());
-            this.polyEditor.ShowJustPolygon();
+            // this.polyEditor.InitPoly(annotation.getPoly());
+            // this.polyEditor.ShowJustPolygon();
+
+            // Propagate the polygon editor's polygons array with polygons from the annotation
+            this.polyEditor.$polygons = [];
+            if (annotation.polyStart != null) {
+                this.polyEditor.$polygons.push(annotation.polyStart);
+                if (annotation.polyEnd != null) {
+                    this.polyEditor.$polygons.push(annotation.polyEnd);
+                }
+            }
 
         }
         // Insert template data if no annotation is given
@@ -388,22 +403,20 @@ class AnnotationGUI {
         }
     }
 
-    // Build an Open Annotation object from the data.
-    GetAnnotationObject(){
+    // Build an object from the data.
+    GetAnnotationObject() {
 
-        let annotation = new Annotation(this.originalAnnotation);
-        //console.log("this.originalAnnotation: " + JSON.stringify(this.originalAnnotation)); //prints null
+        let annotation = new Annotation();
        
-        
-        // ver1 
-        annotation["body"] = this.BuildAnnotationBodyV1();
-        annotation["target"] = this.BuildAnnotationTarget();
-        
-        // ver2 
-        annotation["items"] = this.BuildAnnotationItems();
-        annotation["label"] = {
-            "en": this.annotator.contentLabel
-        };
+        if ('undefined' == typeof(annotation.items)) { // Version 1
+            annotation["body"] = this.BuildAnnotationBodyV1();
+            annotation["target"] = this.BuildAnnotationTarget(true);
+        } else { // Version 2
+            annotation["label"] = {
+                "en": [this.annotator.contentLabel]
+            };
+            annotation["items"] = this.BuildAnnotationItems();
+        }
     
         // Recompute read-only access properties after all other properties have been set
         annotation.recalculate();
@@ -429,7 +442,7 @@ class AnnotationGUI {
             "height": videoHeight,
             "width": videoWidth,
             "duration": videoDuration, 
-            "content": [{
+            "content": {
                 "id": this.annotator.url, 
                 "type": "Video",
                 "height": videoHeight,
@@ -441,14 +454,14 @@ class AnnotationGUI {
                 "description": {
                     "en": ""
                 }
-            }],
+            },
             "items": [{
-                "id": this.annotator.serverURL,  
+                "id": this.annotator.url,  
                 "type": "AnnotationPage",
                 "generator": "http://github.com/anvc/scalar",
                 "generated": buildTime, 
                 "items": [{
-                    "id": "", //Annotation id - after successful data saving
+                    "id": this.id, // URL to the annotation-page
                     "type": "Annotation",
                     "generator": "http://github.com/novomancy/waldorf-scalar", 
                     "motivation": "highlighting",
@@ -456,7 +469,7 @@ class AnnotationGUI {
                     "created": buildTime,  
                     "rights": "https://creativecommons.org/licenses/by/4.0/",
                     "body": this.BuildAnnotationBodyV2(),
-                    "target": this.BuildAnnotationTarget()
+                    "target": this.BuildAnnotationTarget(false)
                 }],
                 
             }]
@@ -554,7 +567,10 @@ class AnnotationGUI {
     }
 
     //used both v1 and v2
-    BuildAnnotationTarget() {
+    BuildAnnotationTarget(selectorsInArray) {
+
+        if ('undefined' == typeof(selectorsInArray)) selectorsInArray = false;
+
         let target = {
             "id": this.annotator.url, // URL of the video
             "type": "Video"
@@ -574,16 +590,22 @@ class AnnotationGUI {
             "conformsTo": "http://www.w3.org/TR/media-frags/", // See media fragment specification
             "value": `t=${startTime},${safeEndTime}` // Time interval in seconds
         }
-        selectors.push(timeSelector);
 
         //Build SvgSelector
         if (this.polyEditor.$polygons.length > 0) {
+            
             let pointsStr = this.polyEditor.$polygons[0].map(item => { return `${item[0]},${item[1]}` }).join(" ");
-            let animeStr = this.polyEditor.$polygons[1].map(item => { return `${item[0]},${item[1]}` }).join(" ");
+            console.log('$polygons[0]: ' + pointsStr);
             let value = "<svg viewBox='0 0 100 100' preserveAspectRatio='none'>";
             value += "<polygon points='" + pointsStr + "' />";
-            value += "<animate attributeName='points' from='" + pointsStr + "' to='" + animeStr + "'";
-            value += " start='" + startTime + "' end='" + safeEndTime + "' />";
+
+            if ('undefined' != typeof(this.polyEditor.$polygons[1])) {
+                let animeStr = this.polyEditor.$polygons[1].map(item => { return `${item[0]},${item[1]}` }).join(" ");
+                console.log('$polygons[1]: ' + animeStr);
+                value += "<animate attributeName='points' from='" + pointsStr + "' to='" + animeStr + "'";
+                value += " start='" + startTime + "' end='" + safeEndTime + "' />";
+            }
+
             value += "</svg>";
 
             let polygonSelector = {
@@ -591,11 +613,19 @@ class AnnotationGUI {
                 "conformsTo": "http://www.w3.org/TR/SVG/", //added for v2
                 "value": `${value}` // http://stackoverflow.com/a/24898728
             }
-            selectors.push(polygonSelector);
+            if (selectorsInArray) {
+                selectors.push(polygonSelector);
+            } else {
+                timeSelector["refinedBy"] = polygonSelector;
+            }
         }
 
-        // Finalize target section
-        target["selector"] = selectors;
+        if (selectorsInArray) {
+            selectors.push(timeSelector);   
+            target["selector"] = selectors;
+        } else {
+            target["selector"] = timeSelector;
+        }
 
         return target;
     }

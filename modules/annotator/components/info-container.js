@@ -44,8 +44,15 @@ class InfoContainer {
         $panel.append($header);
         let $content = $("<p></p>");
         
+        if ('undefined' == typeof(annotation.items)) { // Version 1
+            var annotation_body = annotation.body.filter(item => item.purpose === "describing")[0];
+            var annotation_creator = (annotation.creator != null) ? annotation.creator : {};
+        } else { // Version 2
+            var annotation_body = annotation.items[0].items[0].items[0].body.filter(item => item.purpose === "describing")[0];
+            var annotation_creator = annotation.items[0].items[0].items[0].creator;
+        }
         
-        $content.append("<b>Text: </b> " + annotation.body.filter(item => item.purpose === "describing")[0].value);
+        $content.append("<b>Text: </b> " + annotation_body.value);
         $content.append("<br>");
         $content.append("<b>Tags: </b> " + annotation.tags.join(", "));
         $content.append("<br>");
@@ -55,8 +62,8 @@ class InfoContainer {
                 + GetFormattedTime(annotation.endTime));
         $content.append("<br>");
 
-        $content.append("<b>Submitted by:</b><br />"
-                + (annotation.creator != null ? annotation.creator.nickname + ' (' + annotation.creator.email + ')' : "unspecified")
+        $content.append("<b>Submitter:</b> "
+                + (('undefined' != typeof(annotation_creator.nickname) && annotation_creator.nickname.length) ? annotation_creator.nickname : "<i>Not available</i>")
                 );
 
         //$paragraph.append("<strong>Annotation " + (index + 1) + ":</strong><br><pre>" + text.escapeHTML() + "</pre>");
