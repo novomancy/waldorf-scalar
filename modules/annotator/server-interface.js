@@ -125,19 +125,9 @@ class ServerInterface {
             key = this.annotator.apiKey;
             let email_storage = localStorage.getItem('waldorf_user_email');
             let name_storage = localStorage.getItem('waldorf_user_name');
-            if (email_storage === null) {
-                console.error("[Server Interface] You are not logged in!");
-                this.annotator.messageOverlay.ShowError("You are not logged in!");
-                return false;
-            }
             if(name_storage == null) name_storage = email_storage;
         } else {
             key = localStorage.getItem('waldorf_auth_token');
-            if (key === null) {
-                console.error("[Server Interface] You are not logged in!");
-                this.annotator.messageOverlay.ShowError("You are not logged in!");
-                return false;
-            }
         }
 
         if(this.annotator.apiKey){
@@ -199,19 +189,9 @@ class ServerInterface {
             key = this.annotator.apiKey;
             let email_storage = localStorage.getItem('waldorf_user_email');
             let name_storage = localStorage.getItem('waldorf_user_name');
-            if (email_storage === null) {
-                console.error("[Server Interface] You are not logged in!");
-                this.annotator.messageOverlay.ShowError("You are not logged in!");
-                return false;
-            }
             if(name_storage == null) name_storage = email_storage;
         } else {
             key = localStorage.getItem('waldorf_auth_token');
-            if (key === null) {
-                console.error("[Server Interface] You are not logged in!");
-                this.annotator.messageOverlay.ShowError("You are not logged in!");
-                return false;
-            }
         }
 
         if(this.annotator.apiKey){
@@ -282,19 +262,9 @@ class ServerInterface {
             key = this.annotator.apiKey;
             let email_storage = localStorage.getItem('waldorf_user_email');
             let name_storage = localStorage.getItem('waldorf_user_name');
-            if (email_storage === null) {
-                console.error("[Server Interface] You are not logged in!");
-                this.annotator.messageOverlay.ShowError("You are not logged in!");
-                return false;
-            }
             if(name_storage == null) name_storage = email_storage;
         } else {
             key = localStorage.getItem('waldorf_auth_token');
-            if (key === null) {
-                console.error("[Server Interface] You are not logged in!");
-                this.annotator.messageOverlay.ShowError("You are not logged in!");
-                return false;
-            }
         }
 
         if(this.annotator.apiKey){
