@@ -1,6 +1,7 @@
 import { GetFormattedTime, GetSecondsFromHMS } from "../../utils/time.js";
 import { PolygonEditor } from "./polygon-editor.js";
 import { Annotation } from "../annotation.js";
+import { tsThisType } from "@babel/types";
 
 class AnnotationGUI {
 
@@ -59,13 +60,19 @@ class AnnotationGUI {
         this.RegisterElement($bodyUI, $tabUI, -1);
         this.RegisterElement($stopUI, $tabUI, -1);
 
-        let $startTab = $("<div id='start_tab' class='ui-field-contain'>" + 
-                            "<label for='start_time'>Start Time</label><br>" + 
-                        "</div>");
+        //Create tabs
+        let $startTab = $("<div id='start_tab' class='ui-field-contain'></div>");
         this.RegisterElement($startTab, this.$tabs, -1);
 
+        let $bodyTab = $("<div id='body_tab'></div>");
+        this.RegisterElement($bodyTab, this.$tabs, -1);
+
+        let $stopTab = $("<div id='stop_tab'></div>");
+        this.RegisterElement($stopTab, this.$tabs, -1);
+
+        //Begin filling start tab
         // Make "Start time" label and field
-        this.$timeStartField = $('<input type="text" name="time-start" id="time-start" value="">').appendTo($startTab);
+        this.$timeStartField = $('<input type="text" name="time-start" id="time-start" value=""><br><br>');
         this.$timeStartField.width(72);
         this.$timeStartField.css("font-family", "Courier, monospace");
         this.$timeStartField.css("margin-right", "2px");
@@ -79,27 +86,45 @@ class AnnotationGUI {
         });
 
         //add start marker button
-        this.$startTimeMarker = $("<button style='padding:0; line-height:1.4'>Set End</button>").button({
+        this.$startTimeMarker = $("<button style='padding:0; line-height:1.4'>Set Start</button> ").button({
             icon: "fa fa-map-marker",
             showLabel: false
         }).click(() => {
             this.$timeStartField[0].value = GetFormattedTime(this.annotator.player.videoElement.currentTime);
         });
-        this.RegisterElement(this.$startTimeMarker, $startTab, -2);     
-        
-        //start point polygon is added
-        this.$startPolygonSet = $("<button style='padding:0; line-height:1.4'>Start Polygon Set</button>").button({
-            icon: "fa fa-check-square-o",
+        this.RegisterElement(this.$startTimeMarker, $startTab, -2);   
+
+        $("<label for='time-start'>Start Time: </label> ").appendTo($startTab);
+        this.$timeStartField.appendTo($startTab);
+
+        //Make "Edit polygon" button
+        let $editPolyButton = $("<button style='padding:0; line-height:1.4'>Edit Polygon</button>").button({
+            icon: "fa fa-pencil",
             showLabel: false
+        }).click(() => {
+            this.SetVisible(false);
+            //console.log("annotation-gui:353 Create");
+            this.polyEditor.BeginEditing();
         });
-        //this.$startPolygonSet.css("visibility", "inherit");
-        this.$startPolygonSet.css("visibility", "hidden");
-        this.$startPolygonSet.addClass("waldorf-confirm-button");
+        $editPolyButton.attr('title', "Edit polygon");
+        this.RegisterElement($editPolyButton, $startTab, -1);
+
+        let $startTargetLabel = $("<label>Start Target</label> ");
+        $startTargetLabel.css("color", "white");
+        this.RegisterElement($startTargetLabel, $startTab, -1);
+
+  
         
+        //start point polygon is added (This seems to be unused? JPB 2021-09-16)
+        // this.$startPolygonSet = $("<button style='padding:0; line-height:1.4'>Start Polygon Set</button>").button({
+        //     icon: "fa fa-check-square-o",
+        //     showLabel: false
+        // });
+        // //this.$startPolygonSet.css("visibility", "inherit");
+        // this.$startPolygonSet.css("visibility", "hidden");
+        // this.$startPolygonSet.addClass("waldorf-confirm-button");
         //this.RegisterElement(this.$startPolygonSet, $startTab, -2); 
 
-        let $bodyTab = $("<div id='body_tab'></div>");
-        this.RegisterElement($bodyTab, this.$tabs, -1);
 
         // Add tags input field
         this.$tagsField = $('<select class="form-control" multiple="multiple"></select>');
@@ -134,13 +159,8 @@ class AnnotationGUI {
         this.$textField.css("flex-grow", 2);
         this.RegisterElement(this.$textField, $bodyTab, -1);
 
-        let $stopTab = $("<div id='stop_tab'>" + 
-                            "<label for='stop_time'>Stop Time</label><br>" + 
-                        "</div>");
-        this.RegisterElement($stopTab, this.$tabs, -1);
-
-        // Make "Start time" label and field
-        this.$timeEndField = $('<input type="text" name="time-start" id="time-start" value="">').appendTo($stopTab);
+        // Make "Stop time" label and field
+        this.$timeEndField = $('<input type="text" name="time-stop" id="time-stop" value=""><br><br>');
         this.$timeEndField.width(72);
         this.$timeEndField.css("font-family", "Courier, monospace");
         this.$timeEndField.css("margin-right", "2px");
@@ -153,14 +173,33 @@ class AnnotationGUI {
             return false;
         });
 
-        //add start marker button
+        //add end marker button
         this.$endTimeMarker = $("<button style='padding:0; line-height:1.4'>Set End</button>").button({
             icon: "fa fa-map-marker",
             showLabel: false
         }).click(() => {
             this.$timeEndField[0].value = GetFormattedTime(this.annotator.player.videoElement.currentTime);
         });
+        
         this.RegisterElement(this.$endTimeMarker, $stopTab, -2);
+        $("<label for='stop_time'>Stop Time: </label> ").appendTo($stopTab);
+        this.$timeEndField.appendTo($stopTab);
+
+        //Make "Edit polygon" button
+        let $editStopPolyButton = $("<button style='padding:0; line-height:1.4'>Edit Polygon</button>").button({
+            icon: "fa fa-pencil",
+            showLabel: false
+        }).click(() => {
+            this.SetVisible(false);
+            //console.log("annotation-gui:353 Create");
+            this.polyEditor.BeginEditing();
+        });
+        $editStopPolyButton.attr('title', "Edit polygon");
+        this.RegisterElement($editStopPolyButton, $stopTab, -1);
+
+        let $stopTargetLabel = $("<label>Stop Target</label> ");
+        $stopTargetLabel.css("color", "white");
+        this.RegisterElement($stopTargetLabel, $stopTab, -1);
 
         //stop point polygon is added
         this.$endPolygonSet = $("<button style='padding:0; line-height:1.4'>End Polygon Set</button>").button({
@@ -191,28 +230,12 @@ class AnnotationGUI {
 
         let $buttonPanel = $("<div class='button_panel'></div>").appendTo(this.$container);
 
-        let $startTargetLabel = $("<label>Start Target</label><br>");
-        $startTargetLabel.css("color", "white");
-        this.RegisterElement($startTargetLabel, $buttonPanel, -1);
-
-        //Make "Edit polygon" button
-        let $editPolyButton = $("<button>Edit Polygon</button>").button({
-             icon: "fa fa-pencil",
-             showLabel: false
-        }).click(() => {
-             this.SetVisible(false);
-             //console.log("annotation-gui:353 Create");
-             this.polyEditor.BeginEditing();
-        });
-        $editPolyButton.attr('title', "Edit polygon");
-        this.RegisterElement($editPolyButton, $buttonPanel, -1);
-
-        // Make delete button
+        // Make delete button. This should only appear if we're editing, not if it's a new annotation
         this.$deleteButton = $("<button>Delete Annotation</button>").button({
-            icon: "fa fa-bomb",
-            showLabel: false
+            // icon: "fa fa-bomb",
+            showLabel: true
         });
-        this.$deleteButton.css("margin-right", "15px");
+        this.$deleteButton.hide();
         this.$deleteButton.attr('title', "Delete annotation");
         this.$deleteButton.click(() => {
             this.annotator.server.DeleteAnnotation(this.originalAnnotation, () => {
@@ -349,8 +372,8 @@ class AnnotationGUI {
                 this.$tagsField.trigger("change");
             }
 
-            // this.polyEditor.InitPoly(annotation.getPoly());
-            // this.polyEditor.ShowJustPolygon();
+            this.polyEditor.InitPoly(annotation.getPoly());
+            this.polyEditor.ShowJustPolygon();
 
             // Propagate the polygon editor's polygons array with polygons from the annotation
             this.polyEditor.$polygons = [];
