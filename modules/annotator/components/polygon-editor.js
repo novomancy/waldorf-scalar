@@ -419,7 +419,7 @@ class PolygonEditor {
         this.$editDialog.makeVisible(true);
         this.$poly.makeVisible(true);
         //-3//this.$bar.makeVisible(true);
-        //this.AddStartPolygon();
+        this.AddStartPolygon();
         this.UpdatePolyClipping();
     }
 

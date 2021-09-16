@@ -150,9 +150,7 @@ class AnnotatorVideoPlayer {
     }
 
     ToggleFullscreen(){
-        if (screenfull === 'undefined' || !screenfull.enabled) {
-            return;
-        }
+        if (screenfull === 'undefined') return;
         screenfull.toggle(this.$container[0]);
     }
 

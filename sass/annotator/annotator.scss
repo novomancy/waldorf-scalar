@@ -111,12 +111,12 @@
     //height: auto;
     min-height: 15em;
     max-height: 15em;
-    //margin-top: 10px;
+    padding:4px 0px 16px 0px;
     overflow-y: scroll;
 
     p {
         margin: 0px;
-        padding: 10px;
+        padding: 10px 10px 0px 10px;
         line-height: 150%;
     }
 }
