@@ -350,13 +350,15 @@ class PolygonEditor {
     }
 
     UpdatePolyClipping(){
-        
+
         if(this.$breadcrumbs.length < 3){
             this.$poly.clipPath([], {
                 svgDefId: 'annotatorPolyEditorSvg'
             });
             return;
         }
+
+
 
         let points = this.$breadcrumbs.map(($crumb) => {
             let pos = this.GetCenterPercentage($crumb);
@@ -461,7 +463,7 @@ class PolygonEditor {
     }
 
     AddPolygonSet() {
-
+        //An annotation has 0, 1, or 2 polygons.
         if (this.$polygons.length > 1) {
             this.$polygons = [];
             this.$tempBreadCrumbs = [];
@@ -476,6 +478,8 @@ class PolygonEditor {
             this.$tempBreadCrumbs[1] = [this.$breadcrumbs];
             var msg = "Successfully captured second polygon.";
         } 
+        this.annotator.$container.trigger("OnPolygonEditingEnded");
+        this.Done();
         this.annotator.messageOverlay.ShowMessage(msg);
 
     }

@@ -24,7 +24,6 @@
     "babelify": "^10.0.0",
     "browserify-css": "^0.15.0",
     "browserify-shim": "^3.8.14",
-    "clip-path-polygon": "^0.1.14",
     "coffeescript": "^2.5.1",
     "grunt": "^1.4.1",
     "grunt-browser-sync": "^2.2.0",

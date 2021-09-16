@@ -11,7 +11,7 @@ import "qtip2";
 //require("../node_modules/qtip2/dist/jquery.qtip.min.js");
 //import "../node_modules/qtip2/dist/jquery.qtip.min.css";
 
-import "clip-path-polygon";
+require("./utils/clip-path-polygon-1.0.15.js");
 
 //let screenfull = require('screenfull');
 //import screenfull from "screenfull";
