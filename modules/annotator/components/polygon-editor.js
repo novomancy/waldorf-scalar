@@ -11,8 +11,10 @@ class PolygonEditor {
         this.annotator = annotator;
         this.baseZ = 2147483649;
         this.$breadcrumbs = [];
-        this.$polygons = [];
-        this.$tempBreadCrumbs = [];
+        this.$vertices = { 'start': [], 'stop': [] };   //arrays of vertices for start/stop polys
+        this.$polygons = { 'start': null, 'stop': null };   //DOM nodes for the actual polygons
+        // this.$tempBreadCrumbs = [];
+        this.$startStop = null;
 
         // Create the video overlay
         this.$clickSurface = $("<div class='waldorf-edit-overlay waldorf-vp-click-surface'></div>").appendTo(this.annotator.player.$container);
@@ -21,92 +23,91 @@ class PolygonEditor {
             this.OnSurfaceClick(event);
         });
 
-        // Create the poly object for start position polygon
-        this.$startPoly = "";
-        
-        // Create the poly object
-        this.$poly = $("<div class='waldorf-edit-poly'></div>").appendTo(this.annotator.player.$container);
-        this.$poly.css("z-index", this.baseZ + 1);
+        // Initialize the polygon DOM nodes
+        this.$polygons.start = $("<div class='waldorf-start-poly'></div>").appendTo(this.$clickSurface);
+        this.$polygons.start.css("z-index", this.baseZ + 1);
+        this.$polygons.stop = $("<div class='waldorf-stop-poly'></div>").appendTo(this.$clickSurface);
+        this.$polygons.stop.css("z-index", this.baseZ + 1);
 
         this.ResizeOverlay();
         this.annotator.player.$container.on("OnFullscreenChange", (event, setFullscreen) => this.ResizeOverlay());
 
         // Create the toolbar up top
-        this.$bar = $("<div class='waldorf-vp-post'></div>").appendTo(this.annotator.player.$container);
-        this.$postToolbar = $("<div class='flex-toolbar'></div>").appendTo(this.$bar);
+        // this.$bar = $("<div class='waldorf-vp-post'></div>").appendTo(this.annotator.player.$container);
+        // this.$postToolbar = $("<div class='flex-toolbar'></div>").appendTo(this.$bar);
         // Invisible expanding divider
         //-3//this.$postToolbar.append($("<div><p style='color:white'>Edit Polygon</p></div>").css("flex-grow", 1).css("order", 0));
 
 
         // Make "Collect Polygon state" button
-        this.$capPolyButton = $("<button>Capture Polygon</button>").button({
-            icon: "fa fa-camera-retro",
-            showLabel: false
-        }).click(() => {
-            //this.SetVisible(false);
-            //this.GetPoints();
+        // this.$capPolyButton = $("<button>Capture Polygon</button>").button({
+        //     icon: "fa fa-camera-retro",
+        //     showLabel: false
+        // }).click(() => {
+        //     //this.SetVisible(false);
+        //     //this.GetPoints();
 
-            // Build polygon selector
-            // let points = this.GetPoints();
-            // if(points.length > 0) {
-            //     let pointsStr = points.map(item => { return `${item[0]},${item[1]}` }).join(" ");
-            //     let polygonSelector = {
-            //         "type": "SvgSelector",
-            //         "value": `<svg:svg viewBox='0 0 100 100' preserveAspectRatio='none'><polygon points='${pointsStr}' /></svg:svg>` // http://stackoverflow.com/a/24898728
-            //     }
-            //     tmpSelectors.push(polygonSelector);
-            // }
-            // console.log("tmpSelectors");
-            // console.log(tmpSelectors);
-            this.annotator.AddPolygonSet(this.annotator.annotation.getPoly());
+        //     // Build polygon selector
+        //     // let points = this.GetPoints();
+        //     // if(points.length > 0) {
+        //     //     let pointsStr = points.map(item => { return `${item[0]},${item[1]}` }).join(" ");
+        //     //     let polygonSelector = {
+        //     //         "type": "SvgSelector",
+        //     //         "value": `<svg:svg viewBox='0 0 100 100' preserveAspectRatio='none'><polygon points='${pointsStr}' /></svg:svg>` // http://stackoverflow.com/a/24898728
+        //     //     }
+        //     //     tmpSelectors.push(polygonSelector);
+        //     // }
+        //     // console.log("tmpSelectors");
+        //     // console.log(tmpSelectors);
+        //     this.annotator.AddPolygonSet(this.annotator.annotation.getPoly());
 
-        });
-        this.$capPolyButton.css("margin-right", "15px");
-        this.$capPolyButton.attr('title', "Capture polygon");
+        // });
+        // this.$capPolyButton.css("margin-right", "15px");
+        // this.$capPolyButton.attr('title', "Capture polygon");
         //-3//this.RegisterElement(this.$capPolyButton, this.$postToolbar, 1, 'flex-end');
 
         // Create undo button
-        this.$undoButton = $("<button>Remove Last Point</button>").button({
-            icon: "fa fa-undo",
-            showLabel: false
-        });
-        this.$undoButton.css("margin-right", "15px");
-        this.$undoButton.attr('title', "Remove last point");
-        this.$undoButton.click(() => {
-            this.RemoveLastBreadcrumb();
-        });
+        // this.$undoButton = $("<button>Remove Last Point</button>").button({
+        //     icon: "fa fa-undo",
+        //     showLabel: false
+        // });
+        // this.$undoButton.css("margin-right", "15px");
+        // this.$undoButton.attr('title', "Remove last point");
+        // this.$undoButton.click(() => {
+        //     this.RemoveLastBreadcrumb();
+        // });
         //-3//this.RegisterElement(this.$undoButton, this.$postToolbar, 1, 'flex-end');
 
         // Create the confirm button
-        this.$confirmButton = $("<button>Finish polygon</button>").button({
-            icon: "fa fa-check",
-            showLabel: false
-        });
-        this.$confirmButton.attr('title', "Finish polygon");
-        this.$confirmButton.addClass("waldorf-confirm-button");
-        this.$confirmButton.click(() => {
-            this.originalJSON = this.GetJSON();
-            this.Done();
-            this.annotator.$container.trigger("OnPolygonEditingEnded");
-        });
-        //-3//this.RegisterElement(this.$confirmButton, this.$postToolbar, 3, 'flex-end');
+        // this.$confirmButton = $("<button>Finish polygon</button>").button({
+        //     icon: "fa fa-check",
+        //     showLabel: false
+        // });
+        // this.$confirmButton.attr('title', "Finish polygon");
+        // this.$confirmButton.addClass("waldorf-confirm-button");
+        // this.$confirmButton.click(() => {
+        //     this.originalJSON = this.GetJSON();
+        //     this.Done();
+        //     this.annotator.$container.trigger("OnPolygonEditingEnded");
+        // });
+        // //-3//this.RegisterElement(this.$confirmButton, this.$postToolbar, 3, 'flex-end');
 
-        // Create the cancel button
-        this.$cancelButton = $("<button>Stop polygon editing</button>").button({
-            icon: "fa fa-remove",
-            showLabel: false
-        });
-        this.$cancelButton.addClass("waldorf-cancel-button");
-        this.$cancelButton.attr('title', "Stop polygon editing");
-        this.$cancelButton.click(() => {
-            //Restore the original state
-            this.Restore();
-            this.Done();
-            this.annotator.$container.trigger("OnPolygonEditingEnded");
-        });
-        //-3//this.RegisterElement(this.$cancelButton, this.$postToolbar, 2, 'flex-end');
+        // // Create the cancel button
+        // this.$cancelButton = $("<button>Stop polygon editing</button>").button({
+        //     icon: "fa fa-remove",
+        //     showLabel: false
+        // });
+        // this.$cancelButton.addClass("waldorf-cancel-button");
+        // this.$cancelButton.attr('title', "Stop polygon editing");
+        // this.$cancelButton.click(() => {
+        //     //Restore the original state
+        //     this.Restore();
+        //     this.Done();
+        //     this.annotator.$container.trigger("OnPolygonEditingEnded");
+        // });
+        // //-3//this.RegisterElement(this.$cancelButton, this.$postToolbar, 2, 'flex-end');
 
-        $(window).resize(() => this.ResizeOverlay());
+        // $(window).resize(() => this.ResizeOverlay());
 
 
         /* 
@@ -123,63 +124,46 @@ class PolygonEditor {
         this.RegisterElement(this.$space, this.$editDialog, 1, 'flex-end');
 
         // Create undo button
-        this.$undoButton1 = $("<button>Remove Last Point</button>").button({
+        this.$undoButton = $("<button>Remove Last Point</button>").button({
             icon: "fa fa-undo",
             showLabel: false
         });
-        this.$undoButton1.css("margin", "0px 5px 4px 5px");
-        this.$undoButton1.attr('title', "Remove last point");
-        this.$undoButton1.css('z-index', this.baseZ + 105);
-        this.$undoButton1.click(() => {
+        this.$undoButton.css("margin", "0px 5px 4px 5px");
+        this.$undoButton.attr('title', "Remove last point");
+        this.$undoButton.css('z-index', this.baseZ + 105);
+        this.$undoButton.click(() => {
             this.RemoveLastBreadcrumb();
         });
-        this.RegisterElement(this.$undoButton1, this.$editDialog, 1, 'flex-end');
+        this.RegisterElement(this.$undoButton, this.$editDialog, 1, 'flex-end');
 
         // Make "Collect Polygon state" button
-        this.$capPolyButton1 = $("<button>Capture Polygon</button>").button({
+        this.$capPolyButton = $("<button>Capture Polygon</button>").button({
             icon: "fa fa-camera-retro",
             showLabel: false
         }).click(() => {
-            // //this.SetVisible(false);
-            // //this.GetPoints();
-
-            // let tmpSelectors = [];
-
-            // // Build polygon selector
-            // let points = this.GetPoints();
-            // if(points.length > 0) {
-            //     let pointsStr = points.map(item => { return `${item[0]},${item[1]}` }).join(" ");
-            //     let polygonSelector = {
-            //         "type": "SvgSelector",
-            //         "value": `<svg:svg viewBox='0 0 100 100' preserveAspectRatio='none'><polygon points='${pointsStr}' /></svg:svg>` // http://stackoverflow.com/a/24898728
-            //     }
-            //     tmpSelectors.push(polygonSelector);
-            // }
-            // console.log("tmpSelectors");
-            // console.log(tmpSelectors);
             this.AddPolygonSet();
-            //this.annotator.AddPolygonSet(this.annotator.annotation.getPoly());
         });
-        this.$capPolyButton1.css("margin", "0px 5px 4px 5px");
-        this.$capPolyButton1.attr('title', "Capture Polygon");
-        this.$capPolyButton1.css('z-index', this.baseZ + 105);
-        this.RegisterElement(this.$capPolyButton1, this.$editDialog, 1, 'flex-end');
+        this.$capPolyButton.css("margin", "0px 5px 4px 5px");
+        this.$capPolyButton.attr('title', "Capture Polygon");
+        this.$capPolyButton.css('z-index', this.baseZ + 105);
+        this.RegisterElement(this.$capPolyButton, this.$editDialog, 1, 'flex-end');
 
         // Create the cancel button
-        this.$cancelButton1 = $("<button>Stop polygon editing</button>").button({
+        this.$cancelButton = $("<button>Stop polygon editing</button>").button({
             icon: "fa fa-remove",
             showLabel: false
         });
-        this.$cancelButton1.css("margin", "0px 5px 4px 5px");
-        this.$cancelButton1.addClass("waldorf-cancel-button");
-        this.$cancelButton1.attr('title', "Stop Polygon Editing");
-        this.$cancelButton1.click(() => {
+        this.$cancelButton.css("margin", "0px 5px 4px 5px");
+        this.$cancelButton.addClass("waldorf-cancel-button");
+        this.$cancelButton.attr('title', "Stop Polygon Editing");
+        this.$cancelButton.click(() => {
             //Restore the original state
-            this.Restore();
-            this.Done();
+            //this.Restore();
+            this.RemoveAllBreadcrumbs();
             this.annotator.$container.trigger("OnPolygonEditingEnded");
+            this.Done();
         });
-        this.RegisterElement(this.$cancelButton1, this.$editDialog, 2, 'flex-end');
+        this.RegisterElement(this.$cancelButton, this.$editDialog, 2, 'flex-end');
 
         $(window).resize(() => this.ResizeOverlay());
 
@@ -187,11 +171,11 @@ class PolygonEditor {
     }
 
     OnSurfaceClick(event){
-        if ($(event.currentTarget).attr("id") == "edit-dialog") {
+        if ($(event.currentTarget).attr("id") == "edit-dialog" || this.$startStop != "start") {
             return;
         }
 
-        // Add a breadcrumb on click
+        // Add a breadcrumb on click, but only for the start polygon. End vertices can only be dragged
         let target = $(event.currentTarget);
         let x = event.pageX - target.offset().left;
         let y = event.pageY - target.offset().top;
@@ -235,14 +219,17 @@ class PolygonEditor {
                 this.UpdatePolyClipping();
             }
         });
-        $breadcrumb.click((event) => {
-            // Remove the breadcrumb on click
-            event.stopPropagation();
-            $breadcrumb.remove();
-            this.$breadcrumbs.splice(this.$breadcrumbs.indexOf($breadcrumb), 1);
-            this.UpdatePolyClipping();
-            this.UpdateBreadcrumbColoring();
-        });
+        if(this.$startStop=="start"){
+            //breadcrumbs can only be added or removed in the first polygon
+            $breadcrumb.click((event) => {
+                // Remove the breadcrumb on click
+                event.stopPropagation();
+                $breadcrumb.remove();
+                this.$breadcrumbs.splice(this.$breadcrumbs.indexOf($breadcrumb), 1);
+                this.UpdatePolyClipping();
+                this.UpdateBreadcrumbColoring();
+            });
+        }
         
         this.$breadcrumbs.push($breadcrumb);
 
@@ -259,6 +246,13 @@ class PolygonEditor {
         $removed.remove();
         this.UpdatePolyClipping();
         this.UpdateBreadcrumbColoring();
+    }
+
+    RemoveAllBreadcrumbs(){
+        console.log("Removing all breadcrumbs");
+        while(this.$breadcrumbs.length > 0){
+            this.RemoveLastBreadcrumb();
+        }
     }
 
     /**
@@ -295,12 +289,20 @@ class PolygonEditor {
     }
 
     ResetPolygons() {
-        if (this.$startPoly) {
-            this.$startPoly.clipPath([], {
-                svgDefId: 'annotatorPolyEditorSvgStart'
-            });
+        console.log("resetting polygons");
+        if (this.$polygons.start) {
+            console.log("reset start poly");
+            this.$polygons.start.makeVisible(false);
+            this.$polygons.start.css("clip-path", "");
         }
-        this.$polygons = [];
+        if (this.$polygons.stop) {
+            this.$polygons.stop.makeVisible(false);
+            this.$polygons.stop.css("clip-path", "");
+        }
+
+        this.$vertices = { 'start': [], 'stop': [] };
+        this.UpdatePolyClipping();
+        this.RemoveAllBreadcrumbs();
     }
 
     Restore(){
@@ -323,53 +325,78 @@ class PolygonEditor {
         this.originalJSON = points;
     }
 
-    AddStartPolygon() {
-        if (this.$polygons.length > 0) {
-            let startPolygon = this.$polygons[0]; //.map(item => { return `${item[0]},${item[1]}` }).join(" ");;
+    DrawPolygons() {
+        this.RemoveAllBreadcrumbs();
+        if (this.$vertices.start != []) {
+            //let startPolygon = this.$vertices.start; //.map(item => { return `${item[0]},${item[1]}` }).join(" ");;
             
-            // Create the poly object
-            this.$startPoly = $("<div class='waldorf-start-poly'></div>").appendTo(this.$clickSurface);
-            this.$startPoly.css("z-index", this.baseZ + 1000);
+            // Create the poly objects
+            // this.$polygons.start = $("<div class='waldorf-start-poly'></div>").appendTo(this.$clickSurface);
+            // this.$polygons.start.css("z-index", this.baseZ + 1000);
 
-            if(startPolygon.length < 3){
-                this.$startPoly.clipPath([], {
-                    svgDefId: 'annotatorPolyEditorSvgStart'
+            if(this.$vertices.start.length < 3){
+                this.$polygons.start.makeVisible(false);
+                this.$polygons.start.clipPath([], {
+                    svgDefId: 'annotatorStartPolySvg'
                 });
-                return;
+            } else {
+                this.$polygons.start.makeVisible(true);
+                this.$polygons.start.clipPath(this.$vertices.start, {
+                    isPercentage: true,
+                    svgDefId: 'annotatorStartPolySvg'
+                });
+                if(this.$startStop=="start"){
+                    this.$vertices.start.map((point) => {
+                        this.AddBreadcrumb(point[0], point[1]);
+                    });
+                }
+            }
+        }
+        if (this.$vertices.stop != []) {
+
+            // this.$stopPoly.remove();
+            // this.$stopPoly = $("<div class='waldorf-stop-poly'></div>").appendTo(this.$clickSurface);
+            // this.$stopPoly.css("z-index", this.baseZ + 1000);
+
+            if(this.$vertices.stop.length < 3){
+                this.$polygons.stop.clipPath([], {
+                    svgDefId: 'annotatorStopPolySvg'
+                });
+            } else {
+                this.$polygons.stop.clipPath(this.$vertices.stop, {
+                    isPercentage: true,
+                    svgDefId: 'annotatorStopPolySvg'
+                });
+                if(this.$startStop=="stop"){
+                    this.$vertices.stop.map((point) => {
+                        this.AddBreadcrumb(point[0], point[1]);
+                    });
+                }
             }
             
-            this.$startPoly.clipPath(startPolygon, {
-                isPercentage: true,
-                svgDefId: 'annotatorStartPolySvg'
-            });
 
-            startPolygon.map((point) => {
-                this.AddBreadcrumb(point[0], point[1]);
-            });
         }
     }
 
     UpdatePolyClipping(){
-
+        if(this.$startStop==null) return;
+        let svgId = this.$startStop == "start" ? "annotatorStartPolySvg" : "annotatorStopPolySvg";
         if(this.$breadcrumbs.length < 3){
-            this.$poly.clipPath([], {
-                svgDefId: 'annotatorPolyEditorSvg'
+            this.$polygons[this.$startStop].makeVisible(false);
+            this.$polygons[this.$startStop].clipPath([], {
+                svgDefId: svgId
             });
-            return;
+        } else {
+            let points = this.$breadcrumbs.map(($crumb) => {
+                let pos = this.GetCenterPercentage($crumb);
+                return [pos.x, pos.y];
+            });
+            this.$polygons[this.$startStop].makeVisible(true);
+            this.$polygons[this.$startStop].clipPath(points, {
+                isPercentage: true,
+                svgDefId: svgId
+            });
         }
-
-
-
-        let points = this.$breadcrumbs.map(($crumb) => {
-            let pos = this.GetCenterPercentage($crumb);
-            return [pos.x, pos.y];
-        });
-
-        this.$poly.clipPath(points, {
-            isPercentage: true,
-            svgDefId: 'annotatorPolyEditorSvg'
-        });
-
     }
 
     UpdateBreadcrumbColoring(){
@@ -416,19 +443,35 @@ class PolygonEditor {
         return points;
     }
 
-    BeginEditing(){
+    /**
+     * Determines if all start vertices match stop vertices
+     * returns true if the vertices don't match exactly
+     */
+    IsAnimated() {
+        let comp = this.$vertices.start;
+        let startString = JSON.stringify(comp);
+        comp = this.$vertices.stop;
+        let stopString = JSON.stringify(comp);
+        return JSON.stringify(startString) != JSON.stringify(stopString);
+    }
+
+    BeginEditing(startStop){
+        this.$startStop = startStop;
+        //startStop is either 'start' or 'stop', depending on which polygon is being edited
         this.$clickSurface.makeVisible(true);
         this.$editDialog.makeVisible(true);
-        this.$poly.makeVisible(true);
+        this.$polygons.start.makeVisible(true);
+        this.$polygons.stop.makeVisible(true);
         //-3//this.$bar.makeVisible(true);
-        this.AddStartPolygon();
+        this.DrawPolygons();
         this.UpdatePolyClipping();
     }
 
     Done(){
         this.$clickSurface.makeVisible(false);
         this.$editDialog.makeVisible(false);
-        this.$poly.makeVisible(false);
+        this.$polygons.start.makeVisible(false);
+        this.$polygons.stop.makeVisible(false);
         //-3//this.$bar.makeVisible(false);
     }
 
@@ -444,10 +487,20 @@ class PolygonEditor {
         let widthDiff = (this.annotator.player.$video.width() - videoDims.width) / 2;
         this.$clickSurface.css('left', widthDiff);
 
-        this.$poly.width(videoDims.width);
-        this.$poly.height(videoDims.height);
-        this.$poly.css("top", heightDiff);
-        this.$poly.css("left", widthDiff);
+        this.$polygons.start.width(videoDims.width);
+        this.$polygons.start.height(videoDims.height);
+        this.$polygons.start.css("top", heightDiff);
+        this.$polygons.start.css("left", widthDiff);
+        this.$polygons.start.css("position", "absolute");
+        this.$polygons.start.makeVisible(false);
+
+        this.$polygons.stop.width(videoDims.width);
+        this.$polygons.stop.height(videoDims.height);
+        this.$polygons.stop.css("top", heightDiff);
+        this.$polygons.stop.css("left", widthDiff);
+        this.$polygons.stop.css("position", "absolute");
+        this.$polygons.stop.makeVisible(false);
+
     }
 
     RegisterElement($element, $container, order, justification = 'flex-start'){
@@ -459,28 +512,37 @@ class PolygonEditor {
     }
 
     ShowJustPolygon(){
-        this.$poly.makeVisible(true);
+        this.$polygons.start.makeVisible(true);
+        this.$polygons.stop.makeVisible(true);
     }
 
     AddPolygonSet() {
-        //An annotation has 0, 1, or 2 polygons.
-        if (this.$polygons.length > 1) {
-            this.$polygons = [];
-            this.$tempBreadCrumbs = [];
+        //This is saving a set of breadcrumbs into the vertices for a polygon
+        this.$vertices[this.$startStop] = this.GetPoints();
+        if(this.$startStop=="start" && this.$vertices.stop.length != this.$vertices.start.length){
+            this.$vertices.stop = this.GetPoints();
         }
+        this.RemoveAllBreadcrumbs();
+        this.annotator.messageOverlay.ShowMessage("Captured "+this.$startStop+" polygon.");
 
-        if (!this.$polygons.length) {
-            this.$polygons[0] = this.GetPoints();
-            this.$tempBreadCrumbs[0] = [this.$breadcrumbs];
-            var msg = "Successfully captured first polygon.";
-        } else {
-            this.$polygons[1] = this.GetPoints();
-            this.$tempBreadCrumbs[1] = [this.$breadcrumbs];
-            var msg = "Successfully captured second polygon.";
-        } 
+        // if (this.$vertices.length > 1) {
+        //     this.$polygons = [];
+        //     this.$tempBreadCrumbs = [];
+        // }
+
+        // if (!this.$polygons.length) {
+        //     this.$polygons.start = this.GetPoints();
+        //     this.$tempBreadCrumbs[0] = [this.$breadcrumbs];
+        //     var msg = "Successfully captured first polygon.";
+        // } else {
+        //     this.$polygons.stop = this.GetPoints();
+        //     this.$tempBreadCrumbs[1] = [this.$breadcrumbs];
+        //     var msg = "Successfully captured second polygon.";
+        // } 
+
         this.annotator.$container.trigger("OnPolygonEditingEnded");
         this.Done();
-        this.annotator.messageOverlay.ShowMessage(msg);
+
 
     }
 

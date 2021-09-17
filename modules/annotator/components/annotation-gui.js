@@ -104,7 +104,7 @@ class AnnotationGUI {
         }).click(() => {
             this.SetVisible(false);
             //console.log("annotation-gui:353 Create");
-            this.polyEditor.BeginEditing();
+            this.polyEditor.BeginEditing('start');
         });
         $editPolyButton.attr('title', "Edit polygon");
         this.RegisterElement($editPolyButton, $startTab, -1);
@@ -131,8 +131,6 @@ class AnnotationGUI {
         this.$tagsField.width("100%");
         this.$tagsField.css("margin-top", "-8px");
         this.RegisterElement(this.$tagsField, $bodyTab, -1);
-        console.log("annotation-gui.js:109 -> this.annotator.annotationManager.onomyVocabulary");
-        console.log(this.annotator.annotationManager);
         this.$tagsField.select2({
             tags: true,
             placeholder: "Tags",
@@ -192,7 +190,7 @@ class AnnotationGUI {
         }).click(() => {
             this.SetVisible(false);
             //console.log("annotation-gui:353 Create");
-            this.polyEditor.BeginEditing();
+            this.polyEditor.BeginEditing('stop');
         });
         $editStopPolyButton.attr('title', "Edit polygon");
         this.RegisterElement($editStopPolyButton, $stopTab, -1);
@@ -615,16 +613,14 @@ class AnnotationGUI {
         }
 
         //Build SvgSelector
-        if (this.polyEditor.$polygons.length > 0) {
+        if (typeof this.polyEditor.$vertices.start != 'undefined' && this.polyEditor.$vertices.start.length > 0) {
             
-            let pointsStr = this.polyEditor.$polygons[0].map(item => { return `${item[0]},${item[1]}` }).join(" ");
-            console.log('$polygons[0]: ' + pointsStr);
+            let pointsStr = this.polyEditor.$vertices.start.map(item => { return `${item[0]},${item[1]}` }).join(" ");
             let value = "<svg viewBox='0 0 100 100' preserveAspectRatio='none'>";
             value += "<polygon points='" + pointsStr + "' />";
 
-            if ('undefined' != typeof(this.polyEditor.$polygons[1])) {
-                let animeStr = this.polyEditor.$polygons[1].map(item => { return `${item[0]},${item[1]}` }).join(" ");
-                console.log('$polygons[1]: ' + animeStr);
+            if (this.polyEditor.IsAnimated()) {
+                let animeStr = this.polyEditor.$vertices.stop.map(item => { return `${item[0]},${item[1]}` }).join(" ");
                 value += "<animate attributeName='points' from='" + pointsStr + "' to='" + animeStr + "'";
                 value += " start='" + startTime + "' end='" + safeEndTime + "' />";
             }
