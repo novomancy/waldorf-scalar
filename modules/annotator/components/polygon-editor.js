@@ -460,8 +460,8 @@ class PolygonEditor {
         //startStop is either 'start' or 'stop', depending on which polygon is being edited
         this.$clickSurface.makeVisible(true);
         this.$editDialog.makeVisible(true);
-        this.$polygons.start.makeVisible(true);
-        this.$polygons.stop.makeVisible(true);
+        this.$polygons.start.makeVisible(false);
+        this.$polygons.stop.makeVisible(false);
         //-3//this.$bar.makeVisible(true);
         this.DrawPolygons();
         this.UpdatePolyClipping();

@@ -39,7 +39,7 @@
     pointer-events: none;
 
     //@if ($debug){
-        background-color: rgba(121, 221, 121, 0.3);
+        background-color: rgba(33, 33, 33, 0.6);
     //}
 
     // Editor polygon lives next to the overlay
@@ -400,7 +400,7 @@
     border: 1px solid white;
     border-radius: 6px;
     background-color: black;
-    opacity: 0.6 !important;
+    // opacity: 0.6 !important;
     position: absolute;
     top: 40%;
     left: 80%;
