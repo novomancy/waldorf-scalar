@@ -229,11 +229,11 @@ class AnnotationGUI {
         let $buttonPanel = $("<div class='button_panel'></div>").appendTo(this.$container);
 
         // Make delete button. This should only appear if we're editing, not if it's a new annotation
-        this.$deleteButton = $("<button>Delete Annotation</button>").button({
+        this.$deleteButton = $("<button id='delete_annotation_button'>Delete</button>").button({
             // icon: "fa fa-bomb",
             showLabel: true
         });
-        this.$deleteButton.hide();
+        // this.$deleteButton.hide();
         this.$deleteButton.attr('title', "Delete annotation");
         this.$deleteButton.click(() => {
             this.annotator.server.DeleteAnnotation(this.originalAnnotation, () => {
@@ -245,13 +245,12 @@ class AnnotationGUI {
 
 
         // Make cancel button
-        let $cancelButton = $("<br><br><button>Cancel</button>").button({
+        let $cancelButton = $("<button>Cancel</button>").button({
             showLabel: true
         }).click(() => {
             this.polyEditor.ResetPolygons();
             this.Close();
         });
-        $cancelButton.css("float", "right");
         $cancelButton.attr('title', "Exit annotation editing");
         //$cancel_button.addClass("waldorf-cancel-button");
         this.RegisterElement($cancelButton, $buttonPanel, -1);
@@ -270,7 +269,7 @@ class AnnotationGUI {
                 this.Close();
             });
         });
-        $saveButton.css("float", "left");
+        $saveButton.attr('title', "Save annotation");
         this.RegisterElement($saveButton, $buttonPanel, -1);
 
         //https://stackoverflow.com/questions/13837304/jquery-ui-non-ajax-tab-loading-whole-website-into-itself
@@ -405,10 +404,12 @@ class AnnotationGUI {
         if(this.editMode) {
             this.$title.text("Edit Annotation");
             this.$deleteButton.button("enable");
+            this.$deleteButton.show();
         }
         else {
             this.$title.text("Create Annotation");
             this.$deleteButton.button("disable");
+            this.$deleteButton.hide();
         }
 
     }
