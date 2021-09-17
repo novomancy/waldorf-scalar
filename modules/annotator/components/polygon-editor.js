@@ -249,7 +249,6 @@ class PolygonEditor {
     }
 
     RemoveAllBreadcrumbs(){
-        console.log("Removing all breadcrumbs");
         while(this.$breadcrumbs.length > 0){
             this.RemoveLastBreadcrumb();
         }
@@ -275,23 +274,15 @@ class PolygonEditor {
     }
 
     Reset(){
-        
         // Remove all breadcrumbs
         for(let $breadcrumb of this.$breadcrumbs){
             $breadcrumb.remove();
         }
         this.$breadcrumbs = [];
-
-        // Remove the poly if it already exists
-        // if(this.$poly != null){
-        //     this.$poly.remove();
-        // }
     }
 
     ResetPolygons() {
-        console.log("resetting polygons");
         if (this.$polygons.start) {
-            console.log("reset start poly");
             this.$polygons.start.makeVisible(false);
             this.$polygons.start.css("clip-path", "");
         }
@@ -306,23 +297,19 @@ class PolygonEditor {
     }
 
     Restore(){
-        this.InitPoly(this.originalJSON);
+        this.InitPoly(this.originalJSON[0], this.originalJSON[1]);
     }
 
-    InitPoly(points = null){
+    InitPoly(startPoints, stopPoints){
         this.Reset();
 
-        // If JSON was specified, generate breadcrumbs from it.
-        if(points != null){
-            // Put down the breadcrumbs
-            for(let point of points){
-                this.AddBreadcrumb(point[0], point[1]);
-            }
-        }
+        if(startPoints!=null) this.$vertices.start = startPoints;
+        if(startPoints!=null && stopPoints==null) this.$vertices.stop = startPoints;
+        if(stopPoints!=null) this.$vertices.stop = stopPoints;
 
         this.UpdatePolyClipping();
 
-        this.originalJSON = points;
+        this.originalJSON = [startPoints, stopPoints];
     }
 
     DrawPolygons() {

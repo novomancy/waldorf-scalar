@@ -379,17 +379,7 @@ class AnnotationGUI {
                 this.$tagsField.trigger("change");
             }
 
-            this.polyEditor.InitPoly(annotation.getPoly());
-            this.polyEditor.ShowJustPolygon();
-
-            // Propagate the polygon editor's polygons array with polygons from the annotation
-            this.polyEditor.$polygons = [];
-            if (annotation.polyStart != null) {
-                this.polyEditor.$polygons.push(annotation.polyStart);
-                if (annotation.polyEnd != null) {
-                    this.polyEditor.$polygons.push(annotation.polyEnd);
-                }
-            }
+            this.polyEditor.InitPoly(annotation.polyStart,annotation.polyEnd);
 
         }
         // Insert template data if no annotation is given
