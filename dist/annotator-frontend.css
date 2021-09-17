@@ -197,7 +197,7 @@
   height: 100%;
   z-index: 8;
   pointer-events: none;
-  background-color: rgba(121, 221, 121, 0.3);
+  background-color: rgba(33, 33, 33, 0.6);
 }
 .waldorf-edit-overlay + .waldorf-edit-poly {
   position: absolute;
@@ -373,7 +373,6 @@
   border: 1px solid white;
   border-radius: 6px;
   background-color: black;
-  opacity: 0.7 !important;
 }
 
 .center {
@@ -457,7 +456,7 @@
 #start_tab, #body_tab, #stop_tab {
   margin-top: 1px;
   height: 78px;
-  width: 380px;
+  width: 58%;
   background-color: black;
   border-top: 1px solid gray;
   border-right: 1px solid gray;
@@ -468,12 +467,22 @@
 }
 
 .button_panel {
+  float: right;
   margin-right: 15px;
   margin-top: 5px;
+  width: 20%;
+  text-align: center;
 }
 
 .button_panel button {
   height: 30px;
+  margin: 3px auto;
+  width: 80%;
+}
+
+#delete_annotation_button {
+  background-color: #ff8c8c;
+  border: 1px solid red;
 }
 
 /* create_annotation_dialog.css end */
@@ -486,7 +495,6 @@
   border: 1px solid white;
   border-radius: 6px;
   background-color: black;
-  opacity: 0.6 !important;
   position: absolute;
   top: 40%;
   left: 80%;
