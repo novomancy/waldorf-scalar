@@ -72,7 +72,7 @@ class AnnotationGUI {
 
         //Begin filling start tab
         // Make "Start time" label and field
-        this.$timeStartField = $('<input type="text" name="time-start" id="time-start" value=""><br><br>');
+        this.$timeStartField = $('<input type="text" name="time-start" id="time-start" value="">');
         this.$timeStartField.width(72);
         this.$timeStartField.css("font-family", "Courier, monospace");
         this.$timeStartField.css("margin-right", "2px");
@@ -92,10 +92,15 @@ class AnnotationGUI {
         }).click(() => {
             this.$timeStartField[0].value = GetFormattedTime(this.annotator.player.videoElement.currentTime);
         });
-        this.RegisterElement(this.$startTimeMarker, $startTab, -2);   
+        this.RegisterElement(this.$startTimeMarker, $startTab);   
 
         $("<label for='time-start'>Start Time: </label> ").appendTo($startTab);
         this.$timeStartField.appendTo($startTab);
+        this.$startTimeJump =  $("<i class='fa fa-clock-o' style='cursor: pointer; padding:0; line-height:1.4; color: white;'></i><br><br>").click(() => {
+            this.annotator.player.videoElement.currentTime = GetSecondsFromHMS(this.$timeStartField[0].value);
+        });
+        this.RegisterElement(this.$startTimeJump, $startTab);
+
 
         //Make "Edit polygon" button
         let $editPolyButton = $("<button style='padding:0; line-height:1.4'>Edit Polygon</button>").button({
@@ -158,7 +163,7 @@ class AnnotationGUI {
         this.RegisterElement(this.$textField, $bodyTab, -1);
 
         // Make "Stop time" label and field
-        this.$timeEndField = $('<input type="text" name="time-stop" id="time-stop" value=""><br><br>');
+        this.$timeEndField = $('<input type="text" name="time-stop" id="time-stop" value="">');
         this.$timeEndField.width(72);
         this.$timeEndField.css("font-family", "Courier, monospace");
         this.$timeEndField.css("margin-right", "2px");
@@ -179,9 +184,14 @@ class AnnotationGUI {
             this.$timeEndField[0].value = GetFormattedTime(this.annotator.player.videoElement.currentTime);
         });
         
-        this.RegisterElement(this.$endTimeMarker, $stopTab, -2);
+        this.RegisterElement(this.$endTimeMarker, $stopTab);
         $("<label for='stop_time'>Stop Time: </label> ").appendTo($stopTab);
         this.$timeEndField.appendTo($stopTab);
+
+        this.$endTimeJump =  $("<i class='fa fa-clock-o' style='cursor: pointer; padding:0; line-height:1.4; color: white;'></i><br><br>").click(() => {
+            this.annotator.player.videoElement.currentTime = GetSecondsFromHMS(this.$timeEndField[0].value);
+        });
+        this.RegisterElement(this.$endTimeJump, $stopTab);
 
         //Make "Edit polygon" button
         let $editStopPolyButton = $("<button style='padding:0; line-height:1.4'>Edit Polygon</button>").button({
