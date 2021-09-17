@@ -353,16 +353,12 @@ class PolygonEditor {
             }
         }
         if (this.$vertices.stop != []) {
-
-            // this.$stopPoly.remove();
-            // this.$stopPoly = $("<div class='waldorf-stop-poly'></div>").appendTo(this.$clickSurface);
-            // this.$stopPoly.css("z-index", this.baseZ + 1000);
-
             if(this.$vertices.stop.length < 3){
                 this.$polygons.stop.clipPath([], {
                     svgDefId: 'annotatorStopPolySvg'
                 });
             } else {
+                this.$polygons.stop.makeVisible(true);
                 this.$polygons.stop.clipPath(this.$vertices.stop, {
                     isPercentage: true,
                     svgDefId: 'annotatorStopPolySvg'
@@ -373,8 +369,6 @@ class PolygonEditor {
                     });
                 }
             }
-            
-
         }
     }
 
@@ -512,8 +506,7 @@ class PolygonEditor {
     }
 
     ShowJustPolygon(){
-        this.$polygons.start.makeVisible(true);
-        this.$polygons.stop.makeVisible(true);
+        this.DrawPolygons();
     }
 
     AddPolygonSet() {
@@ -542,6 +535,7 @@ class PolygonEditor {
 
         this.annotator.$container.trigger("OnPolygonEditingEnded");
         this.Done();
+        this.ShowJustPolygon();
 
 
     }
