@@ -6,11 +6,11 @@ module.exports = function (grunt) {
         pkg: grunt.file.readJSON('package.json'),
         concat: {
             dist:{
-                src: ["./vendor/select2.min.js","./dist/annotator-frontend.js"],
+                src: ["./vendor/select2.js","./dist/annotator-frontend.js"],
                 dest: './dist/annotator-frontend.js'
             },
             scalar_dist:{
-                src: ["./vendor/select2.min.js","./dist/annotator-frontend-scalar.js"],
+                src: ["./vendor/select2.js","./dist/annotator-frontend-scalar.js"],
                 dest: './dist/annotator-frontend-scalar.js'
             },
         },
@@ -64,7 +64,7 @@ module.exports = function (grunt) {
             scripts: {
                 //Build packed file when any source files change
                 files: ["./modules/**/*.js"],
-                tasks: ["browserify", "extract_sourcemap"]
+                tasks: ["browserify", "concat", "extract_sourcemap"]
             },
             styles: {
                 //Build packed file when any style files change
