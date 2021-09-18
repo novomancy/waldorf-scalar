@@ -32,84 +32,6 @@ class PolygonEditor {
         this.ResizeOverlay();
         this.annotator.player.$container.on("OnFullscreenChange", (event, setFullscreen) => this.ResizeOverlay());
 
-        // Create the toolbar up top
-        // this.$bar = $("<div class='waldorf-vp-post'></div>").appendTo(this.annotator.player.$container);
-        // this.$postToolbar = $("<div class='flex-toolbar'></div>").appendTo(this.$bar);
-        // Invisible expanding divider
-        //-3//this.$postToolbar.append($("<div><p style='color:white'>Edit Polygon</p></div>").css("flex-grow", 1).css("order", 0));
-
-
-        // Make "Collect Polygon state" button
-        // this.$capPolyButton = $("<button>Capture Polygon</button>").button({
-        //     icon: "fa fa-camera-retro",
-        //     showLabel: false
-        // }).click(() => {
-        //     //this.SetVisible(false);
-        //     //this.GetPoints();
-
-        //     // Build polygon selector
-        //     // let points = this.GetPoints();
-        //     // if(points.length > 0) {
-        //     //     let pointsStr = points.map(item => { return `${item[0]},${item[1]}` }).join(" ");
-        //     //     let polygonSelector = {
-        //     //         "type": "SvgSelector",
-        //     //         "value": `<svg:svg viewBox='0 0 100 100' preserveAspectRatio='none'><polygon points='${pointsStr}' /></svg:svg>` // http://stackoverflow.com/a/24898728
-        //     //     }
-        //     //     tmpSelectors.push(polygonSelector);
-        //     // }
-        //     // console.log("tmpSelectors");
-        //     // console.log(tmpSelectors);
-        //     this.annotator.AddPolygonSet(this.annotator.annotation.getPoly());
-
-        // });
-        // this.$capPolyButton.css("margin-right", "15px");
-        // this.$capPolyButton.attr('title', "Capture polygon");
-        //-3//this.RegisterElement(this.$capPolyButton, this.$postToolbar, 1, 'flex-end');
-
-        // Create undo button
-        // this.$undoButton = $("<button>Remove Last Point</button>").button({
-        //     icon: "fa fa-undo",
-        //     showLabel: false
-        // });
-        // this.$undoButton.css("margin-right", "15px");
-        // this.$undoButton.attr('title', "Remove last point");
-        // this.$undoButton.click(() => {
-        //     this.RemoveLastBreadcrumb();
-        // });
-        //-3//this.RegisterElement(this.$undoButton, this.$postToolbar, 1, 'flex-end');
-
-        // Create the confirm button
-        // this.$confirmButton = $("<button>Finish polygon</button>").button({
-        //     icon: "fa fa-check",
-        //     showLabel: false
-        // });
-        // this.$confirmButton.attr('title', "Finish polygon");
-        // this.$confirmButton.addClass("waldorf-confirm-button");
-        // this.$confirmButton.click(() => {
-        //     this.originalJSON = this.GetJSON();
-        //     this.Done();
-        //     this.annotator.$container.trigger("OnPolygonEditingEnded");
-        // });
-        // //-3//this.RegisterElement(this.$confirmButton, this.$postToolbar, 3, 'flex-end');
-
-        // // Create the cancel button
-        // this.$cancelButton = $("<button>Stop polygon editing</button>").button({
-        //     icon: "fa fa-remove",
-        //     showLabel: false
-        // });
-        // this.$cancelButton.addClass("waldorf-cancel-button");
-        // this.$cancelButton.attr('title', "Stop polygon editing");
-        // this.$cancelButton.click(() => {
-        //     //Restore the original state
-        //     this.Restore();
-        //     this.Done();
-        //     this.annotator.$container.trigger("OnPolygonEditingEnded");
-        // });
-        // //-3//this.RegisterElement(this.$cancelButton, this.$postToolbar, 2, 'flex-end');
-
-        // $(window).resize(() => this.ResizeOverlay());
-
-
         /* 
         * new UI
         */
@@ -446,6 +368,8 @@ class PolygonEditor {
         //-3//this.$bar.makeVisible(true);
         this.DrawPolygons();
         this.UpdatePolyClipping();
+        if(typeof this.annotator.tickbar != 'undefined') this.annotator.tickbar.Hide();
+        this.annotator.player.SetVisible(false);
     }
 
     Done(){
@@ -453,7 +377,8 @@ class PolygonEditor {
         this.$editDialog.makeVisible(false);
         this.$polygons.start.makeVisible(false);
         this.$polygons.stop.makeVisible(false);
-        //-3//this.$bar.makeVisible(false);
+        if(typeof this.annotator.tickbar != 'undefined') this.annotator.tickbar.Show();
+        this.annotator.player.SetVisible(true);
     }
 
     ResizeOverlay(){

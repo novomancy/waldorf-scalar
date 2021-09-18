@@ -55,15 +55,23 @@ class TickBar {
         // Remove the object from the document, and the array
         let newTicks = [];
         for(let $tick of this.ticks){
-            console.log('Tick: ' + $tick.data("annotation-id"));
+            // console.log('Tick: ' + $tick.data("annotation-id"));
             if($tick.data("annotation-id") == id){
-                console.log(`Removed tick ${id}`);
+                // console.log(`Removed tick ${id}`);
                 $tick.remove();
             } else {
                 newTicks.push($tick);
             }
         }
         this.ticks = newTicks;
+    }
+
+    Hide(){
+        this.$tickBar.hide();
+    }
+
+    Show(){
+        this.$tickBar.show();
     }
 
     Clear(){
