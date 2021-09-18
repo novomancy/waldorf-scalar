@@ -154,11 +154,6 @@ class Annotation {
                 this.polyEnd = pointsData;
             }
         }
-        console.log('polyStart: ');
-        console.log(this.polyStart);
-        console.log('polyEnd: ');
-        console.log(this.polyEnd);
-
     }
 
     getPoly() {

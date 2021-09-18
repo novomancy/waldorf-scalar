@@ -70,6 +70,12 @@ class AnnotationGUI {
         let $stopTab = $("<div id='stop_tab'></div>");
         this.RegisterElement($stopTab, this.$tabs, -1);
 
+        //Add hidden fields for creator info
+        this.$creatorNameField = $('<input type="hidden" name="creator-nickname" id="creator-nickname" value="">');
+        this.$creatorNameField.appendTo($startTab);
+        this.$creatorEmailField = $('<input type="hidden" name="creator-email" id="creator-email" value="">');
+        this.$creatorEmailField.appendTo($startTab);
+
         //Begin filling start tab
         // Make "Start time" label and field
         this.$timeStartField = $('<input type="text" name="time-start" id="time-start" value="">');
@@ -379,6 +385,12 @@ class AnnotationGUI {
                 this.$tagsField.trigger("change");
             }
 
+            //add creators, if they are specified
+            if('undefined' != typeof annotation.creator){
+                this.$creatorNameField.val(annotation.creator.nickname);
+                this.$creatorEmailField.val(annotation.creator.email);
+            }
+
             this.polyEditor.InitPoly(annotation.polyStart,annotation.polyEnd);
 
         }
@@ -392,6 +404,8 @@ class AnnotationGUI {
             console.log("Populated with template data");
             this.$timeStartField.val(GetFormattedTime(this.annotator.player.videoElement.currentTime));
             this.$timeEndField.val(GetFormattedTime(this.annotator.player.videoElement.duration));
+            this.$creatorNameField.val(localStorage.getItem('waldorf_user_name'));
+            this.$creatorEmailField.val(localStorage.getItem('waldorf_user_email'));
             this.$textField.val("");
             // Reset the tags field
             this.$tagsField.val("").trigger("change");
@@ -433,6 +447,7 @@ class AnnotationGUI {
         if ('undefined' == typeof(annotation.items)) { // Version 1
             annotation["body"] = this.BuildAnnotationBodyV1();
             annotation["target"] = this.BuildAnnotationTarget(true);
+            annotation["creator"] = this.BuildCreatorTemplate();
         } else { // Version 2
             annotation["label"] = {
                 "en": [this.annotator.contentLabel]
@@ -506,8 +521,8 @@ class AnnotationGUI {
     BuildCreatorTemplate() {
         return {
             "type": "Person",
-            "nickname": localStorage.getItem('waldorf_user_name'),
-            "email_sha1": localStorage.getItem('waldorf_user_email')
+            "nickname": this.$creatorNameField.val(),
+            "email_sha1": this.$creatorEmailField.val()
         }
     }
 

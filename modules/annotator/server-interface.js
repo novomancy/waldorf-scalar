@@ -123,18 +123,18 @@ class ServerInterface {
         let key;
         if (this.annotator.apiKey){
             key = this.annotator.apiKey;
-            let email_storage = localStorage.getItem('waldorf_user_email');
-            let name_storage = localStorage.getItem('waldorf_user_name');
-            if(name_storage == null) name_storage = email_storage;
+            // let email_storage = localStorage.getItem('waldorf_user_email');
+            // let name_storage = localStorage.getItem('waldorf_user_name');
+            // if(name_storage == null) name_storage = email_storage;
         } else {
             key = localStorage.getItem('waldorf_auth_token');
         }
 
-        if(this.annotator.apiKey){
-            if(annotation["creator"] == null) annotation["creator"] = {};
-            annotation["creator"]["email"] = localStorage.getItem('waldorf_user_email');
-            annotation["creator"]["nickname"] = localStorage.getItem('waldorf_user_name');
-        }
+        // if(this.annotator.apiKey){
+        //     if(annotation["creator"] == null) annotation["creator"] = {};
+        //     annotation["creator"]["email"] = localStorage.getItem('waldorf_user_email');
+        //     annotation["creator"]["nickname"] = localStorage.getItem('waldorf_user_name');
+        // }
 
         if (annotation["annotation_version"] == "v1") {
             annotation["request"]["items"]["action"] = "add";
