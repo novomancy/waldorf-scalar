@@ -549,7 +549,10 @@ class AnnotationGUI {
         // Build tag descriptors
         //let tags = this.$tagsField.select2("data").map((item) => { return item.text; });
         let selected_tags = this.$tagsField.select2("data").map((item) => { return {id: item.id, text: item.text}});
-        let onomy_map = this.annotator.annotationManager.onomyVocabulary.results.reduce(function(acc, curr) {acc[curr['id']] = curr; return acc;}, {});
+        let onomy_map = {};
+        if(typeof this.annotator.annotationManager.onomyVocabulary.results != 'undefined'){
+            onomy_map = this.annotator.annotationManager.onomyVocabulary.results.reduce(function(acc, curr) {acc[curr['id']] = curr; return acc;}, {});
+        } 
 
         for(let tag of selected_tags){
             let onomy_ref = onomy_map[tag.id];
@@ -676,7 +679,7 @@ class AnnotationGUI {
             return this.annotator.annotationManager.onomyVocabulary;
         }
 
-        if(!this.annotator.tagsURL) return {};
+        if(!this.annotator.tagsURL) return {results: []};
 
         return {
             url: this.annotator.tagsURL,

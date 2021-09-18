@@ -107,7 +107,11 @@ class VideoAnnotator {
                 } else {  // Version 2
                     this.contentLabel = json.label.en[0];
                     this.artURL = json.items[0].content.id;
-                    this.annotationPageURL = json.items[0].items[0].items[0].id;
+                    if(typeof json.items[0].items[0] != 'undefined'){
+                        this.annotationPageURL = json.items[0].items[0].items[0].id;
+                    } else {
+                        this.annotationPageURL = '';
+                    }
                 }
 
                 this.annotationManager.PopulateFromJSON(json);
