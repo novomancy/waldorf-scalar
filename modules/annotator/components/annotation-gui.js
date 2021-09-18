@@ -129,12 +129,12 @@ class AnnotationGUI {
         this.$tagsField.width("100%");
         this.$tagsField.css("margin-top", "-8px");
         this.RegisterElement(this.$tagsField, $bodyTab, -1);
+
         if(this.annotator.tagsURL==''){
-            console.log("NoTagsUrl")
             this.$tagsField.select2({
                 tags: true,
                 placeholder: "Tags",
-                data: [{id: 1, text:'Enter tags above.'},{id:2, text:"the second one"}],
+                data: [{id: 0, text: "No taxonomy; type tags above", disabled: true}],
                 selectOnBlur: true,
                 // Allow manually entered text in drop down.
                 createTag: function (params) {
@@ -146,7 +146,6 @@ class AnnotationGUI {
                 }
             });  
         } else {
-            console.log("hasTagsURL")
             this.$tagsField.select2({
                 tags: true,
                 placeholder: "Tags",
@@ -384,7 +383,7 @@ class AnnotationGUI {
             }
             // Reset the tags field
             this.$tagsField.val("").trigger("change");
-            this.$tagsField.find("option").remove();
+            this.$tagsField.find("option:not([disabled])").remove();
 
             for(let tag of annotation.tags){
                 this.$tagsField.append("<option value='"+tag+"' selected>"+tag+"</option>");
@@ -415,7 +414,7 @@ class AnnotationGUI {
             this.$textField.val("");
             // Reset the tags field
             this.$tagsField.val("").trigger("change");
-            this.$tagsField.find("option").remove();
+            this.$tagsField.find("option:not([disabled])").remove();
 
             this.polyEditor.InitPoly();
         }
