@@ -4,13 +4,23 @@ module.exports = function (grunt) {
 
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
+        concat: {
+            dist:{
+                src: ["./vendor/select2.min.js","./dist/annotator-frontend.js"],
+                dest: './dist/annotator-frontend.js'
+            },
+            scalar_dist:{
+                src: ["./vendor/select2.min.js","./dist/annotator-frontend-scalar.js"],
+                dest: './dist/annotator-frontend-scalar.js'
+            },
+        },
         browserify: {
             dist: {
                 options: {
                     browserifyOptions: {
                         // Enable inline sourcemap generation so that
                         // stack traces reference the original files' lines
-                        debug: true
+                        debug: false
                     },
                     transform: [
                         
@@ -28,7 +38,7 @@ module.exports = function (grunt) {
                     browserifyOptions: {
                         // Enable inline sourcemap generation so that
                         // stack traces reference the original files' lines
-                        debug: true
+                        debug: false
                     },
                     transform: [
                         
@@ -122,14 +132,15 @@ module.exports = function (grunt) {
     });
 
     grunt.loadNpmTasks("grunt-browserify");
+    grunt.loadNpmTasks('grunt-contrib-concat');
     grunt.loadNpmTasks('grunt-contrib-sass');
     grunt.loadNpmTasks("grunt-contrib-watch");
     grunt.loadNpmTasks('grunt-browser-sync');
     grunt.loadNpmTasks('grunt-extract-sourcemap');
     grunt.loadNpmTasks('grunt-contrib-compress');
 
-    grunt.registerTask("build", ["sass", "browserify"]);
-    grunt.registerTask("preview", ["build", "browserSync", "watch"]);
+    grunt.registerTask("build", ["sass", "browserify", "concat"]);
+    grunt.registerTask("preview", ["build", "browserSync", "concat", "watch"]);
     grunt.registerTask("make_release", ["build", "compress"]);
     grunt.registerTask("test", ["test"]);
 };

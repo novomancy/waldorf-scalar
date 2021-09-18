@@ -5,6 +5,7 @@ be registered here.
 
 // Import npm module dependencies
 import "./vendor.js";
+// require("../vendor/select2.min.js"); moved this to be concatenated in grunt since it was out of order
 
 import "./utils/array-extensions.js";
 import "./utils/jquery-extensions.js";

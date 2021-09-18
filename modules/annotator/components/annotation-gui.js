@@ -130,21 +130,23 @@ class AnnotationGUI {
         this.$tagsField.css("margin-top", "-8px");
         this.RegisterElement(this.$tagsField, $bodyTab, -1);
         if(this.annotator.tagsURL==''){
+            console.log("NoTagsUrl")
             this.$tagsField.select2({
                 tags: true,
                 placeholder: "Tags",
-                data: [],
+                data: [{id: 1, text:'Enter tags above.'},{id:2, text:"the second one"}],
                 selectOnBlur: true,
                 // Allow manually entered text in drop down.
                 createTag: function (params) {
                     return {
                         id: params.term,
-                        text: params.term,
-                        newOption: true
+                        text: params.term
+                        // newOption: true
                     }
                 }
             });  
         } else {
+            console.log("hasTagsURL")
             this.$tagsField.select2({
                 tags: true,
                 placeholder: "Tags",
@@ -154,8 +156,8 @@ class AnnotationGUI {
                 createTag: function (params) {
                     return {
                         id: params.term,
-                        text: params.term,
-                        newOption: true
+                        text: params.term
+                        // newOption: true
                     }
                 }
             });
@@ -673,6 +675,8 @@ class AnnotationGUI {
         if (this.annotator.annotationManager != undefined && this.annotator.annotationManager.onomyVocabulary.length > 0) {
             return this.annotator.annotationManager.onomyVocabulary;
         }
+
+        if(!this.annotator.tagsURL) return {};
 
         return {
             url: this.annotator.tagsURL,
