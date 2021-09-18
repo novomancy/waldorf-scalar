@@ -124,38 +124,42 @@ class AnnotationGUI {
         $startTargetLabel.css("color", "white");
         this.RegisterElement($startTargetLabel, $startTab, -1);
 
-  
-        
-        //start point polygon is added (This seems to be unused? JPB 2021-09-16)
-        // this.$startPolygonSet = $("<button style='padding:0; line-height:1.4'>Start Polygon Set</button>").button({
-        //     icon: "fa fa-check-square-o",
-        //     showLabel: false
-        // });
-        // //this.$startPolygonSet.css("visibility", "inherit");
-        // this.$startPolygonSet.css("visibility", "hidden");
-        // this.$startPolygonSet.addClass("waldorf-confirm-button");
-        //this.RegisterElement(this.$startPolygonSet, $startTab, -2); 
-
-
         // Add tags input field
         this.$tagsField = $('<select class="form-control" multiple="multiple"></select>');
         this.$tagsField.width("100%");
         this.$tagsField.css("margin-top", "-8px");
         this.RegisterElement(this.$tagsField, $bodyTab, -1);
-        this.$tagsField.select2({
-            tags: true,
-            placeholder: "Tags",
-            ajax: this.GetTagsQuery(),
-            selectOnBlur: true,
-            // Allow manually entered text in drop down.
-            createTag: function (params) {
-                return {
-                    id: params.term,
-                    text: params.term,
-                    newOption: true
+        if(this.annotator.tagsURL==''){
+            this.$tagsField.select2({
+                tags: true,
+                placeholder: "Tags",
+                data: [],
+                selectOnBlur: true,
+                // Allow manually entered text in drop down.
+                createTag: function (params) {
+                    return {
+                        id: params.term,
+                        text: params.term,
+                        newOption: true
+                    }
                 }
-            }
-        });
+            });  
+        } else {
+            this.$tagsField.select2({
+                tags: true,
+                placeholder: "Tags",
+                ajax: this.GetTagsQuery(),
+                selectOnBlur: true,
+                // Allow manually entered text in drop down.
+                createTag: function (params) {
+                    return {
+                        id: params.term,
+                        text: params.term,
+                        newOption: true
+                    }
+                }
+            });
+        }
         // Add custom class for bringing the dropdown to the front (fullscreen fix)
         this.$tagsField.data('select2').$dropdown.addClass("select2-dropdown-annotator");
 
@@ -677,14 +681,14 @@ class AnnotationGUI {
             cache: true,
             onomyLanguage: this.annotator.onomyLanguage,
             annotationManager: this.annotator.annotationManager,
-            parseFunction: this.OnomyVocabularProcess,
+            parseFunction: this.OnomyVocabularyProcess,
             processResults: function (data) {
                 return this.ajaxOptions.parseFunction(data, this.ajaxOptions.onomyLanguage);
             }
         }
     }
     
-    OnomyVocabularProcess(data, onomyLanguage) {  
+    OnomyVocabularyProcess(data, onomyLanguage) {  
         // Parse the labels into the format expected by Select2
         // multilingual tags
         let multilingual_tags = [];
@@ -747,8 +751,6 @@ class AnnotationGUI {
         if (return_tags.length == 0) {
             return_tags = tags
         }
-        //console.log("return_tags");
-        //console.log(return_tags);
         return {
             results: return_tags,
         };

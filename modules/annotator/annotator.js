@@ -70,13 +70,15 @@ class VideoAnnotator {
         this.annotationManager = new AnnotationManager();
         this.sessionManager = new SessionManager(this);
 
-        //load onomy vocabulary
-        $.ajax(this.gui.GetTagsQuery()).done((vocabulary)=>{
-            //console.log("OnomyVocabulary is loaded");
-            let parsedVocabulary = this.gui.OnomyVocabularProcess(vocabulary, this.onomyLanguage);
-            this.annotationManager.UpdateOnomyVocabulary(parsedVocabulary);
-            this.onomyVocabulary = parsedVocabulary;
-        });
+        //load onomy vocabulary, if it exists
+        if(this.tagsURL!=''){
+            $.ajax(this.gui.GetTagsQuery()).done((vocabulary)=>{
+                //console.log("OnomyVocabulary is loaded");
+                let parsedVocabulary = this.gui.OnomyVocabularyProcess(vocabulary, this.onomyLanguage);
+                this.annotationManager.UpdateOnomyVocabulary(parsedVocabulary);
+                this.onomyVocabulary = parsedVocabulary;
+            });
+        }
 
         //localURL takes precendence - if it is anything but '' then do not load from server
         if(this.localURL == ''){
