@@ -1088,16 +1088,13 @@ var AnnotationGUI = /*#__PURE__*/function () {
       this.RegisterElement(this.$tagsField, $bodyTab, -1);
 
       if (this.annotator.tagsURL == '') {
-        console.log("NoTagsUrl");
         this.$tagsField.select2({
           tags: true,
           placeholder: "Tags",
           data: [{
-            id: 1,
-            text: 'Enter tags above.'
-          }, {
-            id: 2,
-            text: "the second one"
+            id: 0,
+            text: "No taxonomy; type tags above",
+            disabled: true
           }],
           selectOnBlur: true,
           // Allow manually entered text in drop down.
@@ -1110,7 +1107,6 @@ var AnnotationGUI = /*#__PURE__*/function () {
           }
         });
       } else {
-        console.log("hasTagsURL");
         this.$tagsField.select2({
           tags: true,
           placeholder: "Tags",
@@ -1353,7 +1349,7 @@ var AnnotationGUI = /*#__PURE__*/function () {
 
 
         this.$tagsField.val("").trigger("change");
-        this.$tagsField.find("option").remove();
+        this.$tagsField.find("option:not([disabled])").remove();
 
         var _iterator = _createForOfIteratorHelper(annotation.tags),
             _step;
@@ -1390,7 +1386,7 @@ var AnnotationGUI = /*#__PURE__*/function () {
         this.$textField.val(""); // Reset the tags field
 
         this.$tagsField.val("").trigger("change");
-        this.$tagsField.find("option").remove();
+        this.$tagsField.find("option:not([disabled])").remove();
         this.polyEditor.InitPoly();
       } // Modify GUI based on edit mode
 
