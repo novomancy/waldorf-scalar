@@ -172,12 +172,10 @@ class ServerInterface {
                 let idParts = ids[0].split('.');
                 idParts.pop();
                 let newID = idParts.join('.');
-                console.log("Successfully posted new annotation with id "+newID);
                 // annotation.id = ids[0]; // Append the ID given by the response
                 annotation.items[0].id = newID;
                 annotation.items[0].items[0].id = newID; //these should be different, but irrelevant here
                 annotation.items[0].items[0].items[0].id = newID; //these should be different, but irrelevant here
-                console.log(annotation);
                 if(callback) callback(annotation);
             },
             error: (response) => {
@@ -199,18 +197,18 @@ class ServerInterface {
         let key;
         if (this.annotator.apiKey){
             key = this.annotator.apiKey;
-            let email_storage = localStorage.getItem('waldorf_user_email');
-            let name_storage = localStorage.getItem('waldorf_user_name');
-            if(name_storage == null) name_storage = email_storage;
+            // let email_storage = localStorage.getItem('waldorf_user_email');
+            // let name_storage = localStorage.getItem('waldorf_user_name');
+            // if(name_storage == null) name_storage = email_storage;
         } else {
             key = localStorage.getItem('waldorf_auth_token');
         }
 
-        if(this.annotator.apiKey){
-            if(annotation["creator"] == null) annotation["creator"] = {};
-            annotation["creator"]["email"] = localStorage.getItem('waldorf_user_email');
-            annotation["creator"]["nickname"] = localStorage.getItem('waldorf_user_name');
-        }
+        // if(this.annotator.apiKey){
+        //     if(annotation["creator"] == null) annotation["creator"] = {};
+        //     annotation["creator"]["email"] = localStorage.getItem('waldorf_user_email');
+        //     annotation["creator"]["nickname"] = localStorage.getItem('waldorf_user_name');
+        // }
 
         if (annotation["annotation_version"] == "v1") {
             annotation["request"]["items"]["action"] = "update";
@@ -244,8 +242,21 @@ class ServerInterface {
             },
             success: (data) => {
                 //console.log(annotation);
-                annotation.id = data.id; // Append the ID given by the response
+                // annotation.id = data.id; // Append the ID given by the response
                 //console.log("Successfully edited the annotation. (ID is now " + data.id + ")");
+
+                //The callback expects the annotation in memory to be formatted like one from JSON,
+                //so we need to reorganize things a bit. Note that this assume Scalar is the back end
+                // console.log(data);
+                let ids = $.map(data, function(e, k){return k});
+                //Need to remove Scalar's version ID, which is appended to the URL after a .
+                let idParts = ids[0].split('.');
+                idParts.pop();
+                let newID = idParts.join('.');
+                // annotation.id = ids[0]; // Append the ID given by the response
+                annotation.items[0].id = newID;
+                annotation.items[0].items[0].id = newID; //these should be different, but irrelevant here
+                annotation.items[0].items[0].items[0].id = newID; //these should be different, but irrelevant here
 
                 this.annotator.messageOverlay.ShowMessage("Successfully edited the anotation.");
                 if(callback) callback(annotation, oldID);
