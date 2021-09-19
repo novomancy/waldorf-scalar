@@ -24,9 +24,11 @@ class PolygonEditor {
         });
 
         // Initialize the polygon DOM nodes
-        this.$polygons.start = $("<div class='waldorf-start-poly'></div>").appendTo(this.$clickSurface);
+        // this.$polygons.start = $("<div class='waldorf-start-poly'></div>").appendTo(this.$clickSurface);
+        this.$polygons.start = $("<div class='waldorf-start-poly'></div>").appendTo(this.annotator.polyOverlay.$videoOverlay);
         this.$polygons.start.css("z-index", this.baseZ + 1);
-        this.$polygons.stop = $("<div class='waldorf-stop-poly'></div>").appendTo(this.$clickSurface);
+        // this.$polygons.stop = $("<div class='waldorf-stop-poly'></div>").appendTo(this.$clickSurface);
+        this.$polygons.stop = $("<div class='waldorf-stop-poly'></div>").appendTo(this.annotator.polyOverlay.$videoOverlay);
         this.$polygons.stop.css("z-index", this.baseZ + 1);
 
         this.ResizeOverlay();
