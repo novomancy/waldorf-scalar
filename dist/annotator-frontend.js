@@ -257,8 +257,7 @@ var Annotation = /*#__PURE__*/function () {
   }, {
     key: "recalculate",
     value: function recalculate() {
-      console.log(this);
-
+      // console.log(this);
       if ('undefined' == typeof this.items) {
         // Version 1
         var timeSlice = this.target.selector.filter(function (item) {
@@ -274,8 +273,8 @@ var Annotation = /*#__PURE__*/function () {
 
       this.beginTime = parseFloat(timeSlice.split(",")[0]); /// End time in seconds
 
-      this.endTime = parseFloat(timeSlice.split(",")[1]);
-      console.log('beginTime: ' + this.beginTime + ' endTime: ' + this.endTime); /// Extract tags from annotation
+      this.endTime = parseFloat(timeSlice.split(",")[1]); // console.log('beginTime: ' + this.beginTime + ' endTime: ' + this.endTime);
+      /// Extract tags from annotation
 
       if ('undefined' == typeof this.items) {
         // Version 1
@@ -299,9 +298,9 @@ var Annotation = /*#__PURE__*/function () {
             this.tags.push(this.items[0].items[0].items[0].body[j].source.label['en']); // TODO: english hard-coded here
           }
         }
-      }
+      } // console.log('Tags: ' + this.tags);
+      // Start and end poly points
 
-      console.log('Tags: ' + this.tags); // Start and end poly points
 
       this.polyStart = null;
       this.polyEnd = null;
@@ -1295,8 +1294,7 @@ var AnnotationGUI = /*#__PURE__*/function () {
       this.SetVisible(true);
       this.open = true;
       this.polyEditor.Done(); // Disable autofading when the gui is visible
-
-      this.annotator.player.SetAutoFade(false);
+      // this.annotator.player.SetAutoFade(false);
     }
   }, {
     key: "Close",
@@ -1304,8 +1302,8 @@ var AnnotationGUI = /*#__PURE__*/function () {
       this.SetVisible(false);
       this.open = false;
       this.polyEditor.Done(); // Re-enable autofading when the gui is hidden
+      // this.annotator.player.SetAutoFade(true);
 
-      this.annotator.player.SetAutoFade(true);
       this.$container.trigger("OnGUIClosed");
     }
   }, {
@@ -1318,7 +1316,13 @@ var AnnotationGUI = /*#__PURE__*/function () {
     value: function BeginEditing() {
       var annotation = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
       var forceNew = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
-      // Open the GUI if it isn't already
+
+      if (this.open) {
+        this.annotator.messageOverlay.ShowMessage("Please save or close the current annotation.");
+        return;
+      } // Open the GUI if it isn't already
+
+
       this.Open(); // Populate data from the passed in annotation
 
       if (annotation || forceNew) {
@@ -1328,11 +1332,13 @@ var AnnotationGUI = /*#__PURE__*/function () {
         // it as new.
 
         if (forceNew) this.editMode = false;
-        this.originalAnnotation = annotation;
-        console.log("Populated from an existing annotation");
-        console.log(annotation);
+        this.originalAnnotation = annotation; // console.log("Populated from an existing annotation");
+        // console.log(annotation);
+
         this.$timeStartField.val((0, _time.GetFormattedTime)(annotation.beginTime));
         this.$timeEndField.val((0, _time.GetFormattedTime)(annotation.endTime));
+        this.$creatorNameField.val(localStorage.getItem('waldorf_user_name'));
+        this.$creatorEmailField.val(localStorage.getItem('waldorf_user_email'));
 
         if ('undefined' == typeof annotation.items) {
           // Version 1
@@ -1377,8 +1383,8 @@ var AnnotationGUI = /*#__PURE__*/function () {
       else {
         // Populate fields if no annotation is given
         this.editMode = false;
-        this.originalAnnotation = null;
-        console.log("Populated with template data");
+        this.originalAnnotation = null; // console.log("Populated with template data");
+
         this.$timeStartField.val((0, _time.GetFormattedTime)(this.annotator.player.videoElement.currentTime));
         this.$timeEndField.val((0, _time.GetFormattedTime)(this.annotator.player.videoElement.duration));
         this.$creatorNameField.val(localStorage.getItem('waldorf_user_name'));
@@ -1405,10 +1411,10 @@ var AnnotationGUI = /*#__PURE__*/function () {
     key: "CommitAnnotationToServer",
     value: function CommitAnnotationToServer(callback) {
       if (this.editMode) {
-        console.log("Sending edited annotation to server...");
+        // console.log("Sending edited annotation to server...");
         this.annotator.server.EditAnnotation(callback);
       } else {
-        console.log("Sending new annotation to server...");
+        // console.log("Sending new annotation to server...");
         this.annotator.server.PostAnnotation(callback);
       }
     } // Build an object from the data.
@@ -3171,11 +3177,23 @@ var ServerInterface = /*#__PURE__*/function () {
           xhr.setRequestHeader('Authorization', this.make_write_auth(key));
         },
         success: function success(data) {
-          console.log("Successfully posted new annotation.");
+          _this3.annotator.messageOverlay.ShowMessage("Successfully created new annotation."); //The callback expects the annotation in memory to be formatted like one from JSON,
+          //so we need to reorganize things a bit. Note that this assume Scalar is the back end
+          // console.log(data);
 
-          _this3.annotator.messageOverlay.ShowMessage("Successfully created new annotation.");
 
-          annotation.id = data.id; // Append the ID given by the response
+          var ids = $.map(data, function (e, k) {
+            return k;
+          }); //Need to remove Scalar's version ID, which is appended to the URL after a .
+
+          var idParts = ids[0].split('.');
+          idParts.pop();
+          var newID = idParts.join('.'); // annotation.id = ids[0]; // Append the ID given by the response
+
+          annotation.items[0].id = newID;
+          annotation.items[0].items[0].id = newID; //these should be different, but irrelevant here
+
+          annotation.items[0].items[0].items[0].id = newID; //these should be different, but irrelevant here
 
           if (callback) callback(annotation);
         },
@@ -3203,19 +3221,17 @@ var ServerInterface = /*#__PURE__*/function () {
       var key;
 
       if (this.annotator.apiKey) {
-        key = this.annotator.apiKey;
-        var email_storage = localStorage.getItem('waldorf_user_email');
-        var name_storage = localStorage.getItem('waldorf_user_name');
-        if (name_storage == null) name_storage = email_storage;
+        key = this.annotator.apiKey; // let email_storage = localStorage.getItem('waldorf_user_email');
+        // let name_storage = localStorage.getItem('waldorf_user_name');
+        // if(name_storage == null) name_storage = email_storage;
       } else {
         key = localStorage.getItem('waldorf_auth_token');
-      }
+      } // if(this.annotator.apiKey){
+      //     if(annotation["creator"] == null) annotation["creator"] = {};
+      //     annotation["creator"]["email"] = localStorage.getItem('waldorf_user_email');
+      //     annotation["creator"]["nickname"] = localStorage.getItem('waldorf_user_name');
+      // }
 
-      if (this.annotator.apiKey) {
-        if (annotation["creator"] == null) annotation["creator"] = {};
-        annotation["creator"]["email"] = localStorage.getItem('waldorf_user_email');
-        annotation["creator"]["nickname"] = localStorage.getItem('waldorf_user_name');
-      }
 
       if (annotation["annotation_version"] == "v1") {
         annotation["request"]["items"]["action"] = "update";
@@ -3251,8 +3267,23 @@ var ServerInterface = /*#__PURE__*/function () {
         },
         success: function success(data) {
           //console.log(annotation);
-          annotation.id = data.id; // Append the ID given by the response
+          // annotation.id = data.id; // Append the ID given by the response
           //console.log("Successfully edited the annotation. (ID is now " + data.id + ")");
+          //The callback expects the annotation in memory to be formatted like one from JSON,
+          //so we need to reorganize things a bit. Note that this assume Scalar is the back end
+          // console.log(data);
+          var ids = $.map(data, function (e, k) {
+            return k;
+          }); //Need to remove Scalar's version ID, which is appended to the URL after a .
+
+          var idParts = ids[0].split('.');
+          idParts.pop();
+          var newID = idParts.join('.'); // annotation.id = ids[0]; // Append the ID given by the response
+
+          annotation.items[0].id = newID;
+          annotation.items[0].items[0].id = newID; //these should be different, but irrelevant here
+
+          annotation.items[0].items[0].items[0].id = newID; //these should be different, but irrelevant here
 
           _this4.annotator.messageOverlay.ShowMessage("Successfully edited the anotation.");
 
