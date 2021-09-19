@@ -374,10 +374,12 @@ class AnnotationGUI {
 
             this.originalAnnotation = annotation;
 
-            console.log("Populated from an existing annotation");
-            console.log(annotation);
+            // console.log("Populated from an existing annotation");
+            // console.log(annotation);
             this.$timeStartField.val(GetFormattedTime(annotation.beginTime));
             this.$timeEndField.val(GetFormattedTime(annotation.endTime));
+            this.$creatorNameField.val(localStorage.getItem('waldorf_user_name'));
+            this.$creatorEmailField.val(localStorage.getItem('waldorf_user_email'));
             if ('undefined' == typeof(annotation.items)) { // Version 1
                 this.$textField.val(annotation.body.filter(item => item.purpose == "describing")[0].value);
                 // Version 1 doesn't have a this.id context
@@ -410,7 +412,7 @@ class AnnotationGUI {
 
             this.originalAnnotation = null;
 
-            console.log("Populated with template data");
+            // console.log("Populated with template data");
             this.$timeStartField.val(GetFormattedTime(this.annotator.player.videoElement.currentTime));
             this.$timeEndField.val(GetFormattedTime(this.annotator.player.videoElement.duration));
             this.$creatorNameField.val(localStorage.getItem('waldorf_user_name'));
@@ -439,11 +441,11 @@ class AnnotationGUI {
 
     CommitAnnotationToServer(callback){
         if(this.editMode){
-            console.log("Sending edited annotation to server...");
+            // console.log("Sending edited annotation to server...");
             this.annotator.server.EditAnnotation(callback);
         }
         else{
-            console.log("Sending new annotation to server...");
+            // console.log("Sending new annotation to server...");
             this.annotator.server.PostAnnotation(callback);
         }
     }
