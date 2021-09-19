@@ -18,6 +18,8 @@ class AnnotationManager {
             }
         } else {  // Version 2
             for (let object of json.items[0].items) {
+                console.log("registering");
+                console.log(object);
                 this.RegisterAnnotation(object, JSON.parse(JSON.stringify(json.items[0])));
             }
         }

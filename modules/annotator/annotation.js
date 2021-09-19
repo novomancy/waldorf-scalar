@@ -95,7 +95,7 @@ class Annotation {
     /// Compute read only easy access properties
     recalculate() {
 
-        console.log(this);
+        // console.log(this);
 
         if ('undefined' == typeof(this.items)) { // Version 1
             var timeSlice = this.target.selector.filter(function (item) {
@@ -111,7 +111,7 @@ class Annotation {
         this.beginTime = parseFloat(timeSlice.split(",")[0]);
         /// End time in seconds
         this.endTime = parseFloat(timeSlice.split(",")[1]);
-        console.log('beginTime: ' + this.beginTime + ' endTime: ' + this.endTime);
+        // console.log('beginTime: ' + this.beginTime + ' endTime: ' + this.endTime);
 
         /// Extract tags from annotation
         if ('undefined' == typeof(this.items)) { // Version 1
@@ -127,7 +127,7 @@ class Annotation {
                 }
             }
         }
-        console.log('Tags: ' + this.tags);
+        // console.log('Tags: ' + this.tags);
 
         // Start and end poly points
         this.polyStart = null;

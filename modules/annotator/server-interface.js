@@ -163,9 +163,21 @@ class ServerInterface {
                 xhr.setRequestHeader('Authorization', this.make_write_auth(key));
             },
             success: (data) => {
-                console.log("Successfully posted new annotation.");
                 this.annotator.messageOverlay.ShowMessage("Successfully created new annotation.");
-                annotation.id = data.id; // Append the ID given by the response
+                //The callback expects the annotation in memory to be formatted like one from JSON,
+                //so we need to reorganize things a bit. Note that this assume Scalar is the back end
+                // console.log(data);
+                let ids = $.map(data, function(e, k){return k});
+                //Need to remove Scalar's version ID, which is appended to the URL after a .
+                let idParts = ids[0].split('.');
+                idParts.pop();
+                let newID = idParts.join('.');
+                console.log("Successfully posted new annotation with id "+newID);
+                // annotation.id = ids[0]; // Append the ID given by the response
+                annotation.items[0].id = newID;
+                annotation.items[0].items[0].id = newID; //these should be different, but irrelevant here
+                annotation.items[0].items[0].items[0].id = newID; //these should be different, but irrelevant here
+                console.log(annotation);
                 if(callback) callback(annotation);
             },
             error: (response) => {
