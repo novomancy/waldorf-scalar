@@ -355,6 +355,10 @@ class AnnotationGUI {
     }
 
     BeginEditing(annotation = null, forceNew = false){
+        if(this.open){
+            this.annotator.messageOverlay.ShowMessage("Please save or close the current annotation.");
+            return;
+        }
         // Open the GUI if it isn't already
         this.Open();
         
