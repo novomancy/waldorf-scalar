@@ -338,7 +338,7 @@ class AnnotationGUI {
         this.open = true;
         this.polyEditor.Done();
         // Disable autofading when the gui is visible
-        this.annotator.player.SetAutoFade(false);
+        // this.annotator.player.SetAutoFade(false);
     }
 
     Close(){
@@ -346,7 +346,7 @@ class AnnotationGUI {
         this.open = false;
         this.polyEditor.Done();
         // Re-enable autofading when the gui is hidden
-        this.annotator.player.SetAutoFade(true);
+        // this.annotator.player.SetAutoFade(true);
         this.$container.trigger("OnGUIClosed");
     }
     
