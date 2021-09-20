@@ -429,6 +429,8 @@ var _messageOverlay = require("./components/message-overlay.js");
 
 var _annotation2 = require("./annotation.js");
 
+function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
@@ -867,7 +869,7 @@ var VideoAnnotator = /*#__PURE__*/function () {
           if (typeof localJson.target != "undefined") {
             var annotation = new _annotation2.Annotation(localJson);
 
-            if (_this3.ValidateAnnotation(annotation)) {
+            if (_this3.ValidateAnnotation(annotation, 1)) {
               // Open the GUI and populate it with this annotation's data.
               _this3.gui.BeginEditing(annotation, true);
 
@@ -881,15 +883,15 @@ var VideoAnnotator = /*#__PURE__*/function () {
             for (var i = 0; i < localJson.length; i++) {
               var _annotation = new _annotation2.Annotation(localJson[i]);
 
-              if (_this3.ValidateAnnotation(_annotation)) {
-                // Open the GUI and populate it with this annotation's data.
+              if (_this3.ValidateAnnotation(_annotation, i + 1)) {
+                // // Open the GUI and populate it with this annotation's data.
                 _this3.gui.BeginEditing(_annotation, true);
 
                 _this3.gui.CommitAnnotationToServer(function (annotation) {
                   _this3.RegisterNewAnnotation(annotation);
-
-                  _this3.gui.Close();
                 });
+
+                _this3.gui.Close();
               } else {
                 error("JSON is invalid!");
               }
@@ -918,9 +920,64 @@ var VideoAnnotator = /*#__PURE__*/function () {
     }
   }, {
     key: "ValidateAnnotation",
-    value: function ValidateAnnotation(annotation) {
+    value: function ValidateAnnotation(annotation, idx) {
       // TODO: Validate annotation here. Return false if any
-      // required properties are not present.
+      // required properties are not present. Right now, this is only for v1.
+      //Required fields:
+      //- beginTime
+      // - endTime
+      // - annotation_version
+      // - body type textualBody
+      // -- value
+      // - creator
+      // -- nickname
+      // -- email
+      // Note that tags and targets are _not_ required elements in the v1 format when
+      //moving annotations around because tags are always optional and targets are
+      //assumed to change when importing
+      var requiredFields = ["beginTime", "endTime", "annotation_version", "body", "creator"];
+
+      for (var i = 0; i < requiredFields.length; i++) {
+        if (typeof annotation[requiredFields[i]] == 'undefined' || annotation[requiredFields[i]] == '') {
+          this.messageOverlay.ShowMessage("Skipped annotation " + idx + ": missing " + requiredFields[i]);
+          return false;
+        }
+      }
+
+      if (_typeof(annotation.creator) != 'object') {
+        this.messageOverlay.ShowMessage("Skipped annotation " + idx + ": malformed creator node");
+        return false;
+      }
+
+      if (typeof annotation.creator.nickname == 'undefined' || annotation.creator.nickname == '') {
+        this.messageOverlay.ShowMessage("Skipped annotation " + idx + ": missing creator name");
+        return false;
+      }
+
+      if (typeof annotation.creator.email == 'undefined' || annotation.creator.email == '') {
+        this.messageOverlay.ShowMessage("Skipped annotation " + idx + ": missing creator email");
+        return false;
+      }
+
+      if (_typeof(annotation.body) != 'object' || annotation.body.length == 0) {
+        this.messageOverlay.ShowMessage("Skipped annotation " + idx + ": malformed body node");
+        return false;
+      }
+
+      var textNode = '';
+
+      for (var _i = 0; _i < annotation.body.length; _i++) {
+        if (typeof annotation.body[_i].purpose != 'undefined' && annotation.body[_i].purpose == 'describing') {
+          if (typeof annotation.body[_i].value != 'undefined') textNode = annotation.body[_i].value;
+          continue;
+        }
+      }
+
+      if (textNode == '') {
+        this.messageOverlay.ShowMessage("Skipped annotation " + idx + ": missing body text node");
+        return false;
+      }
+
       return true;
     } // checking whether the browser is safari or not
 
@@ -1337,8 +1394,8 @@ var AnnotationGUI = /*#__PURE__*/function () {
 
         this.$timeStartField.val((0, _time.GetFormattedTime)(annotation.beginTime));
         this.$timeEndField.val((0, _time.GetFormattedTime)(annotation.endTime));
-        this.$creatorNameField.val(localStorage.getItem('waldorf_user_name'));
-        this.$creatorEmailField.val(localStorage.getItem('waldorf_user_email'));
+        if (typeof annotation.creator != 'undefined' && typeof annotation.creator.nickname != 'undefined') this.$creatorNameField.val(annotation.creator.nickname);else this.$creatorNameField.val(localStorage.getItem('waldorf_user_name'));
+        if (typeof annotation.creator != 'undefined' && typeof annotation.creator.email != 'undefined') this.$creatorNameField.val(annotation.creator.email);else this.$creatorNameField.val(localStorage.getItem('waldorf_user_email'));
 
         if ('undefined' == typeof annotation.items) {
           // Version 1
