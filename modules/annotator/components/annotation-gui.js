@@ -378,8 +378,10 @@ class AnnotationGUI {
             // console.log(annotation);
             this.$timeStartField.val(GetFormattedTime(annotation.beginTime));
             this.$timeEndField.val(GetFormattedTime(annotation.endTime));
-            this.$creatorNameField.val(localStorage.getItem('waldorf_user_name'));
-            this.$creatorEmailField.val(localStorage.getItem('waldorf_user_email'));
+            if(typeof annotation.creator != 'undefined' && typeof annotation.creator.nickname != 'undefined') this.$creatorNameField.val(annotation.creator.nickname);
+            else this.$creatorNameField.val(localStorage.getItem('waldorf_user_name'));
+            if(typeof annotation.creator != 'undefined' && typeof annotation.creator.email != 'undefined') this.$creatorNameField.val(annotation.creator.email);
+            else this.$creatorNameField.val(localStorage.getItem('waldorf_user_email'));
             if ('undefined' == typeof(annotation.items)) { // Version 1
                 this.$textField.val(annotation.body.filter(item => item.purpose == "describing")[0].value);
                 // Version 1 doesn't have a this.id context

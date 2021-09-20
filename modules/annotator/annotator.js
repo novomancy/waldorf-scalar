@@ -435,9 +435,11 @@ class VideoAnnotator {
                 }
 
                 let localJson = JSON.parse(localFile.target.result);
+
+
                 if(typeof(localJson.target)!="undefined"){
                     let annotation = new Annotation(localJson);
-                    if(this.ValidateAnnotation(annotation)){
+                    if(this.ValidateAnnotation(annotation, 1)){
                         // Open the GUI and populate it with this annotation's data.
                         this.gui.BeginEditing(annotation, true);
                         this.gui.CommitAnnotationToServer(function(){return;});
@@ -448,13 +450,14 @@ class VideoAnnotator {
                 } else {
                     for(var i=0; i<localJson.length; i++){
                         let annotation = new Annotation(localJson[i]);
-                        if(this.ValidateAnnotation(annotation)){
-                            // Open the GUI and populate it with this annotation's data.
+
+                        if(this.ValidateAnnotation(annotation, i+1)){
+                            // // Open the GUI and populate it with this annotation's data.
                             this.gui.BeginEditing(annotation, true);
                             this.gui.CommitAnnotationToServer((annotation) => {
                                 this.RegisterNewAnnotation(annotation);
-                                this.gui.Close();
                             });
+                            this.gui.Close();
                         }
                         else {
                             error("JSON is invalid!");
@@ -483,9 +486,65 @@ class VideoAnnotator {
         });
     }
 
-    ValidateAnnotation(annotation) {
+    ValidateAnnotation(annotation, idx) {
         // TODO: Validate annotation here. Return false if any
-        // required properties are not present.
+        // required properties are not present. Right now, this is only for v1.
+
+        //Required fields:
+        //- beginTime
+        // - endTime
+        // - annotation_version
+        // - body type textualBody
+        // -- value
+        // - creator
+        // -- nickname
+        // -- email
+        // Note that tags and targets are _not_ required elements in the v1 format when
+        //moving annotations around because tags are always optional and targets are
+        //assumed to change when importing
+
+        let requiredFields = ["beginTime", "endTime", "annotation_version", "body", "creator"];
+
+        for(let i=0; i<requiredFields.length; i++){
+            if(typeof annotation[requiredFields[i]]=='undefined' || annotation[requiredFields[i]] == ''){
+                this.messageOverlay.ShowMessage("Skipped annotation "+idx+": missing "+requiredFields[i]);
+                return false;
+            }
+        }
+
+        if(typeof annotation.creator != 'object'){
+            this.messageOverlay.ShowMessage("Skipped annotation "+idx+": malformed creator node");
+            return false;  
+        }
+
+        if(typeof annotation.creator.nickname=='undefined' || annotation.creator.nickname == ''){
+            this.messageOverlay.ShowMessage("Skipped annotation "+idx+": missing creator name");
+            return false;
+        }
+
+        if(typeof annotation.creator.email=='undefined' || annotation.creator.email == ''){
+            this.messageOverlay.ShowMessage("Skipped annotation "+idx+": missing creator email");
+            return false;
+        }
+
+        if(typeof annotation.body != 'object' || annotation.body.length == 0){
+            this.messageOverlay.ShowMessage("Skipped annotation "+idx+": malformed body node");
+            return false;  
+        }
+
+        let textNode = '';
+
+        for(let i=0; i<annotation.body.length; i++){
+            if(typeof annotation.body[i].purpose != 'undefined' && annotation.body[i].purpose == 'describing'){
+                if(typeof annotation.body[i].value != 'undefined') textNode = annotation.body[i].value;
+                continue;
+            }
+        }
+
+        if(textNode == ''){
+            this.messageOverlay.ShowMessage("Skipped annotation "+idx+": missing body text node");
+            return false;   
+        }
 
         return true;
     }
