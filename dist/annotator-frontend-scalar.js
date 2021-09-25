@@ -4,7 +4,7 @@
 module.exports={
     "client_id": "scalar",
     "client_ver": "2.6",
-    "native": "true",
+    "native": true,
     "id": "",
     "api_key": ""
 }
