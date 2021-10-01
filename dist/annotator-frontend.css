@@ -558,8 +558,8 @@
   width: 100% !important;
   height: auto !important; }
   .waldorf-video-player video {
-    width: 100%;
-    height: 100%;
+    /* width: 100%; */
+    /* height: 100%; */
     display: block; }
 
 .waldorf-video-player .select2-selection {
