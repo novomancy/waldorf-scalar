@@ -5,11 +5,11 @@ class InfoContainer {
     constructor(annotator){
         this.annotator = annotator;
         let container = $(".waldorf-info");
-        if(container.length > 0){
-            this.$container = container.first();
-        } else {
+        //if(container.length > 0){
+        //    this.$container = container.first();
+        //} else {
             this.$container = $("<div class='waldorf-info' aria-live='polite' aria-atomic='true'></div>").appendTo(this.annotator.$container);
-        }
+        //}
     }
 
     Rebuild(annotations, clearContainer){
