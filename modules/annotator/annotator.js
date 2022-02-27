@@ -447,10 +447,24 @@ class VideoAnnotator {
                     else {
                         error("JSON is invalid!");
                     }
-                } else {
+                } else if (typeof(localJson.items) != 'undefined') {  // ver2
+                    for (var object of localJson.items[0].items) {  // Per AnnotationPage
+                        for (var j = 0; j < object.items.length; j++) {  // Per Annotation
+                            var theAnnotation = JSON.parse(JSON.stringify( object.items[j] ));
+                            var theObject = JSON.parse(JSON.stringify( object ));
+                            theObject.items = [theAnnotation];
+                            var annotation = new Annotation(theObject, JSON.parse(JSON.stringify(localJson.items[0])));
+                            console.log(annotation);
+                            this.gui.BeginEditing(annotation, true);
+                            this.gui.CommitAnnotationToServer((annotation) => {
+                                this.RegisterNewAnnotation(annotation);
+                            });
+                            this.gui.Close();
+                        }
+                    }
+                } else {  // ver1
                     for(var i=0; i<localJson.length; i++){
                         let annotation = new Annotation(localJson[i]);
-
                         if(this.ValidateAnnotation(annotation, i+1)){
                             // // Open the GUI and populate it with this annotation's data.
                             this.gui.BeginEditing(annotation, true);

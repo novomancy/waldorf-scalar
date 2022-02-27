@@ -427,9 +427,15 @@ var _sessionManager = require("./session-manager.js");
 
 var _messageOverlay = require("./components/message-overlay.js");
 
-var _annotation2 = require("./annotation.js");
+var _annotation3 = require("./annotation.js");
 
 function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _createForOfIteratorHelper(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
+
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -867,11 +873,11 @@ var VideoAnnotator = /*#__PURE__*/function () {
           var localJson = JSON.parse(localFile.target.result);
 
           if (typeof localJson.target != "undefined") {
-            var annotation = new _annotation2.Annotation(localJson);
+            var _annotation = new _annotation3.Annotation(localJson);
 
-            if (_this3.ValidateAnnotation(annotation, 1)) {
+            if (_this3.ValidateAnnotation(_annotation, 1)) {
               // Open the GUI and populate it with this annotation's data.
-              _this3.gui.BeginEditing(annotation, true);
+              _this3.gui.BeginEditing(_annotation, true);
 
               _this3.gui.CommitAnnotationToServer(function () {
                 return;
@@ -879,13 +885,46 @@ var VideoAnnotator = /*#__PURE__*/function () {
             } else {
               error("JSON is invalid!");
             }
-          } else {
-            for (var i = 0; i < localJson.length; i++) {
-              var _annotation = new _annotation2.Annotation(localJson[i]);
+          } else if (typeof localJson.items != 'undefined') {
+            // ver2
+            var _iterator = _createForOfIteratorHelper(localJson.items[0].items),
+                _step;
 
-              if (_this3.ValidateAnnotation(_annotation, i + 1)) {
+            try {
+              for (_iterator.s(); !(_step = _iterator.n()).done;) {
+                var object = _step.value;
+
+                // Per AnnotationPage
+                for (var j = 0; j < object.items.length; j++) {
+                  // Per Annotation
+                  var theAnnotation = JSON.parse(JSON.stringify(object.items[j]));
+                  var theObject = JSON.parse(JSON.stringify(object));
+                  theObject.items = [theAnnotation];
+                  var annotation = new _annotation3.Annotation(theObject, JSON.parse(JSON.stringify(localJson.items[0])));
+                  console.log(annotation);
+
+                  _this3.gui.BeginEditing(annotation, true);
+
+                  _this3.gui.CommitAnnotationToServer(function (annotation) {
+                    _this3.RegisterNewAnnotation(annotation);
+                  });
+
+                  _this3.gui.Close();
+                }
+              }
+            } catch (err) {
+              _iterator.e(err);
+            } finally {
+              _iterator.f();
+            }
+          } else {
+            // ver1
+            for (var i = 0; i < localJson.length; i++) {
+              var _annotation2 = new _annotation3.Annotation(localJson[i]);
+
+              if (_this3.ValidateAnnotation(_annotation2, i + 1)) {
                 // // Open the GUI and populate it with this annotation's data.
-                _this3.gui.BeginEditing(_annotation, true);
+                _this3.gui.BeginEditing(_annotation2, true);
 
                 _this3.gui.CommitAnnotationToServer(function (annotation) {
                   _this3.RegisterNewAnnotation(annotation);
