@@ -374,20 +374,24 @@ class AnnotationGUI {
 
             this.originalAnnotation = annotation;
 
-            // console.log("Populated from an existing annotation");
-            // console.log(annotation);
+            console.log("Populated from an existing annotation");
+            console.log(annotation);
             this.$timeStartField.val(GetFormattedTime(annotation.beginTime));
             this.$timeEndField.val(GetFormattedTime(annotation.endTime));
-            if(typeof annotation.creator != 'undefined' && typeof annotation.creator.nickname != 'undefined') this.$creatorNameField.val(annotation.creator.nickname);
-            else this.$creatorNameField.val(localStorage.getItem('waldorf_user_name'));
-            if(typeof annotation.creator != 'undefined' && typeof annotation.creator.email != 'undefined') this.$creatorNameField.val(annotation.creator.email);
-            else this.$creatorNameField.val(localStorage.getItem('waldorf_user_email'));
             if ('undefined' == typeof(annotation.items)) { // Version 1
                 this.$textField.val(annotation.body.filter(item => item.purpose == "describing")[0].value);
                 // Version 1 doesn't have a this.id context
+                if(typeof annotation.creator != 'undefined' && typeof annotation.creator.nickname != 'undefined') this.$creatorNameField.val(annotation.creator.nickname);
+                else this.$creatorNameField.val(localStorage.getItem('waldorf_user_name'));
+                if(typeof annotation.creator != 'undefined' && typeof annotation.creator.email != 'undefined') this.$creatorNameField.val(annotation.creator.email);
+                else this.$creatorNameField.val(localStorage.getItem('waldorf_user_email'));
             } else { // Version 2
                 this.$textField.val(annotation.items[0].items[0].items[0].body.filter(item => item.purpose == "describing")[0].value);
                 this.id = annotation.items[0].items[0].items[0].id;
+                if(typeof annotation.items[0].items[0].items[0].creator != 'undefined' && typeof annotation.items[0].items[0].items[0].creator.nickname != 'undefined') this.$creatorNameField.val(annotation.items[0].items[0].items[0].creator.nickname);
+                else this.$creatorNameField.val(localStorage.getItem('waldorf_user_name'));
+                if(typeof annotation.items[0].items[0].items[0].creator != 'undefined' && typeof annotation.items[0].items[0].items[0].creator.email != 'undefined') this.$creatorNameField.val(annotation.items[0].items[0].items[0].creator.email);
+                else this.$creatorNameField.val(localStorage.getItem('waldorf_user_email'));
             }
             // Reset the tags field
             this.$tagsField.val("").trigger("change");
@@ -396,12 +400,6 @@ class AnnotationGUI {
             for(let tag of annotation.tags){
                 this.$tagsField.append("<option value='"+tag+"' selected>"+tag+"</option>");
                 this.$tagsField.trigger("change");
-            }
-
-            //add creators, if they are specified
-            if('undefined' != typeof annotation.creator){
-                this.$creatorNameField.val(annotation.creator.nickname);
-                this.$creatorEmailField.val(annotation.creator.email);
             }
 
             this.polyEditor.InitPoly(annotation.polyStart,annotation.polyEnd);

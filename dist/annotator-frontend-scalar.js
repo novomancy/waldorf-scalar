@@ -1428,25 +1428,30 @@ var AnnotationGUI = /*#__PURE__*/function () {
         // it as new.
 
         if (forceNew) this.editMode = false;
-        this.originalAnnotation = annotation; // console.log("Populated from an existing annotation");
-        // console.log(annotation);
-
+        this.originalAnnotation = annotation;
+        console.log("Populated from an existing annotation");
+        console.log(annotation);
         this.$timeStartField.val((0, _time.GetFormattedTime)(annotation.beginTime));
         this.$timeEndField.val((0, _time.GetFormattedTime)(annotation.endTime));
-        if (typeof annotation.creator != 'undefined' && typeof annotation.creator.nickname != 'undefined') this.$creatorNameField.val(annotation.creator.nickname);else this.$creatorNameField.val(localStorage.getItem('waldorf_user_name'));
-        if (typeof annotation.creator != 'undefined' && typeof annotation.creator.email != 'undefined') this.$creatorNameField.val(annotation.creator.email);else this.$creatorNameField.val(localStorage.getItem('waldorf_user_email'));
 
         if ('undefined' == typeof annotation.items) {
           // Version 1
           this.$textField.val(annotation.body.filter(function (item) {
             return item.purpose == "describing";
           })[0].value); // Version 1 doesn't have a this.id context
+
+          if (typeof annotation.creator != 'undefined' && typeof annotation.creator.nickname != 'undefined') this.$creatorNameField.val(annotation.creator.nickname);else this.$creatorNameField.val(localStorage.getItem('waldorf_user_name'));
+          if (typeof annotation.creator != 'undefined' && typeof annotation.creator.email != 'undefined') this.$creatorNameField.val(annotation.creator.email);else this.$creatorNameField.val(localStorage.getItem('waldorf_user_email'));
         } else {
           // Version 2
+          console.log('VERSION 2');
+          console.log(annotation.items[0].items[0].items[0].creator);
           this.$textField.val(annotation.items[0].items[0].items[0].body.filter(function (item) {
             return item.purpose == "describing";
           })[0].value);
           this.id = annotation.items[0].items[0].items[0].id;
+          if (typeof annotation.items[0].items[0].items[0].creator != 'undefined' && typeof annotation.items[0].items[0].items[0].creator.nickname != 'undefined') this.$creatorNameField.val(annotation.items[0].items[0].items[0].creator.nickname);else this.$creatorNameField.val(localStorage.getItem('waldorf_user_name'));
+          if (typeof annotation.items[0].items[0].items[0].creator != 'undefined' && typeof annotation.items[0].items[0].items[0].creator.email != 'undefined') this.$creatorNameField.val(annotation.items[0].items[0].items[0].creator.email);else this.$creatorNameField.val(localStorage.getItem('waldorf_user_email'));
         } // Reset the tags field
 
 
@@ -1461,17 +1466,11 @@ var AnnotationGUI = /*#__PURE__*/function () {
             var tag = _step.value;
             this.$tagsField.append("<option value='" + tag + "' selected>" + tag + "</option>");
             this.$tagsField.trigger("change");
-          } //add creators, if they are specified
-
+          }
         } catch (err) {
           _iterator.e(err);
         } finally {
           _iterator.f();
-        }
-
-        if ('undefined' != typeof annotation.creator) {
-          this.$creatorNameField.val(annotation.creator.nickname);
-          this.$creatorEmailField.val(annotation.creator.email);
         }
 
         this.polyEditor.InitPoly(annotation.polyStart, annotation.polyEnd);
