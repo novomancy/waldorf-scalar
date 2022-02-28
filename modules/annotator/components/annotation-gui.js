@@ -179,7 +179,7 @@ class AnnotationGUI {
         this.$timeEndField.css("font-family", "Courier, monospace");
         this.$timeEndField.css("margin-right", "2px");
         this.$timeEndField.addClass("ui-widget ui-widget-content ui-corner-all");
-        this.$timeEndField.attr('title', "Start time (hh:mm:ss.ss)");
+        this.$timeEndField.attr('title', "End time (hh:mm:ss.ss)");
         this.$timeEndField.on('keypress', function(event){
             if (event.keyCode == 46 || (event.keyCode >= 48 && event.keyCode <= 58)){ //0-9, period, and colon
                 return true;
@@ -361,7 +361,6 @@ class AnnotationGUI {
         }
         // Open the GUI if it isn't already
         this.Open();
-        
         // Populate data from the passed in annotation
         if (annotation || forceNew) {
             // Populate the fields from the annotation
@@ -415,6 +414,7 @@ class AnnotationGUI {
             this.editMode = false;
 
             this.originalAnnotation = null;
+            this.id=null;
 
             // console.log("Populated with template data");
             this.$timeStartField.val(GetFormattedTime(this.annotator.player.videoElement.currentTime));
@@ -513,7 +513,7 @@ class AnnotationGUI {
                 "generator": "http://github.com/anvc/scalar",
                 "generated": buildTime, 
                 "items": [{
-                    "id": this.id, // URL to the annotation-page
+                    "id": this.id, // URL to the annotation-page JPB
                     "type": "Annotation",
                     "generator": "http://github.com/novomancy/waldorf-scalar", 
                     "motivation": "highlighting",

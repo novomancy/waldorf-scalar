@@ -1234,7 +1234,7 @@ var AnnotationGUI = /*#__PURE__*/function () {
       this.$timeEndField.css("font-family", "Courier, monospace");
       this.$timeEndField.css("margin-right", "2px");
       this.$timeEndField.addClass("ui-widget ui-widget-content ui-corner-all");
-      this.$timeEndField.attr('title', "Start time (hh:mm:ss.ss)");
+      this.$timeEndField.attr('title', "End time (hh:mm:ss.ss)");
       this.$timeEndField.on('keypress', function (event) {
         if (event.keyCode == 46 || event.keyCode >= 48 && event.keyCode <= 58) {
           //0-9, period, and colon
@@ -1450,18 +1450,12 @@ var AnnotationGUI = /*#__PURE__*/function () {
           this.id = annotation.items[0].items[0].items[0].id;
 
           if (typeof annotation.items[0].items[0].items[0].creator != 'undefined' && typeof annotation.items[0].items[0].items[0].creator.nickname != 'undefined') {
-            console.log("using person object: " + annotation.items[0].items[0].items[0].creator.nickname);
             this.$creatorNameField.val(annotation.items[0].items[0].items[0].creator.nickname);
           } else this.$creatorNameField.val(localStorage.getItem('waldorf_user_name'));
 
           if (typeof annotation.items[0].items[0].items[0].creator != 'undefined' && typeof annotation.items[0].items[0].items[0].creator.email_sha1 != 'undefined') {
-            console.log("using person email");
             this.$creatorEmailField.val(annotation.items[0].items[0].items[0].creator.email_sha1);
           } else this.$creatorEmailField.val(localStorage.getItem('waldorf_user_email'));
-
-          console.log('V2nameediting');
-          console.log(this.$creatorNameField.val());
-          console.log(annotation.items[0].items[0].items[0].creator);
         } // Reset the tags field
 
 
@@ -1488,7 +1482,8 @@ var AnnotationGUI = /*#__PURE__*/function () {
       else {
         // Populate fields if no annotation is given
         this.editMode = false;
-        this.originalAnnotation = null; // console.log("Populated with template data");
+        this.originalAnnotation = null;
+        this.id = null; // console.log("Populated with template data");
 
         this.$timeStartField.val((0, _time.GetFormattedTime)(this.annotator.player.videoElement.currentTime));
         this.$timeEndField.val((0, _time.GetFormattedTime)(this.annotator.player.videoElement.duration));
@@ -1587,7 +1582,7 @@ var AnnotationGUI = /*#__PURE__*/function () {
           "generated": buildTime,
           "items": [{
             "id": this.id,
-            // URL to the annotation-page
+            // URL to the annotation-page JPB
             "type": "Annotation",
             "generator": "http://github.com/novomancy/waldorf-scalar",
             "motivation": "highlighting",
