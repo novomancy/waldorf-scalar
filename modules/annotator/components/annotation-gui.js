@@ -383,15 +383,19 @@ class AnnotationGUI {
                 // Version 1 doesn't have a this.id context
                 if(typeof annotation.creator != 'undefined' && typeof annotation.creator.nickname != 'undefined') this.$creatorNameField.val(annotation.creator.nickname);
                 else this.$creatorNameField.val(localStorage.getItem('waldorf_user_name'));
-                if(typeof annotation.creator != 'undefined' && typeof annotation.creator.email != 'undefined') this.$creatorNameField.val(annotation.creator.email);
-                else this.$creatorNameField.val(localStorage.getItem('waldorf_user_email'));
+                if(typeof annotation.creator != 'undefined' && typeof annotation.creator.email_sha1 != 'undefined') this.$creatorEmailField.val(annotation.creator.email_sha1);
+                else this.$creatorEmailField.val(localStorage.getItem('waldorf_user_email'));
             } else { // Version 2
                 this.$textField.val(annotation.items[0].items[0].items[0].body.filter(item => item.purpose == "describing")[0].value);
                 this.id = annotation.items[0].items[0].items[0].id;
-                if(typeof annotation.items[0].items[0].items[0].creator != 'undefined' && typeof annotation.items[0].items[0].items[0].creator.nickname != 'undefined') this.$creatorNameField.val(annotation.items[0].items[0].items[0].creator.nickname);
+                if(typeof annotation.items[0].items[0].items[0].creator != 'undefined' && typeof annotation.items[0].items[0].items[0].creator.nickname != 'undefined') {
+                    this.$creatorNameField.val(annotation.items[0].items[0].items[0].creator.nickname);
+                }
                 else this.$creatorNameField.val(localStorage.getItem('waldorf_user_name'));
-                if(typeof annotation.items[0].items[0].items[0].creator != 'undefined' && typeof annotation.items[0].items[0].items[0].creator.email != 'undefined') this.$creatorNameField.val(annotation.items[0].items[0].items[0].creator.email);
-                else this.$creatorNameField.val(localStorage.getItem('waldorf_user_email'));
+                if(typeof annotation.items[0].items[0].items[0].creator != 'undefined' && typeof annotation.items[0].items[0].items[0].creator.email_sha1 != 'undefined') {
+                    this.$creatorEmailField.val(annotation.items[0].items[0].items[0].creator.email_sha1);
+                }
+                else this.$creatorEmailField.val(localStorage.getItem('waldorf_user_email'));
             }
             // Reset the tags field
             this.$tagsField.val("").trigger("change");
