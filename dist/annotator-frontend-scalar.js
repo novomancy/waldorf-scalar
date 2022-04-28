@@ -4,7 +4,7 @@
 module.exports={
     "client_id": "scalar",
     "client_ver": "2.6",
-    "native": "true",
+    "native": true,
     "id": "",
     "api_key": ""
 }
@@ -975,10 +975,14 @@ var VideoAnnotator = /*#__PURE__*/function () {
       //moving annotations around because tags are always optional and targets are
       //assumed to change when importing
       var requiredFields = ["beginTime", "endTime", "annotation_version", "body", "creator"];
+      console.log('Annotation:');
+      console.log(annotation);
 
       for (var i = 0; i < requiredFields.length; i++) {
-        if (typeof annotation[requiredFields[i]] == 'undefined' || annotation[requiredFields[i]] == '') {
+        if (typeof annotation[requiredFields[i]] === 'undefined' || annotation[requiredFields[i]] === '') {
           this.messageOverlay.ShowMessage("Skipped annotation " + idx + ": missing " + requiredFields[i]);
+          console.log("Skipped annotation " + idx + ": missing " + requiredFields[i]);
+          console.log("Value: " + annotation[requiredFields[i]]);
           return false;
         }
       }

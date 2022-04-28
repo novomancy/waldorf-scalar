@@ -520,7 +520,7 @@ class VideoAnnotator {
         let requiredFields = ["beginTime", "endTime", "annotation_version", "body", "creator"];
 
         for(let i=0; i<requiredFields.length; i++){
-            if(typeof annotation[requiredFields[i]]=='undefined' || annotation[requiredFields[i]] == ''){
+            if (typeof(annotation[requiredFields[i]]) === 'undefined' || annotation[requiredFields[i]] === ''){
                 this.messageOverlay.ShowMessage("Skipped annotation "+idx+": missing "+requiredFields[i]);
                 return false;
             }
