@@ -975,14 +975,10 @@ var VideoAnnotator = /*#__PURE__*/function () {
       //moving annotations around because tags are always optional and targets are
       //assumed to change when importing
       var requiredFields = ["beginTime", "endTime", "annotation_version", "body", "creator"];
-      console.log('Annotation:');
-      console.log(annotation);
 
       for (var i = 0; i < requiredFields.length; i++) {
         if (typeof annotation[requiredFields[i]] === 'undefined' || annotation[requiredFields[i]] === '') {
           this.messageOverlay.ShowMessage("Skipped annotation " + idx + ": missing " + requiredFields[i]);
-          console.log("Skipped annotation " + idx + ": missing " + requiredFields[i]);
-          console.log("Value: " + annotation[requiredFields[i]]);
           return false;
         }
       }
@@ -3213,8 +3209,9 @@ var ServerInterface = /*#__PURE__*/function () {
       //var book_url = 'http://scalar.usc.edu/dev/semantic-annotation-tool/';  // This will be defined in the Book's JS
       //https://scalar.usc.edu/dev/semantic-annotation-tool/rdf/file/media/Inception%20Corgi%20Flop.mp4?format=oac&prov=1&rec=2
       // var ajax_url = this.baseURL + 'rdf/file/' + searchParam.replace(this.baseURL, '') + '?format=oac&prov=1&rec=2';
-      var ajax_url = this.baseURL + 'rdf/file/' + searchParam.replace(this.baseURL, '') + '?format=iiif&prov=1&rec=2'; //console.log("ajax_url: " + ajax_url);
-
+      //var ajax_url = this.baseURL + 'rdf/file/' + searchParam.replace(this.baseURL,'') + '?format=iiif&prov=1&rec=2';
+      var ajax_url = this.baseURL + 'rdf/file/?format=iiif&prov=1&rec=2&file=' + encodeURIComponent(searchParam.replace(this.baseURL, ''));
+      console.log("ajax_url: " + ajax_url);
       return $.ajax({
         url: ajax_url,
         type: "GET",

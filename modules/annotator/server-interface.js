@@ -96,9 +96,10 @@ class ServerInterface {
         //This is replaced by this.baseURL, which is defined in config
         //var book_url = 'http://scalar.usc.edu/dev/semantic-annotation-tool/';  // This will be defined in the Book's JS
         //https://scalar.usc.edu/dev/semantic-annotation-tool/rdf/file/media/Inception%20Corgi%20Flop.mp4?format=oac&prov=1&rec=2
-       // var ajax_url = this.baseURL + 'rdf/file/' + searchParam.replace(this.baseURL, '') + '?format=oac&prov=1&rec=2';
-        var ajax_url = this.baseURL + 'rdf/file/' + searchParam.replace(this.baseURL,'') + '?format=iiif&prov=1&rec=2';
-        //console.log("ajax_url: " + ajax_url);
+        // var ajax_url = this.baseURL + 'rdf/file/' + searchParam.replace(this.baseURL, '') + '?format=oac&prov=1&rec=2';
+        //var ajax_url = this.baseURL + 'rdf/file/' + searchParam.replace(this.baseURL,'') + '?format=iiif&prov=1&rec=2';
+        var ajax_url = this.baseURL + 'rdf/file/?format=iiif&prov=1&rec=2&file=' + encodeURIComponent(searchParam.replace(this.baseURL,''));
+        console.log("ajax_url: " + ajax_url);
         return $.ajax({
             url: ajax_url,
             type: "GET",
