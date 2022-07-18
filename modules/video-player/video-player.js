@@ -49,6 +49,10 @@ class AnnotatorVideoPlayer {
             this.OnTimeUpdate(this.videoElement.currentTime);
         };
 
+        $(this.videoElement).on('annotationEndTime', (event, endTime) => {
+            this.endTime = endTime;
+        });
+
         this.$container.on("OnVideoReady", () => {
             if(annotatorArgs.annotator==null){
                 console.log("[AnnotatorVideoPlayer] Player sent OnVideoReady, attempting to wrap with annotator...");
@@ -126,7 +130,7 @@ class AnnotatorVideoPlayer {
 
     Play(){
         this.videoElement.play();
-        if(this.endTime) this.endTime = false;
+        //if(this.endTime) this.endTime = false;
         this.SetAutoFade(true);
         this.$container.trigger("OnPlayStateChange", !this.videoElement.paused);
     }
@@ -190,6 +194,7 @@ class AnnotatorVideoPlayer {
     }
 
     OnTimeUpdate(time){
+        //console.log('this.endTime: ' + this.endTime + ' this.videoElement.currentTime: ' + this.videoElement.currentTime);
         if(this.endTime && this.endTime <= this.videoElement.currentTime){
             this.Pause();   
             this.endTime = false;

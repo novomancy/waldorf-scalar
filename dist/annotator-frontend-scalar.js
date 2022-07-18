@@ -4661,6 +4661,9 @@ var AnnotatorVideoPlayer = /*#__PURE__*/function () {
       _this.OnTimeUpdate(_this.videoElement.currentTime);
     };
 
+    $(this.videoElement).on('annotationEndTime', function (event, endTime) {
+      _this.endTime = endTime;
+    });
     this.$container.on("OnVideoReady", function () {
       if (annotatorArgs.annotator == null) {
         console.log("[AnnotatorVideoPlayer] Player sent OnVideoReady, attempting to wrap with annotator..."); // Add annotator once video has loaded
@@ -4746,8 +4749,8 @@ var AnnotatorVideoPlayer = /*#__PURE__*/function () {
   }, {
     key: "Play",
     value: function Play() {
-      this.videoElement.play();
-      if (this.endTime) this.endTime = false;
+      this.videoElement.play(); //if(this.endTime) this.endTime = false;
+
       this.SetAutoFade(true);
       this.$container.trigger("OnPlayStateChange", !this.videoElement.paused);
     }
@@ -4818,6 +4821,7 @@ var AnnotatorVideoPlayer = /*#__PURE__*/function () {
   }, {
     key: "OnTimeUpdate",
     value: function OnTimeUpdate(time) {
+      //console.log('this.endTime: ' + this.endTime + ' this.videoElement.currentTime: ' + this.videoElement.currentTime);
       if (this.endTime && this.endTime <= this.videoElement.currentTime) {
         this.Pause();
         this.endTime = false;
