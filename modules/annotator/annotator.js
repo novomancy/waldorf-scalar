@@ -32,6 +32,9 @@ class VideoAnnotator {
         //If apiKey is set and cmsUsername and cmsEmail are passed, we'll auto login later
         this.cmsUsername = typeof args.cmsUsername === 'undefined' ? '' : args.cmsUsername;
         this.cmsEmail = typeof args.cmsEmail === 'undefined' ? '' : args.cmsEmail;
+        console.log('Setting username and email to localStorage...');
+        localStorage.setItem('waldorf_user_email', this.cmsUsername);
+        localStorage.setItem('waldorf_user_name', sha1(this.cmsEmail));
 
         //This config option is required for using a static annotation file
         this.localURL = typeof args.localURL === 'undefined' ? '' : args.localURL;

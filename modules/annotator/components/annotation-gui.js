@@ -410,6 +410,7 @@ class AnnotationGUI {
         }
         // Insert template data if no annotation is given
         else {
+            console.log("Not populated from an existing annotation")
             // Populate fields if no annotation is given
             this.editMode = false;
 

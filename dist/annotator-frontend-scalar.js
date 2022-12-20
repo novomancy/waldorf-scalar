@@ -467,7 +467,10 @@ var VideoAnnotator = /*#__PURE__*/function () {
     this.apiKey = typeof args.apiKey === 'undefined' ? '' : args.apiKey; //If apiKey is set and cmsUsername and cmsEmail are passed, we'll auto login later
 
     this.cmsUsername = typeof args.cmsUsername === 'undefined' ? '' : args.cmsUsername;
-    this.cmsEmail = typeof args.cmsEmail === 'undefined' ? '' : args.cmsEmail; //This config option is required for using a static annotation file
+    this.cmsEmail = typeof args.cmsEmail === 'undefined' ? '' : args.cmsEmail;
+    console.log('Setting username and email to localStorage...');
+    localStorage.setItem('waldorf_user_email', this.cmsUsername);
+    localStorage.setItem('waldorf_user_name', sha1(this.cmsEmail)); //This config option is required for using a static annotation file
 
     this.localURL = typeof args.localURL === 'undefined' ? '' : args.localURL; //Optional params
     //Removes the editing interface
@@ -1480,7 +1483,8 @@ var AnnotationGUI = /*#__PURE__*/function () {
         this.polyEditor.InitPoly(annotation.polyStart, annotation.polyEnd);
       } // Insert template data if no annotation is given
       else {
-        // Populate fields if no annotation is given
+        console.log("Not populated from an existing annotation"); // Populate fields if no annotation is given
+
         this.editMode = false;
         this.originalAnnotation = null;
         this.id = null; // console.log("Populated with template data");
