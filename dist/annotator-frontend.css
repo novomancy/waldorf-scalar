@@ -736,7 +736,7 @@
     background-color: rgba(0, 255, 49, 0.78); }
 
 .waldorf-info {
-  position: relative;
+  position: absolute;
   background-color: #d9d0e2;
   width: 100%;
   min-height: 15em;
