@@ -226,7 +226,7 @@ class VideoAnnotator {
 
         // Copy the video styles to the container
         // console.log(this.player.originalStyles);
-        this.$container.css(this.player.originalStyles);
+        //this.$container.css(this.player.originalStyles);
     }
 
     PopulateControls(){

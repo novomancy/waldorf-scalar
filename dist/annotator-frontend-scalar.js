@@ -658,8 +658,7 @@ var VideoAnnotator = /*#__PURE__*/function () {
       //this.player.$container.height("100%");
       // Copy the video styles to the container
       // console.log(this.player.originalStyles);
-
-      this.$container.css(this.player.originalStyles);
+      //this.$container.css(this.player.originalStyles);
     }
   }, {
     key: "PopulateControls",
